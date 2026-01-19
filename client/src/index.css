@@ -1,0 +1,58 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+body{
+    background-color: #f0efed;
+}
+
+/**/
+
+.row{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.row-fs{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+.row-sb{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: sba;
+    align-items: center;
+}
+
+/* FONTS */
+
+@font-face {
+    font-family: 'NeutralSans-Regular';
+    src: url('../public/font/NeutralSans-Regular.otf');
+}
+
+@font-face {
+    font-family: 'NeutralSans-Bold';
+    src: url('../public/font/NeutralSans-Bold.otf');
+}
+
+@font-face {
+    font-family: 'NeutralSans-Medium';
+    src: url('../public/font/NeutralSans-Meidum.otf');
+}
+
+/* ASSETS */
+
+.main-container{
+    padding-top: 100px
+}
