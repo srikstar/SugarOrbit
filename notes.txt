@@ -2,3 +2,4 @@ font-family: 'NeutralSans-Regular';
 font-family: 'NeutralSans-Bold';
 font-family: 'NeutralSans-Medium';
 
+#f0efed;
