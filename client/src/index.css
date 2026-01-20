@@ -30,7 +30,7 @@ body{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: sba;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -54,5 +54,10 @@ body{
 /* ASSETS */
 
 .main-container{
-    padding-top: 100px
+    padding-top: 150px
+}
+
+a{
+    text-decoration: none;
+    color: black;
 }
