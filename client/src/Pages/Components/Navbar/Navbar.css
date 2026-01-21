@@ -32,10 +32,16 @@
     width: 90%;
     height: inherit;
     margin: 0px 20px;
+    border-bottom: 1px solid rgb(163, 163, 163);
 }
 
 .donut-logo {
     width: 50px;
+}
+
+.donut-logo:hover
+{
+    animation: spinlogo 1s 1 forwards ease;
 }
 
 .profile-icon,
@@ -133,5 +139,14 @@
     .subnav-max {
         position: relative;
         left: 25px;
+    }
+}
+
+@keyframes spinlogo {
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
     }
 }

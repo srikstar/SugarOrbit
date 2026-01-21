@@ -64,7 +64,8 @@ body{
 /* ASSETS */
 
 .main-container{
-    padding-top: 135px
+    padding-top: 135px;
+    height: max-content;
 }
 
 a{
