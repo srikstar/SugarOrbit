@@ -1,14 +1,14 @@
 /* FONTS */
 
 .home-section-one-container h1 {
-    font-family: 'NeutralSans-Regular';
+    font-family: 'BeautiqueDisplay-Regular';
     font-size: 4.5rem;
     word-wrap: break-word;
-    letter-spacing: 1px;
+    letter-spacing: 5px;
 }
 
 .home-section-two-container h3 {
-    font-family: 'NeutralSans-Regular';
+    font-family: 'BeautiqueDisplay-Regular';
     font-size: 2.2rem;
     word-wrap: break-word;
     letter-spacing: 1px;
@@ -17,16 +17,18 @@
 
 .home-section-one-container p {
     font-family: 'NeutralSans-Regular';
-    font-size: 1rem;
+    font-size: 0.9rem;
     word-wrap: break-word;
     letter-spacing: 0.8px;
+    color: rgb(59, 59, 59)
 }
 
 .home-section-two-container p {
     font-family: 'NeutralSans-Regular';
-    font-size: 1rem;
+    font-size: 0.9rem;
     word-wrap: break-word;
     letter-spacing: 0.8px;
+    color: rgb(59, 59, 59)
 }
 
 .order-count {
@@ -74,6 +76,7 @@
 .home-wrapper-image {
     width: 100%;
     height: 60vh;
+    border-radius: 10px;
 }
 
 .home-section-two-container {
@@ -95,6 +98,7 @@
     width: 100%;
     object-fit: contain;
     margin: 5px 0px;
+    border-radius: 10px;
 }
 
 .item-size-container {

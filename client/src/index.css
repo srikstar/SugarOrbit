@@ -61,6 +61,11 @@ body{
     src: url('../public/font/NeutralSans-Meidum.otf');
 }
 
+@font-face {
+    font-family: 'BeautiqueDisplay-Regular';
+    src: url('../public/font/BeautiqueDisplay-Regular.otf');
+}
+
 /* ASSETS */
 
 .main-container{
