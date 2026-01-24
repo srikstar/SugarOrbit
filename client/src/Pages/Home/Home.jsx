@@ -1,5 +1,6 @@
 import React from 'react'
 import './Home.css'
+import Footer from '../Components/Footer/Footer';
 
 function Home() {
 
@@ -293,7 +294,7 @@ function Home() {
           </div>
         </div>
 
-        {/* Home Section 5 */}
+        {/* Home Section 6 */}
         <div className="home-section-six-container row-sb">
           <section className="features-section">
             <div className="features-container">
@@ -317,6 +318,72 @@ function Home() {
             </div>
           </section>
         </div>
+
+        <div className="div-90">
+
+          {/* Home Section 7 */}
+          <div className="home-section-seven-container row-sb">
+            <h1>Our 🍩! <br />Through Their Words.</h1>
+            <div className="reviews-container-section">
+              <div className="reviews-container-section-main">
+                <div className="reviews-container">
+
+                </div>
+                <div className="reviews-container">
+
+                </div>
+                <div className="reviews-container">
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          {/* Home Section 8 */}
+          <div className="home-section-eight-container row-sb">
+            <div className="home-section-two-container">
+              <h3>Masterfully Made Chocolate</h3>
+              <div className="home-para-one">
+                <p>Each chocolate is thoughtfully created using fine ingredients and precise techniques, resulting in smooth textures, deep flavors, and a perfectly balanced finish in every bite.
+                </p>
+              </div>
+
+              <div className="items-display-main-container row-sb">
+                {items.map((item, i) => (
+                  <div className="item-display-container" key={i}>
+                    <span className="order-count">{item.orders}k orders</span>
+
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="item-image"
+                    />
+
+                    <h4>{item.name}</h4>
+                    <p>{item.description}</p>
+
+                    <div className="item-size-container row-fs">
+                      {item.weight.map((w, index) => (
+                        <div
+                          key={index}
+                          className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
+                        >
+                          <span>{w}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button className="item-add-btn">Add to cart</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+        
+        <Footer />
 
       </section>
     </>

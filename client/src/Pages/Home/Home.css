@@ -24,8 +24,19 @@
 }
 
 .home-section-five-container h1 {
-    font-family: 'BeautiqueDisplay-Regular';
     font-size: 4.5rem;
+    font-family: 'BeautiqueDisplay-Regular';
+    font-weight: 500;
+    font-weight: bold;
+    letter-spacing: 3px;
+    letter-spacing: -2px;
+    font-weight: 500;
+    color: rgb(218, 58, 84);
+}
+
+.home-section-seven-container h1 {
+    font-family: 'BeautiqueDisplay-Regular';
+    font-size: 4rem;
     font-weight: 900;
     word-wrap: break-word;
     letter-spacing: -2px;
@@ -101,7 +112,7 @@
     color: rgb(107, 114, 128);
     line-height: 1.6;
     margin-top: 1.2rem;
-    max-width: 520px;
+    max-width: 700px;
 }
 
 .order-count {
@@ -197,8 +208,12 @@
     padding-top: calc(3vh + 3vw);
 }
 
+.home-section-seven-container {
+    padding-top: calc(2vh + 2vw);
+}
+
 .home-para-one {
-    width: 700px;
+    width: 1000px;
     padding: 5px 0px 40px 0px;
 }
 
@@ -411,7 +426,7 @@
     height: calc(40vh + 20vw);
 }
 
-.home-section-six-container{
+.home-section-six-container {
     width: 100%;
     margin: calc(2vh + 2vw) 0px;
 }
@@ -426,7 +441,6 @@
 .features-container {
     width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
 }
 
 .features-grid {
@@ -515,6 +529,42 @@
         height: 65px;
     }
 }
+
+
+
+
+
+.reviews-container-section{
+    width: 100%;
+    height: auto;
+    padding: calc(2vh + 2vw) 0px calc(1vh + 1vw) 0px;
+    overflow: hidden;
+}
+
+.reviews-container-section-main{
+    display: flex;
+    width: max-content;
+    height: inherit;
+    gap: 20px;
+}
+
+.reviews-container{
+    width: calc(20vh + 20vw);
+    height: calc(15vh + 20vw);
+    background-color: rgb(255, 209, 217);
+    border-radius: 10px;
+}
+
+.reviews-container:nth-child(2n){
+    background-color: #FFFDCE;
+}
+
+.home-section-eight-container{
+    width: 100%;
+    height: auto;
+}
+
+
 
 /* MEDIA QUERIES */
 

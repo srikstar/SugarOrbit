@@ -44,6 +44,14 @@ body{
     align-items: flex-start;
 }
 
+.column{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
 /* FONTS */
 
 @font-face {
