@@ -4,6 +4,7 @@ import Footer from '../Components/Footer/Footer';
 
 function Home() {
 
+  // Features section refs and state
   const featuresRef = React.useRef(null);
   const [isDragging, setIsDragging] = React.useState(false);
   const [startX, setStartX] = React.useState(0);
@@ -39,6 +40,90 @@ function Home() {
       }
     }
   }
+
+  // Section 2 - Best Sellers
+  const itemsScrollRef1 = React.useRef(null);
+  const [isItemsDragging1, setIsItemsDragging1] = React.useState(false);
+  const [itemsStartX1, setItemsStartX1] = React.useState(0);
+  const [itemsScrollLeft1, setItemsScrollLeft1] = React.useState(0);
+
+  const handleItemsMouseDown1 = (e) => {
+    setIsItemsDragging1(true);
+    setItemsStartX1(e.pageX - itemsScrollRef1.current.offsetLeft);
+    setItemsScrollLeft1(itemsScrollRef1.current.scrollLeft);
+  };
+
+  const handleItemsMouseUp1 = () => {
+    setIsItemsDragging1(false);
+  };
+
+  const handleItemsMouseMove1 = (e) => {
+    if (!isItemsDragging1) return;
+    e.preventDefault();
+    const x = e.pageX - itemsScrollRef1.current.offsetLeft;
+    const walk = (x - itemsStartX1) * 2;
+    itemsScrollRef1.current.scrollLeft = itemsScrollLeft1 - walk;
+  };
+
+  const handleItemsMouseLeave1 = () => {
+    setIsItemsDragging1(false);
+  };
+
+  // Section 4 - Signature Mithai
+  const itemsScrollRef2 = React.useRef(null);
+  const [isItemsDragging2, setIsItemsDragging2] = React.useState(false);
+  const [itemsStartX2, setItemsStartX2] = React.useState(0);
+  const [itemsScrollLeft2, setItemsScrollLeft2] = React.useState(0);
+
+  const handleItemsMouseDown2 = (e) => {
+    setIsItemsDragging2(true);
+    setItemsStartX2(e.pageX - itemsScrollRef2.current.offsetLeft);
+    setItemsScrollLeft2(itemsScrollRef2.current.scrollLeft);
+  };
+
+  const handleItemsMouseUp2 = () => {
+    setIsItemsDragging2(false);
+  };
+
+  const handleItemsMouseMove2 = (e) => {
+    if (!isItemsDragging2) return;
+    e.preventDefault();
+    const x = e.pageX - itemsScrollRef2.current.offsetLeft;
+    const walk = (x - itemsStartX2) * 2;
+    itemsScrollRef2.current.scrollLeft = itemsScrollLeft2 - walk;
+  };
+
+  const handleItemsMouseLeave2 = () => {
+    setIsItemsDragging2(false);
+  };
+
+  // Section 8 - Masterfully Made Chocolate
+  const itemsScrollRef3 = React.useRef(null);
+  const [isItemsDragging3, setIsItemsDragging3] = React.useState(false);
+  const [itemsStartX3, setItemsStartX3] = React.useState(0);
+  const [itemsScrollLeft3, setItemsScrollLeft3] = React.useState(0);
+
+  const handleItemsMouseDown3 = (e) => {
+    setIsItemsDragging3(true);
+    setItemsStartX3(e.pageX - itemsScrollRef3.current.offsetLeft);
+    setItemsScrollLeft3(itemsScrollRef3.current.scrollLeft);
+  };
+
+  const handleItemsMouseUp3 = () => {
+    setIsItemsDragging3(false);
+  };
+
+  const handleItemsMouseMove3 = (e) => {
+    if (!isItemsDragging3) return;
+    e.preventDefault();
+    const x = e.pageX - itemsScrollRef3.current.offsetLeft;
+    const walk = (x - itemsStartX3) * 2;
+    itemsScrollRef3.current.scrollLeft = itemsScrollLeft3 - walk;
+  };
+
+  const handleItemsMouseLeave3 = () => {
+    setIsItemsDragging3(false);
+  };
 
   const features = [
     {
@@ -115,7 +200,7 @@ function Home() {
     weight: ['250g', '500g', '1kg']
   }
 
-  const items = Array(4).fill(item_top)
+  const items = Array(6).fill(item_top)
 
   const categories = [
     {
@@ -171,34 +256,44 @@ function Home() {
               </p>
             </div>
 
-            <div className="items-display-main-container row-sb">
-              {items.map((item, i) => (
-                <div className="item-display-container" key={i}>
-                  <span className="order-count">{item.orders}k orders</span>
+            <div
+              className={`items-display-main-container column ${isItemsDragging1 ? 'dragging' : ''}`}
+              ref={itemsScrollRef1}
+              onMouseDown={handleItemsMouseDown1}
+              onMouseUp={handleItemsMouseUp1}
+              onMouseMove={handleItemsMouseMove1}
+              onMouseLeave={handleItemsMouseLeave1}
+            >
+              <div className="item-display-max">
+                {items.map((item, i) => (
+                  <div className="item-display-container" key={i}>
+                    <span className="order-count">{item.orders}k orders</span>
 
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="item-image"
-                  />
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="item-image"
+                      draggable="false"
+                    />
 
-                  <h4>{item.name}</h4>
-                  <p>{item.description}</p>
+                    <h4>{item.name}</h4>
+                    <p>{item.description}</p>
 
-                  <div className="item-size-container row-fs">
-                    {item.weight.map((w, index) => (
-                      <div
-                        key={index}
-                        className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
-                      >
-                        <span>{w}</span>
-                      </div>
-                    ))}
+                    <div className="item-size-container row-fs">
+                      {item.weight.map((w, index) => (
+                        <div
+                          key={index}
+                          className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
+                        >
+                          <span>{w}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button className="item-add-btn">Add to cart</button>
                   </div>
-
-                  <button className="item-add-btn">Add to cart</button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
@@ -252,34 +347,44 @@ function Home() {
               <p>Our signature mithai are customer favorites, celebrated for their irresistible flavors, authentic recipes, and perfectly balanced sweetness.</p>
             </div>
 
-            <div className="items-display-main-container row-sb">
-              {items.map((item, i) => (
-                <div className="item-display-container" key={i}>
-                  <span className="order-count">{item.orders}k orders</span>
+            <div
+              className={`items-display-main-container column ${isItemsDragging2 ? 'dragging' : ''}`}
+              ref={itemsScrollRef2}
+              onMouseDown={handleItemsMouseDown2}
+              onMouseUp={handleItemsMouseUp2}
+              onMouseMove={handleItemsMouseMove2}
+              onMouseLeave={handleItemsMouseLeave2}
+            >
+              <div className="item-display-max">
+                {items.map((item, i) => (
+                  <div className="item-display-container" key={i}>
+                    <span className="order-count">{item.orders}k orders</span>
 
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="item-image"
-                  />
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="item-image"
+                      draggable="false"
+                    />
 
-                  <h4>{item.name}</h4>
-                  <p>{item.description}</p>
+                    <h4>{item.name}</h4>
+                    <p>{item.description}</p>
 
-                  <div className="item-size-container row-fs">
-                    {item.weight.map((w, index) => (
-                      <div
-                        key={index}
-                        className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
-                      >
-                        <span>{w}</span>
-                      </div>
-                    ))}
+                    <div className="item-size-container row-fs">
+                      {item.weight.map((w, index) => (
+                        <div
+                          key={index}
+                          className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
+                        >
+                          <span>{w}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button className="item-add-btn">Add to cart</button>
                   </div>
-
-                  <button className="item-add-btn">Add to cart</button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
@@ -349,40 +454,50 @@ function Home() {
                 </p>
               </div>
 
-              <div className="items-display-main-container row-sb">
-                {items.map((item, i) => (
-                  <div className="item-display-container" key={i}>
-                    <span className="order-count">{item.orders}k orders</span>
+              <div
+                className={`items-display-main-container column ${isItemsDragging3 ? 'dragging' : ''}`}
+                ref={itemsScrollRef3}
+                onMouseDown={handleItemsMouseDown3}
+                onMouseUp={handleItemsMouseUp3}
+                onMouseMove={handleItemsMouseMove3}
+                onMouseLeave={handleItemsMouseLeave3}
+              >
+                <div className="item-display-max">
+                  {items.map((item, i) => (
+                    <div className="item-display-container" key={i}>
+                      <span className="order-count">{item.orders}k orders</span>
 
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="item-image"
-                    />
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="item-image"
+                        draggable="false"
+                      />
 
-                    <h4>{item.name}</h4>
-                    <p>{item.description}</p>
+                      <h4>{item.name}</h4>
+                      <p>{item.description}</p>
 
-                    <div className="item-size-container row-fs">
-                      {item.weight.map((w, index) => (
-                        <div
-                          key={index}
-                          className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
-                        >
-                          <span>{w}</span>
-                        </div>
-                      ))}
+                      <div className="item-size-container row-fs">
+                        {item.weight.map((w, index) => (
+                          <div
+                            key={index}
+                            className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
+                          >
+                            <span>{w}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button className="item-add-btn">Add to cart</button>
                     </div>
-
-                    <button className="item-add-btn">Add to cart</button>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
         </div>
-        
+
         <Footer />
 
       </section>
