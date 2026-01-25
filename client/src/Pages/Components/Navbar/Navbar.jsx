@@ -32,8 +32,8 @@ function Navbar() {
           <div className="nav-content-container row">
             <Link to='/'><img src="./profile.ico" alt="profile-icon" className="profile-icon nav-icons" /></Link>
             <div onClick={handleCart} className="overlay-number">
-              <Link to='/'><span className='cart-content-count'>5</span></Link>
-              <Link to='/'><img src="./shopping-cart.ico" alt="shopping-cart" className="shopping-cart nav-icons" /></Link>
+              <span className='cart-content-count'>5</span>
+              <img src="./shopping-cart.ico" alt="shopping-cart" className="shopping-cart nav-icons" />
             </div>
           </div>
         </div>
@@ -54,4 +54,3 @@ function Navbar() {
 }
 
 export default Navbar
-

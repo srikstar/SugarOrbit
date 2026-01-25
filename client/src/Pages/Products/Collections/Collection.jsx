@@ -1,8 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Collection.css';
-import { Navigate } from 'react-router-dom';
 
 function Collection() {
+  const navigate = useNavigate();
 
   const items = [
     {
@@ -32,48 +33,42 @@ function Collection() {
       price: "120",
       options: ["250 gms", "500 gms", "1 kg"],
       description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
-    }
-    ,
+    },
     {
       image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
       name: "Mysore Pak",
       price: "120",
       options: ["250 gms", "500 gms", "1 kg"],
       description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
-    }
-    ,
+    },
     {
       image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
       name: "Mysore Pak",
       price: "120",
       options: ["250 gms", "500 gms", "1 kg"],
       description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
-    }
-    ,
+    },
     {
       image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
       name: "Mysore Pak",
       price: "120",
       options: ["250 gms", "500 gms", "1 kg"],
       description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
-    }
-    ,
+    },
     {
       image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
       name: "Mysore Pak",
       price: "120",
       options: ["250 gms", "500 gms", "1 kg"],
       description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
-    }
-    ,
+    },
     {
       image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
       name: "Mysore Pak",
       price: "120",
       options: ["250 gms", "500 gms", "1 kg"],
       description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
-    }
-    ,
+    },
     {
       image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
       name: "Mysore Pak",
@@ -83,8 +78,8 @@ function Collection() {
     }
   ];
 
-  const handleProduct = () =>{
-    Navigate('/product')
+  const handleProduct = () => {
+    navigate('/product');
   }
 
   return (
@@ -106,7 +101,6 @@ function Collection() {
             <p className="product-price">Net Weight : 250g</p>
             <p className="product-price">Rs. {item.price}</p>
           </div>
-
 
           <button onClick={handleProduct} className="add-to-cart">
             View Options
