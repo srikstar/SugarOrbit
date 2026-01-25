@@ -36,6 +36,14 @@ body{
     align-items: center;
 }
 
+.row-sa{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
 .row-top{
     display: flex;
     flex-direction: row;

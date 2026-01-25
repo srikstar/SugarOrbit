@@ -23,7 +23,7 @@ function Navbar() {
             <Link to='/'><img className='donut-logo' src="./donut.jpg" alt="donut-logo" /></Link>
           </div>
           <div className="nav-links row">
-            <Link className="sub-navlinks">Sweets</Link>
+            <Link className="sub-navlinks" to='/sweets'>Sweets</Link>
             <Link className="sub-navlinks">Namkeens</Link>
             <Link className="sub-navlinks">Snacks</Link>
             <Link className="sub-navlinks">Chocolates</Link>
