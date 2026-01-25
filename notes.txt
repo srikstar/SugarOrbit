@@ -4,3 +4,4 @@ font-family: 'NeutralSans-Medium';
 font-family: "Inter", sans-serif;
 
 #f0efed;
+color: rgb(218, 58, 84);

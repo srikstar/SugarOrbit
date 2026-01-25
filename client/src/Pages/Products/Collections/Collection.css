@@ -1,17 +1,46 @@
-.collection-main-container{
-    width: 100%;
-    height: auto;
-    padding: calc(2vh + 2vw) 0px;
-    gap:20px;
-    align-items: stretch;
-    display: flex;
-    flex-wrap: wrap;
+/* FONTS */
+
+.collection-main-container h3 {
+  font-family: 'NeutralSans-Regular';
+  font-size: clamp(1rem, 5vw, 1.4rem);
+  padding: calc(0.5vh + 0.5vw) 0px;
+}
+
+.product-desc {
+  font-family: 'NeutralSans-Regular';
+  padding: calc(0.5vh + 0.5vw) 0px;
+  color: rgb(58, 58, 58);
+}
+
+.item-collection-container p {
+  font-family: 'NeutralSans-Regular';
+  color: rgb(218, 58, 84);
+  font-size: clamp(0.8rem, 5vw, 1.1rem);
+  font-weight: 600;
+}
+
+.collection-main-container button{
+  font-family: 'NeutralSans-Regular';
+  font-size: clamp(0.8rem, 5vw, 1.1rem);
+}
+
+
+/* CONTAINERS */
+.collection-main-container {
+  width: 100%;
+  height: auto;
+  padding: calc(2vh + 2vw) 0px;
+  gap: 20px;
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .product-card {
   width: 15vw;
   height: auto;
-  background: #f5b2b2;
+  /* background: rgb(241, 213, 217); */
+  border: 1px solid rgb(168, 168, 168);
   border-radius: 16px;
   padding: 14px;
   gap: calc(0.5vw);
@@ -30,65 +59,48 @@
   margin: 0;
 }
 
-.product-price {
-  color: #8a00ff;
-  font-weight: 600;
-  margin: 0;
-}
-
 .product-options {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.option-btn {
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid #ddd;
-  background: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.option-btn.active {
-  background: #8a00ff;
-  color: #fff;
-  border-color: #8a00ff;
-}
 
 .add-to-cart {
-  margin-top: auto;
+  width: 100%;
+  margin-top: 20px;
   padding: 10px;
-  border-radius: 999px;
-  border: none;
-  background: #eab7ff;
-  color: #000;
-  font-weight: 500;
+  border-radius: 10px;
+  background: #2c2c2c;
+  color: #ffffff;
   cursor: pointer;
-  transition: transform 0.2s ease;
 }
 
 .add-to-cart:hover {
-  transform: scale(1.03);
+  background: #000000;
 }
 
 @media screen and (max-width: 1467px) {
-    .product-card{
-        width: 25%;
-        min-width: 200px;
-    }
+  .product-card {
+    width: 25%;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .product-card {
+    width: 40%;
+  }
 }
 
 
 @media screen and (max-width: 861px) {
-    .product-card{
-        width: 40%;
-    }
+  .product-card {
+    width: 40%;
+  }
 }
 
 @media screen and (max-width: 861px) {
-    .product-card{
-        width: 100%;
-    }
+  .product-card {
+    width: 100%;
+  }
 }
