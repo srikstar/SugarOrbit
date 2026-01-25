@@ -262,20 +262,20 @@ function Home() {
           {/* Home Section 7 */}
           <div className="home-section-seven-container row-sb">
             <h1>Our 🍩! <br />Through Their Words.</h1>
-            <div className="reviews-container-section">
-              <div className="reviews-container-section-main">
-                <div className="reviews-container">
 
-                </div>
-                <div className="reviews-container">
-
-                </div>
-                <div className="reviews-container">
-
-                </div>
+            <div className="reviews-container-section-main row">
+              <div className="reviews-container">
 
               </div>
+              <div className="reviews-container">
+
+              </div>
+              <div className="reviews-container">
+
+              </div>
+
             </div>
+
           </div>
 
           {/* Home Section 8 - Masterfully Made Chocolate */}

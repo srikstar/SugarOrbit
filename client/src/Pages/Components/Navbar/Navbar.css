@@ -24,7 +24,7 @@
     height: 80px;
     position: fixed;
     padding-top: 25px;
-    z-index: 1;
+    z-index: 6;
     background-color: #f0efed;
 }
 
@@ -46,7 +46,7 @@
 
 .profile-icon,
 .shopping-cart {
-    width: 35px;
+    width: 30px;
     padding: 5px;
     margin: 0px 5px;
 }

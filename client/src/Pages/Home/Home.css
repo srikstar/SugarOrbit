@@ -430,6 +430,12 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+.reviews-container-section-main {
+    width: 100%;
+    padding: calc(1vh + 1vw) 0px;
+    gap: 20px;
+}
+
 .reviews-container-section {
     width: 100%;
     height: auto;
@@ -437,15 +443,10 @@
     overflow: hidden;
 }
 
-.reviews-container-section-main {
-    display: flex;
-    width: max-content;
-    height: inherit;
-    gap: 20px;
-}
 
 .reviews-container {
-    width: calc(20vh + 20vw);
+    width: calc(10vh + 22vw);
+    min-width: 300px;
     height: calc(15vh + 20vw);
     background-color: rgb(255, 209, 217);
     border-radius: 10px;
@@ -455,24 +456,39 @@
     background-color: #FFFDCE;
 }
 
+/* .reviews-container:nth-child(3n) {
+    width: 85%;
+} */
+
 /* MEDIA QUERIES */
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1205px) {
+    .reviews-container{
+        height: 300px;
+    }
+
+    .reviews-container:nth-child(2n) {
+        width: 50%;
+        height: 300px;
+    }
+
+    .reviews-container:nth-child(3n) {
+        width: 85%;
+        height: 300px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
     .features-grid {
         flex-wrap: nowrap;
         overflow-x: auto;
         justify-content: flex-start;
-        gap: calc(3vh + 3vw);
         padding-bottom: 10px;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
         cursor: grab;
         user-select: none;
-    }
-
-    .item-add-btn {
-        padding: calc(1vh + 1vw) 0px;
     }
 
     .features-grid:active {
@@ -487,6 +503,13 @@
         flex: 0 0 auto;
         min-width: 150px;
         pointer-events: none;
+    }
+}
+
+
+@media screen and (max-width: 800px) {
+    .item-add-btn {
+        padding: calc(1vh + 1vw) 0px;
     }
 }
 
@@ -523,9 +546,14 @@
         height: 400px;
     }
 
-    .feature-icon{
+    .feature-icon {
         width: 30px;
         height: 30px;
+        padding: calc(0.6rem);
+    }
+
+    .feature-title {
+        font-size: 10px;
     }
 
     .category-card-medium {
@@ -541,6 +569,20 @@
     }
 }
 
+@media screen and (max-width: 800px) {
+    .reviews-container {
+        width: 100%;
+    }
+
+    .reviews-container:nth-child(2n) {
+        width: 100%;
+    }
+
+    .reviews-container:nth-child(3n) {
+        width: 100%;
+    }
+}
+
 @media screen and (max-width: 480px) {
     .home-section-one-container h1 {
         font-size: 2.5rem;
@@ -553,10 +595,5 @@
     .category-card-large h3,
     .category-card-medium h3 {
         font-size: 1.5rem;
-    }
-
-    .feature-icon {
-        width: 65px;
-        height: 65px;
     }
 }
