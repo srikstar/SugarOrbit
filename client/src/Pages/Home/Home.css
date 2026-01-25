@@ -186,7 +186,7 @@
 .home-section-one-container {
     width: 100%;
     height: auto;
-    padding-top: calc(2vh + 2vw);
+    padding-top: calc(1vh + 0.5vw);
 }
 
 .home-section-two-container {
@@ -241,82 +241,6 @@
 .point {
     color: rgb(218, 58, 84);
     font-size: 2rem;
-}
-
-.items-display-main-container {
-    width: 100%;
-    height: auto;
-    overflow-x: auto;
-    overflow-y: hidden;
-    cursor: grab;
-    user-select: none;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.items-display-main-container::-webkit-scrollbar {
-    display: none;
-}
-
-.items-display-main-container.dragging {
-    cursor: grabbing;
-}
-
-.item-display-max {
-    display: flex;
-    width: max-content;
-    height: inherit;
-    gap: 40px;
-}
-
-.item-display-container {
-    width: 380px;
-    height: inherit;
-}
-
-.item-image {
-    width: 100%;
-    object-fit: contain;
-    margin: 5px 0px;
-    border-radius: 10px;
-    pointer-events: none;
-}
-
-.item-size-container {
-    margin-top: 15px;
-    gap: 0.5rem;
-}
-
-.item-size {
-    padding: 8px 16px;
-    border: 1px solid black;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.item-size:hover {
-    background-color: black;
-    color: white;
-}
-
-.item-add-btn {
-    font-family: 'NeutralSans-Regular';
-    width: 100%;
-    height: auto;
-    padding: calc(0.5vh + 0.5vw) 0px;
-    margin: 10px 0px;
-    background-color: black;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    border: 0px;
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.item-add-btn:hover {
-    background-color: rgb(40, 40, 40);
 }
 
 .connoisseur-header-wrapper {
@@ -547,8 +471,7 @@
         user-select: none;
     }
 
-    .item-add-btn
-    {
+    .item-add-btn {
         padding: calc(1vh + 1vw) 0px;
     }
 
@@ -600,6 +523,11 @@
         height: 400px;
     }
 
+    .feature-icon{
+        width: 30px;
+        height: 30px;
+    }
+
     .category-card-medium {
         height: 250px;
     }
@@ -610,24 +538,6 @@
 
     .category-card-medium h3 {
         font-size: 1.5rem;
-    }
-}
-
-@media screen and (max-width: 630px) {
-
-    .item-display-max{
-        gap: 40px;
-        align-items: stretch;
-    }
-
-    .item-display-container {
-        width: 250px;
-        height: auto;
-    }
-
-    .item-image {
-        object-fit: cover;
-        height: 300px;
     }
 }
 

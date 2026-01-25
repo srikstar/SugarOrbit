@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
+
 import './Home.css'
 import Footer from '../Components/Footer/Footer';
+import ItemsCarousel from '../Components/ItemsCarousel/ItemsCarousel';
 
 function Home() {
 
   // Features section refs and state
-  const featuresRef = React.useRef(null);
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [startX, setStartX] = React.useState(0);
-  const [scrollLeft, setScrollLeft] = React.useState(0);
+  const featuresRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -40,90 +42,6 @@ function Home() {
       }
     }
   }
-
-  // Section 2 - Best Sellers
-  const itemsScrollRef1 = React.useRef(null);
-  const [isItemsDragging1, setIsItemsDragging1] = React.useState(false);
-  const [itemsStartX1, setItemsStartX1] = React.useState(0);
-  const [itemsScrollLeft1, setItemsScrollLeft1] = React.useState(0);
-
-  const handleItemsMouseDown1 = (e) => {
-    setIsItemsDragging1(true);
-    setItemsStartX1(e.pageX - itemsScrollRef1.current.offsetLeft);
-    setItemsScrollLeft1(itemsScrollRef1.current.scrollLeft);
-  };
-
-  const handleItemsMouseUp1 = () => {
-    setIsItemsDragging1(false);
-  };
-
-  const handleItemsMouseMove1 = (e) => {
-    if (!isItemsDragging1) return;
-    e.preventDefault();
-    const x = e.pageX - itemsScrollRef1.current.offsetLeft;
-    const walk = (x - itemsStartX1) * 2;
-    itemsScrollRef1.current.scrollLeft = itemsScrollLeft1 - walk;
-  };
-
-  const handleItemsMouseLeave1 = () => {
-    setIsItemsDragging1(false);
-  };
-
-  // Section 4 - Signature Mithai
-  const itemsScrollRef2 = React.useRef(null);
-  const [isItemsDragging2, setIsItemsDragging2] = React.useState(false);
-  const [itemsStartX2, setItemsStartX2] = React.useState(0);
-  const [itemsScrollLeft2, setItemsScrollLeft2] = React.useState(0);
-
-  const handleItemsMouseDown2 = (e) => {
-    setIsItemsDragging2(true);
-    setItemsStartX2(e.pageX - itemsScrollRef2.current.offsetLeft);
-    setItemsScrollLeft2(itemsScrollRef2.current.scrollLeft);
-  };
-
-  const handleItemsMouseUp2 = () => {
-    setIsItemsDragging2(false);
-  };
-
-  const handleItemsMouseMove2 = (e) => {
-    if (!isItemsDragging2) return;
-    e.preventDefault();
-    const x = e.pageX - itemsScrollRef2.current.offsetLeft;
-    const walk = (x - itemsStartX2) * 2;
-    itemsScrollRef2.current.scrollLeft = itemsScrollLeft2 - walk;
-  };
-
-  const handleItemsMouseLeave2 = () => {
-    setIsItemsDragging2(false);
-  };
-
-  // Section 8 - Masterfully Made Chocolate
-  const itemsScrollRef3 = React.useRef(null);
-  const [isItemsDragging3, setIsItemsDragging3] = React.useState(false);
-  const [itemsStartX3, setItemsStartX3] = React.useState(0);
-  const [itemsScrollLeft3, setItemsScrollLeft3] = React.useState(0);
-
-  const handleItemsMouseDown3 = (e) => {
-    setIsItemsDragging3(true);
-    setItemsStartX3(e.pageX - itemsScrollRef3.current.offsetLeft);
-    setItemsScrollLeft3(itemsScrollRef3.current.scrollLeft);
-  };
-
-  const handleItemsMouseUp3 = () => {
-    setIsItemsDragging3(false);
-  };
-
-  const handleItemsMouseMove3 = (e) => {
-    if (!isItemsDragging3) return;
-    e.preventDefault();
-    const x = e.pageX - itemsScrollRef3.current.offsetLeft;
-    const walk = (x - itemsStartX3) * 2;
-    itemsScrollRef3.current.scrollLeft = itemsScrollLeft3 - walk;
-  };
-
-  const handleItemsMouseLeave3 = () => {
-    setIsItemsDragging3(false);
-  };
 
   const features = [
     {
@@ -196,7 +114,7 @@ function Home() {
     image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
     name: 'Mysore Pak',
     description:
-      'Mysore Pak is a true taste of tradition. Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance of sweetness.',
+      'Mysore Pak is a true taste of tradition. Our best sellers are customer favorites.',
     weight: ['250g', '500g', '1kg']
   }
 
@@ -246,56 +164,12 @@ function Home() {
             />
           </div>
 
-          {/* Home Section 2 */}
-          <div className="home-section-two-container">
-            <h3>Best Sellers</h3>
-            <div className="home-para-one">
-              <p>
-                Our best sellers are customer favorites, loved for their
-                irresistible flavors and perfect balance.
-              </p>
-            </div>
-
-            <div
-              className={`items-display-main-container column ${isItemsDragging1 ? 'dragging' : ''}`}
-              ref={itemsScrollRef1}
-              onMouseDown={handleItemsMouseDown1}
-              onMouseUp={handleItemsMouseUp1}
-              onMouseMove={handleItemsMouseMove1}
-              onMouseLeave={handleItemsMouseLeave1}
-            >
-              <div className="item-display-max">
-                {items.map((item, i) => (
-                  <div className="item-display-container" key={i}>
-                    <span className="order-count">{item.orders}k orders</span>
-
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="item-image"
-                      draggable="false"
-                    />
-
-                    <h4>{item.name}</h4>
-                    <p>{item.description}</p>
-
-                    <div className="item-size-container row-fs">
-                      {item.weight.map((w, index) => (
-                        <div
-                          key={index}
-                          className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
-                        >
-                          <span>{w}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <button className="item-add-btn">Add to cart</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          {/* Home Section 2 - Best Sellers */}
+          <ItemsCarousel
+            items={items}
+            title="Best Sellers"
+            description="Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
+          />
 
           {/* Home Section 3 */}
           <div className="home-section-three-container">
@@ -340,53 +214,12 @@ function Home() {
             </div>
           </div>
 
-          {/* Home Section 4 */}
-          <div className="home-section-two-container">
-            <h3>Signature Mithai</h3>
-            <div className="home-para-one">
-              <p>Our signature mithai are customer favorites, celebrated for their irresistible flavors, authentic recipes, and perfectly balanced sweetness.</p>
-            </div>
-
-            <div
-              className={`items-display-main-container column ${isItemsDragging2 ? 'dragging' : ''}`}
-              ref={itemsScrollRef2}
-              onMouseDown={handleItemsMouseDown2}
-              onMouseUp={handleItemsMouseUp2}
-              onMouseMove={handleItemsMouseMove2}
-              onMouseLeave={handleItemsMouseLeave2}
-            >
-              <div className="item-display-max">
-                {items.map((item, i) => (
-                  <div className="item-display-container" key={i}>
-                    <span className="order-count">{item.orders}k orders</span>
-
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="item-image"
-                      draggable="false"
-                    />
-
-                    <h4>{item.name}</h4>
-                    <p>{item.description}</p>
-
-                    <div className="item-size-container row-fs">
-                      {item.weight.map((w, index) => (
-                        <div
-                          key={index}
-                          className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
-                        >
-                          <span>{w}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <button className="item-add-btn">Add to cart</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          {/* Home Section 4 - Signature Mithai */}
+          <ItemsCarousel
+            items={items}
+            title="Signature Mithai"
+            description="Our signature mithai are customer favorites, celebrated for their irresistible flavors, authentic recipes, and perfectly balanced sweetness."
+          />
 
           {/* Home Section 5 */}
           <div className="home-section-five-container">
@@ -445,56 +278,12 @@ function Home() {
             </div>
           </div>
 
-          {/* Home Section 8 */}
-          <div className="home-section-eight-container row-sb">
-            <div className="home-section-two-container">
-              <h3>Masterfully Made Chocolate</h3>
-              <div className="home-para-one">
-                <p>Each chocolate is thoughtfully created using fine ingredients and precise techniques, resulting in smooth textures, deep flavors, and a perfectly balanced finish in every bite.
-                </p>
-              </div>
-
-              <div
-                className={`items-display-main-container column ${isItemsDragging3 ? 'dragging' : ''}`}
-                ref={itemsScrollRef3}
-                onMouseDown={handleItemsMouseDown3}
-                onMouseUp={handleItemsMouseUp3}
-                onMouseMove={handleItemsMouseMove3}
-                onMouseLeave={handleItemsMouseLeave3}
-              >
-                <div className="item-display-max">
-                  {items.map((item, i) => (
-                    <div className="item-display-container" key={i}>
-                      <span className="order-count">{item.orders}k orders</span>
-
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="item-image"
-                        draggable="false"
-                      />
-
-                      <h4>{item.name}</h4>
-                      <p>{item.description}</p>
-
-                      <div className="item-size-container row-fs">
-                        {item.weight.map((w, index) => (
-                          <div
-                            key={index}
-                            className={`item-size row ${index !== 0 ? 'item-size-n' : ''}`}
-                          >
-                            <span>{w}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <button className="item-add-btn">Add to cart</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Home Section 8 - Masterfully Made Chocolate */}
+          <ItemsCarousel
+            items={items}
+            title="Masterfully Made Chocolate"
+            description="Each chocolate is thoughtfully created using fine ingredients and precise techniques, resulting in smooth textures, deep flavors, and a perfectly balanced finish in every bite."
+          />
 
         </div>
 
