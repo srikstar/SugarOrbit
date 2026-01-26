@@ -75,6 +75,20 @@ function Collection() {
       price: "120",
       options: ["250 gms", "500 gms", "1 kg"],
       description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
+    },
+    {
+      image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
+      name: "Mysore Pak",
+      price: "120",
+      options: ["250 gms", "500 gms", "1 kg"],
+      description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
+    },
+    {
+      image: 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg',
+      name: "Mysore Pak",
+      price: "120",
+      options: ["250 gms", "500 gms", "1 kg"],
+      description : "Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance."
     }
   ];
 

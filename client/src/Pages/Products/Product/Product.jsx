@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./Product.css";
 import Footer from "../../Components/Footer/Footer";
+import { Link } from "react-router-dom";
+import Features from "../../Components/Features/Features";
 
 const Product = () => {
   const [weight, setWeight] = useState("250g");
@@ -8,6 +10,9 @@ const Product = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [])
+
+  const image = 'https://www.shutterstock.com/image-photo/mysore-pak-traditional-popular-delicious-260nw-2572703781.jpg'
+
 
   return (
     <>
@@ -17,14 +22,24 @@ const Product = () => {
           <section className="product-page">
             <div className="product-container">
 
-              {/* LEFT – Images */}
+              {/* Images */}
               <div className="product-images">
-                <img src="/assets/kaju-roll-1.jpg" alt="Kaju Roll" />
+                <img src={image} alt="Kaju Roll" />
               </div>
 
-              {/* RIGHT – Details */}
+
               <div className="product-details">
-                <span className="brand">SANGAM SWEETS</span>
+                <div className="item-details-container">
+                  <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="108" height="108" rx="16" fill="#F4FFF6" stroke="#2E7D32" stroke-width="4" />
+                    <path d="M40 65c15-30 40-35 40-35s-2 28-22 45c-8 6-14 4-18-10z"
+                      fill="#2E7D32" />
+                    <path d="M45 65l8 8 18-20" stroke="#2E7D32" stroke-width="5" fill="none" stroke-linecap="round" />
+                    <text x="60" y="105" text-anchor="middle" font-size="12" fill="#2E7D32"
+                      font-family="Arial, sans-serif">VEGETARIAN</text>
+                  </svg>
+
+                </div>
                 <h1>Kaju Roll</h1>
                 <p className="price">Rs. 345.00</p>
                 <p className="tax">Taxes included. Shipping calculated at checkout.</p>
@@ -51,7 +66,7 @@ const Product = () => {
                 {/* Quantity */}
                 <div className="quantity">
                   <p>Quantity</p>
-                  <div className="qty-box">
+                  <div className="qty-box row-sb">
                     <button onClick={() => setQty(qty > 1 ? qty - 1 : 1)}>-</button>
                     <span>{qty}</span>
                     <button onClick={() => setQty(qty + 1)}>+</button>
@@ -65,7 +80,10 @@ const Product = () => {
                 {/* Accordions */}
                 <div className="accordion">
                   <details open>
-                    <summary>Description</summary>
+                    <summary>
+                      <span className="acc-icon">📦</span>
+                      <span className="acc-title">Description</span>
+                    </summary>
                     <p>
                       Popular across many North Indian households, the Kaju Roll is
                       elegantly crafted with a rich cashew paste exterior and a
@@ -74,7 +92,10 @@ const Product = () => {
                   </details>
 
                   <details>
-                    <summary>Specification</summary>
+                    <summary>
+                      <span className="acc-icon">📋</span>
+                      <span className="acc-title">Specification</span>
+                    </summary>
                     <ul>
                       <li>Net Weight: 250g / 500g</li>
                       <li>Product Type: Dryfruit Sweets</li>
@@ -84,42 +105,53 @@ const Product = () => {
                   </details>
 
                   <details>
-                    <summary>Contents</summary>
+                    <summary>
+                      <span className="acc-icon">🌾</span>
+                      <span className="acc-title">Contents</span>
+                    </summary>
                     <p>Cashew nuts, sugar, ghee, assorted dry fruits</p>
                   </details>
 
                   <details>
-                    <summary>Shipping</summary>
+                    <summary>
+                      <span className="acc-icon">🚚</span>
+                      <span className="acc-title">Shipping</span>
+                    </summary>
                     <p>
                       Fast and secure delivery via our online store.
                       Also available on Swiggy and Zomato.
                     </p>
                   </details>
                 </div>
-              </div>
-            </div>
 
-            {/* Recommendations */}
-            <div className="recommend">
-              <h2>You may also like</h2>
-
-              <div className="recommend-grid">
-                {[
-                  "Kesar Kaju Burfi",
-                  "Kaju Burfi",
-                  "Kaju Pakam",
-                  "Monthal",
-                ].map((item, i) => (
-                  <div className="card" key={i}>
-                    <img src="/assets/kaju-roll-1.jpg" alt={item} />
-                    <h4>{item}</h4>
-                    <p>Net Weight: 250g</p>
-                    <span>From Rs. 325.00</span>
-                  </div>
-                ))}
               </div>
             </div>
           </section>
+        </div>
+
+        <Features />
+
+        <div className="div-90 row">
+          <div className="recommend">
+            <h2>You may also like</h2>
+            <div className="recommend-grid">
+              {[
+                "Kesar Kaju Burfi",
+                "Kaju Burfi",
+                "Kaju Pakam",
+                "Monthal",
+              ].map((item, i) => (
+                <div className="card" key={i}>
+                  <img src={image} alt={item} />
+                  <Link to='/product'><h4>{item}</h4></Link>
+                  <div className="recommend-card-container row-sb">
+                    <p>Net Weight: 250g</p>
+                    <span>From Rs. 325.00</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         <Footer />
       </div>

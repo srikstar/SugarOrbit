@@ -37,7 +37,7 @@
 }
 
 .product-card {
-  width: 15vw;
+  width: 19vw;
   height: auto;
   /* background: rgb(241, 213, 217); */
   border: 1px solid rgb(168, 168, 168);
@@ -84,6 +84,9 @@
   .product-card {
     width: 25%;
   }
+      .product-desc{
+    margin: 20px 0px;
+  }
 }
 
 @media screen and (max-width: 1100px) {
@@ -102,5 +105,8 @@
 @media screen and (max-width: 861px) {
   .product-card {
     width: 100%;
+  }
+  .product-image{
+    height: calc(25vh + 25vw);
   }
 }

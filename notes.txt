@@ -5,3 +5,9 @@ font-family: "Inter", sans-serif;
 
 #f0efed;
 color: rgb(218, 58, 84);
+#FFFDCE;
+
+
+Add a proper image carousel with zoom
+Add trust badges (certified, vegetarian, etc.)
+

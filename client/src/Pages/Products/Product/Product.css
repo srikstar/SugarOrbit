@@ -1,3 +1,76 @@
+/**/
+
+.product-details h1 {
+  font-family: 'BeautiqueDisplay-Regular';
+  font-size: 4.5rem;
+  word-wrap: break-word;
+  letter-spacing: 5px;
+}
+
+.price {
+  font-family: 'NeutralSans-Regular';
+  padding: calc(0.1vh + 0.1vw) 0px calc(0.3vh + 0.3vw) 0px;
+  font-size: clamp(0.9rem, 5vw, 1.2rem);
+  font-weight: 600;
+  color: rgb(218, 58, 84);
+}
+
+.tax {
+  font-family: 'NeutralSans-Regular';
+  font-size: 13px;
+  color: #777;
+}
+
+.weight *,
+.quantity * {
+  font-family: 'NeutralSans-Regular';
+}
+
+.add-cart,
+.buy-now {
+  font-family: 'NeutralSans-Regular';
+  font-size: clamp(0.9rem, 5vw, 1.2rem);
+}
+
+.acc-title{
+  font-family: 'NeutralSans-Medium';
+  font-size: clamp(0.9rem, 5vw, 1.2rem);
+}
+
+details p, ul{
+  font-family: 'NeutralSans-Regular';
+}
+
+.recommend h2{
+    font-family: 'NeutralSans-Medium';
+  font-size: clamp(1rem, 5vw, 1.5rem);
+  padding: calc(0.5vw + 0.5vw) 0px;
+}
+
+.card h4{
+  font-family: 'NeutralSans-Regular';
+  font-size: clamp(0.9rem, 5vw, 1.2rem);
+  padding: calc(0.5vw + 0.5vh) 0px;
+}
+
+.recommend-card-container{
+  font-family: 'NeutralSans-Regular';
+  color: rgb(218, 58, 84);
+}
+
+
+/**/
+
+.weight {
+  margin-top: 30px;
+}
+
+
+.item-details-container svg{
+  width: 60px;
+  height: 60px;
+}
+
 .product-page {
   padding: 60px 80px;
 }
@@ -26,25 +99,19 @@
   margin: 8px 0;
 }
 
-.price {
-  font-size: 20px;
-  font-weight: 600;
-  color: #b57b1c;
+.weight-options {
+  margin: 20px 0px;
 }
 
-.tax {
-  font-size: 13px;
-  color: #777;
-}
 
-/* Weight */
 .weight-options button {
   margin-right: 10px;
   padding: 6px 14px;
-  border-radius: 20px;
+  border-radius: 10px;
   border: 1px solid #ccc;
   background: #fff;
   cursor: pointer;
+  font-size: clamp(1rem, 5vw, 1.1rem);
 }
 
 .weight-options .active {
@@ -53,10 +120,11 @@
 }
 
 .qty-box {
-  display: flex;
-  align-items: center;
   border: 1px solid #ccc;
   width: fit-content;
+  margin-top: 20px;
+  width: 200px;
+  font-size: clamp(1rem, 5vw, 1.1rem);
 }
 
 .qty-box button {
@@ -64,10 +132,12 @@
   background: none;
   border: none;
   cursor: pointer;
+  font-size: clamp(1rem, 5vw, 1.8rem);
 }
 
 .qty-box span {
-  padding: 0 14px;
+  padding: 0px calc(0.4vw + 0.4vh);
+  font-size: clamp(1rem, 5vw, 1.8rem);
 }
 
 
@@ -77,35 +147,99 @@
   padding: 14px;
   margin-top: 14px;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: 10px;
+  transition: background 0.3s ease-in-out;
 }
 
 .add-cart {
-  background: #fff;
-  border: 1px solid #000;
+  background: #292929;
+  color: white;
 }
 
 .buy-now {
-  background: #c58b2a;
-  color: #fff;
+  background: pink;
+  color: #000000;
   border: none;
 }
 
+.add-cart:hover {
+  background: #000000;
+  transition: background 0.3s ease-in-out;
+}
 
-.accordion details {
-  margin-top: 16px;
+.buy-now:hover {
+  background: rgb(236, 91, 115);
+  transition: background 0.3s ease-in-out;
+}
+
+
+.accordion {
+  margin-top: 30px;
   border-top: 1px solid #ddd;
-  padding-top: 12px;
 }
 
+/* Each item */
+.accordion details {
+  border-bottom: 1px solid #ddd;
+  padding: 14px 0;
+}
+
+/* Remove default arrow */
 .accordion summary {
+  list-style: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font-weight: 600;
+  font-size: 15px;
+  color: #222;
 }
 
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Icon */
+.acc-icon {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+/* Title */
+.acc-title {
+  flex: 1;
+}
+
+/* Custom arrow */
+.accordion summary::after {
+  content: "↓";
+  transition: transform 0.25s ease;
+  color: #000000;
+}
+
+.accordion details[open] summary::after {
+  transform: rotate(180deg);
+}
+
+/* Content */
+.accordion p,
+.accordion ul {
+  margin: 12px 0 0 35px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.accordion ul {
+  padding-left: 16px;
+}
+
+.accordion li {
+  margin-bottom: 6px;
+}
 
 .recommend {
-  margin-top: 80px;
+  padding: calc(0.5vh + 0.5vw) 0px calc(1vh + 1vw) 0px;
 }
 
 .recommend-grid {
@@ -124,6 +258,9 @@
   width: 100%;
   border-radius: 12px;
 }
+
+
+/* MEDIA QUERIES */
 
 @media (max-width: 1024px) {
   .product-page {
