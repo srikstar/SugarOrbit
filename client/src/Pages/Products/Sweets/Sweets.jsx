@@ -3,9 +3,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import './Sweets.css';
 import Collection from '../Collections/Collection';
 import Footer from '../../Components/Footer/Footer';
+import { sweets } from '../../../APIs/Products';
 
 
 function Sweets() {
+
+    useEffect(() =>{
+       const response = async() =>{
+            try {
+                const response = await sweets()
+                console.log(response)
+            } catch (error) {
+                console.log(error)
+            }
+       }
+       response()
+    },[])
+
 
     const OPTIONS = [
         { label: "Ganesh Chaturthi", count: 3 },

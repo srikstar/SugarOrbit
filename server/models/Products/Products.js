@@ -2,6 +2,18 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 
 const productSchema = new mongoose.Schema({
+    productCategory: {
+        type: String,
+        required: [true, 'Product category is required'],
+        trim: true,
+        minlength: [3, 'Product category must be at least 3 characters'],
+        maxlength: [100, 'Product category cannot exceed 100 characters'],
+        lowercase: true,
+        enum: {
+            values: ['sweets', 'namkeens', 'Snacks', 'Chocolates', 'Gifting'],
+            message: 'Product type must be either veg or non-veg'
+        }
+    },
     productName: {
         type: String,
         required: [true, 'Product name is required'],
@@ -14,7 +26,7 @@ const productSchema = new mongoose.Schema({
         type: [String],
         required: [true, 'At least one image is required'],
         validate: {
-            validator: function(images) {
+            validator: function (images) {
                 return images.length > 0 && images.every(img => validator.isURL(img));
             },
             message: 'All images must be valid URLs'
@@ -48,7 +60,7 @@ const productSchema = new mongoose.Schema({
         ],
         required: [true, 'At least one price option is required'],
         validate: {
-            validator: function(prices) {
+            validator: function (prices) {
                 return prices.length > 0;
             },
             message: 'Must have at least one price option'
@@ -88,7 +100,7 @@ const productSchema = new mongoose.Schema({
         ],
         required: [true, 'At least one ingredient is required'],
         validate: {
-            validator: function(content) {
+            validator: function (content) {
                 return content.length > 0;
             },
             message: 'Must have at least one ingredient'
@@ -124,7 +136,7 @@ const productSchema = new mongoose.Schema({
         min: [0, 'Stock cannot be negative'],
         max: [1000000, 'Stock value too high']
     }
-}, { 
+}, {
     timestamps: true,
     strict: true
 });
@@ -133,7 +145,7 @@ productSchema.index({ productName: 1 });
 productSchema.index({ productType: 1 });
 
 productSchema.set('toJSON', {
-    transform: function(doc, ret) {
+    transform: function (doc, ret) {
         delete ret.__v;
         return ret;
     }
