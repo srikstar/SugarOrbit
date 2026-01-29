@@ -6,6 +6,7 @@ import Home from './Pages/Home/Home'
 import Sweets from './Pages/Products/Sweets/Sweets'
 import Product from './Pages/Products/Product/Product'
 
+
 function App() {
   return (
     <BrowserRouter>

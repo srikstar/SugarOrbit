@@ -14,8 +14,22 @@ function Sweets() {
     const dispatch = useDispatch()
     // const { sweet } = useSelector(state => state.sweets)
 
+    // ✅ FIX 1: Move all useState hooks to the top
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState([]);
+    const [priceOpen, setPriceOpen] = useState(false);
+    const [priceFrom, setPriceFrom] = useState(0);
+    const [priceTo, setPriceTo] = useState(860); // MAX_PRICE constant
+    const [priceApplied, setPriceApplied] = useState(false);
+
+    const productTypeRef = useRef(null);
+    const priceRangeRef = useRef(null);
+
+    const MAX_PRICE = 860; // Define constant AFTER hooks
+
+    // ✅ FIX 2: Fetch data with proper dependencies
     useEffect(() => {
-        const response = async () => {
+        const fetchSweets = async () => {
             try {
                 const response = await sweets()
                 console.log(response)
@@ -24,34 +38,10 @@ function Sweets() {
                 console.log(error)
             }
         }
-        response()
-    }, [])
+        fetchSweets()
+    }, [dispatch]) // ✅ Add dispatch to dependency array
 
-
-    const OPTIONS = [
-        { label: "Ganesh Chaturthi", count: 3 },
-        { label: "Sweets-Chikkis", count: 5 },
-        { label: "Sweets-Dryfruits", count: 3 },
-        { label: "sweets-Ghee", count: 6 },
-        { label: "Sweets-Laddus", count: 4 },
-        { label: "Sweets-Milk", count: 2 },
-        { label: "Sweets-Tag", count: 21 },
-        { label: "winterSpecialCollection", count: 1 },
-    ];
-
-    const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState([]);
-
-    const MAX_PRICE = 860;
-    const [priceOpen, setPriceOpen] = useState(false);
-    const [priceFrom, setPriceFrom] = useState(0);
-    const [priceTo, setPriceTo] = useState(MAX_PRICE);
-    const [priceApplied, setPriceApplied] = useState(false);
-
-    const productTypeRef = useRef(null);
-    const priceRangeRef = useRef(null);
-
-    // Close dropdowns when clicking outside
+    // ✅ FIX 3: Clean up click-outside handler with correct dependencies
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (productTypeRef.current && !productTypeRef.current.contains(event.target)) {
@@ -68,7 +58,18 @@ function Sweets() {
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [priceFrom, priceTo, MAX_PRICE]);
+    }, [priceFrom, priceTo]); // ✅ Removed MAX_PRICE - it's a constant
+
+    const OPTIONS = [
+        { label: "Ganesh Chaturthi", count: 3 },
+        { label: "Sweets-Chikkis", count: 5 },
+        { label: "Sweets-Dryfruits", count: 3 },
+        { label: "sweets-Ghee", count: 6 },
+        { label: "Sweets-Laddus", count: 4 },
+        { label: "Sweets-Milk", count: 2 },
+        { label: "Sweets-Tag", count: 21 },
+        { label: "winterSpecialCollection", count: 1 },
+    ];
 
     const toggleOption = (label) => {
         setSelected((prev) =>

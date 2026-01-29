@@ -40,7 +40,7 @@ function Navbar() {
         <div className="sub-navbar-main-container row">
           <div className="subnav-max row">
             <div className="sub-navbar row-sb">
-              <Link className="sub-navlinks">Sweets</Link>
+              <Link className="sub-navlinks" to='/sweets'>Sweets</Link>
               <Link className="sub-navlinks">Namkeens</Link>
               <Link className="sub-navlinks">Snacks</Link>
               <Link className="sub-navlinks">Chocolates</Link>
