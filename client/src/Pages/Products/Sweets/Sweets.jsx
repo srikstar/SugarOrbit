@@ -1,24 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch } from 'react-redux'
 
 import './Sweets.css';
 import Collection from '../Collections/Collection';
 import Footer from '../../Components/Footer/Footer';
 import { sweets } from '../../../APIs/Products';
 
+import { setSweetsData } from '../../../Redux/sweets.js'
+ 
 
 function Sweets() {
 
-    useEffect(() =>{
-       const response = async() =>{
+    const dispatch = useDispatch()
+    // const { sweet } = useSelector(state => state.sweets)
+
+    useEffect(() => {
+        const response = async () => {
             try {
                 const response = await sweets()
                 console.log(response)
+                dispatch(setSweetsData([response]))
             } catch (error) {
                 console.log(error)
             }
-       }
-       response()
-    },[])
+        }
+        response()
+    }, [])
 
 
     const OPTIONS = [

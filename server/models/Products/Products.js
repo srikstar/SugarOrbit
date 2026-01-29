@@ -2,44 +2,33 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 
 const productSchema = new mongoose.Schema({
-    productCategory: {
+    productType: {
         type: String,
-        required: [true, 'Product category is required'],
-        trim: true,
-        minlength: [3, 'Product category must be at least 3 characters'],
-        maxlength: [100, 'Product category cannot exceed 100 characters'],
-        lowercase: true,
+        required: [true, 'Product type is required'],
         enum: {
-            values: ['sweets', 'namkeens', 'Snacks', 'Chocolates', 'Gifting'],
-            message: 'Product type must be either veg or non-veg'
-        }
+            values: ['sweets', 'namkeens', 'chocolates', 'gifting', 'snacks'],
+            message: 'Product type must be sweets, namkeens, chocolates, gifting, or snacks'
+        },
+        trim: true,
+        lowercase: true
     },
     productName: {
         type: String,
         required: [true, 'Product name is required'],
-        trim: true,
         minlength: [3, 'Product name must be at least 3 characters'],
         maxlength: [100, 'Product name cannot exceed 100 characters'],
-        lowercase: true
-    },
-    productImage: {
-        type: [String],
-        required: [true, 'At least one image is required'],
-        validate: {
-            validator: function (images) {
-                return images.length > 0 && images.every(img => validator.isURL(img));
-            },
-            message: 'All images must be valid URLs'
-        }
+        trim: true,
+        lowercase: true,
+        match: [/^[a-z\s]+$/i, 'Product name should only contain letters and spaces']
     },
     productDescription: {
         type: String,
-        required: [true, 'Description is required'],
-        trim: true,
+        required: [true, 'Product description is required'],
         minlength: [10, 'Description must be at least 10 characters'],
-        maxlength: [1000, 'Description cannot exceed 1000 characters']
+        maxlength: [500, 'Description cannot exceed 500 characters'],
+        trim: true
     },
-    productPrice: {
+    productWeight: {
         type: [
             {
                 weight: {
@@ -47,49 +36,59 @@ const productSchema = new mongoose.Schema({
                     required: [true, 'Weight is required'],
                     enum: {
                         values: ['250g', '500g', '1kg'],
-                        message: 'Weight must be 250g, 500g, or 1kg'
+                        message: 'Weight must be 250g, 500g, 1kg'
                     }
                 },
+                _id: false
+            }
+        ],
+        required: [true, 'At least one weight option is required'],
+        validate: {
+            validator: function (weights) {
+                return Array.isArray(weights) && weights.length > 0;
+            },
+            message: 'Must have at least one weight option'
+        }
+    },
+    productPrice: {
+        type: [
+            {
                 price: {
                     type: Number,
                     required: [true, 'Price is required'],
-                    min: [0, 'Price cannot be negative'],
-                    max: [999999, 'Price is too high']
-                }
+
+                },
+                _id: false
             }
         ],
         required: [true, 'At least one price option is required'],
         validate: {
             validator: function (prices) {
-                return prices.length > 0;
+                return Array.isArray(prices) && prices.length > 0;
             },
             message: 'Must have at least one price option'
         }
     },
-    productSpecification: {
-        netWeight: {
-            type: String,
-            required: [true, 'Net weight is required'],
-            trim: true,
-            match: [/^\d+(g|kg)$/, 'Net weight must be in format like 250g or 1kg']
-        },
-        productType: {
-            type: String,
-            required: [true, 'Product type is required'],
-            enum: {
-                values: ['veg', 'non-veg'],
-                message: 'Product type must be either veg or non-veg'
-            }
-        },
-        shelfLife: {
-            type: String,
-            required: [true, 'Shelf life is required'],
-            trim: true,
-            minlength: [3, 'Shelf life description too short'],
-            maxlength: [50, 'Shelf life description too long']
-        }
+    productCategory: {
+        type: String,
+        required: [true, 'Product category is required'],
+        lowercase: true,
+        trim: true
     },
-    productContent: {
+    productNetWeight: {
+        type: String,
+        required: [true, 'Net weight is required'],
+        trim: true,
+        match: [/^\d+(g|kg)$/, 'Net weight must be in format like 250g or 1kg']
+    },
+    productShelfLife: {
+        type: String,
+        required: [true, 'Shelf life is required'],
+        minlength: [3, 'Shelf life description too short'],
+        maxlength: [50, 'Shelf life description too long'],
+        trim: true
+    },
+    productIngredients: {
         type: [
             {
                 type: String,
@@ -100,49 +99,57 @@ const productSchema = new mongoose.Schema({
         ],
         required: [true, 'At least one ingredient is required'],
         validate: {
-            validator: function (content) {
-                return content.length > 0;
+            validator: function (ingredients) {
+                return Array.isArray(ingredients) && ingredients.length > 0;
             },
             message: 'Must have at least one ingredient'
         }
     },
-    productType: {
+    productBadge: {
         type: String,
-        required: [true, 'Product type is required'],
+        required: [true, `Please specify whether the product is either veg or non-veg`],
         enum: {
             values: ['veg', 'non-veg'],
-            message: 'Product type must be either veg or non-veg'
+            message: `Please specify whether the product is either veg or non-veg`
+        },
+        lowercase: true,
+        trim: true
+    },
+    productStock: {
+        type: Boolean,
+        required: [true, 'Please specify true or false if the product is in-stock or unavailable'],
+        validate: {
+            validator: function (stock) {
+                return typeof stock === 'boolean';
+            },
+            message: 'Product stock must be true (in-stock) or false (unavailable)'
+        }
+    },
+    productImages: {
+        type: [String],
+        required: [true, 'At least one image is required'],
+        validate: {
+            validator: function (images) {
+                return (
+                    Array.isArray(images) &&
+                    images.length > 0 &&
+                    images.every(img => validator.isURL(img))
+                );
+            },
+            message: 'All images must be valid URLs'
         }
     },
     productTotalOrders: {
         type: Number,
-        required: [true, 'Total orders is required'],
-        default: 0,
-        min: [0, 'Total orders cannot be negative'],
-        max: [10000000, 'Total orders value too high']
-    },
-    productBadges: {
-        type: [String],
-        enum: {
-            values: ['Sulphur-free Process', 'Trans Fat-free Oil', '100% Vegetarian', 'Eggless', 'Freshly Baked', 'Handcrafted'],
-            message: 'Invalid badge: {VALUE}'
-        },
-        default: []
-    },
-    stock: {
-        type: Number,
-        required: [true, 'Stock is required'],
-        default: 0,
-        min: [0, 'Stock cannot be negative'],
-        max: [1000000, 'Stock value too high']
+        default: 0
     }
-}, {
-    timestamps: true,
-    strict: true
-});
+}, { timestamps: true, strict: true, strictQuery: true });
+
 
 productSchema.index({ productName: 1 });
 productSchema.index({ productType: 1 });
+productSchema.index({ productCategory: 1 });
+productSchema.index({ createdAt: -1 });
 
 productSchema.set('toJSON', {
     transform: function (doc, ret) {
@@ -150,6 +157,7 @@ productSchema.set('toJSON', {
         return ret;
     }
 });
+
 
 const Products = mongoose.model('Products', productSchema);
 module.exports = Products;
