@@ -1,0 +1,13 @@
+/* FONTS */
+
+
+/* CONTAINERS */
+
+
+/* MEDIA QUERIES */
+
+font-family: 'NeutralSans-Regular';
+font-family: "Inter", sans-serif;
+font-family: "Poppins", sans-serif;
+
+height: 80px;

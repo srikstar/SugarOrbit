@@ -1,0 +1,118 @@
+/* FONTS */
+
+.navbar-main-container h3 {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-weight: 500;
+}
+
+.navbar-main-container h4 {
+    font-family: "Poppins", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.menu-list-container h2 {
+    font-family: "Poppins", sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    padding: calc(1vh + 1vw) 0px;
+}
+
+
+/* CONTAINERS */
+
+.navbar-main-container {
+    width: 100%;
+    height: auto;
+    position: fixed;
+    background-color: white;
+    top: 0px;
+}
+
+.navbar {
+    height: 80px;
+    padding: 15px 0px;
+}
+
+.main-logo {
+    width: 80px;
+    height: 80px;
+    background-color: red;
+}
+
+.nav-links {
+    width: auto;
+    height: auto;
+    gap: 50px;
+}
+
+.nav-icons-container {
+    width: 200px;
+    gap: 20px;
+}
+
+.main-logo {
+    width: auto;
+    height: 70px;
+}
+
+.nav-icon {
+    width: 17px;
+    height: 17px;
+    margin: 0px 5px;
+}
+
+.menu-main-container {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.11);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5.6px);
+    -webkit-backdrop-filter: blur(5.6px);
+}
+
+.menu-container {
+    width: 100%;
+    height: 70vh;
+    background-color: blue;
+}
+
+.back-btn-container {
+    padding: 8vh 0px;
+    text-align: end;
+}
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width:1430px) {
+    .navbar {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width:900px) {
+    .nav-icons-container {
+        width: auto;
+    }
+
+    .nav-icons-container h4 {
+        display: none;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .nav-icons-container{
+        gap: 15px;
+    }
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+        margin: 2px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+}

@@ -1,9 +1,23 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
+import Navbar from './Components/Navbar/Navbar'
+import Home from './Pages/Home/Home'
+import Sweets from './Pages/Sweets/Sweets'
+import Namkeen from './Pages/Namkeens/Namkeen'
+import Chocolates from './Pages/Chocolates/Chocolates'
+
 function App() {
   return (
-    <div>App</div>
+    <BrowserRouter>
+    <Navbar />
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/sweets' element={<Sweets />} />
+        <Route path='/namkeens' element={<Namkeen />} />
+        <Route path='/chocolates' element={<Chocolates />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
