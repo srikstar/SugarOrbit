@@ -23,9 +23,9 @@ function Navbar() {
             <Link to='/'><img className='main-logo' src="./donut.svg" alt="main-logo" /></Link>
           </div>
           <div className="nav-containers nav-links row">
-            <Link><h3>Sweets</h3></Link>
-            <Link><h3>Namkeens</h3></Link>
-            <Link><h3>Chocolates</h3></Link>
+            <Link to='/sweets'><h3>Sweets</h3></Link>
+            <Link to='/namkeens'><h3>Namkeens</h3></Link>
+            <Link to='/chocolates'><h3>Chocolates</h3></Link>
           </div>
           <div className="nav-containers nav-icons-container row">
             <div className="nav-icons" onClick={handleMenuOpen}><Link className='row'><img className='nav-icon menu' src="./menu.png" alt="menu-logo" /></Link></div>
@@ -35,24 +35,23 @@ function Navbar() {
         </nav>
       </div>
 
-      {isOpen && (
-        <div className={`menu-main-container ${isOpen ? 'active' : 'inactive'}`}>
-          <div className="menu-container">
-            <div className="div row">
-              <div className="div-80 back-btn-container">
-                <div className="nav-icons" onClick={handleMenuClose}><Link><p>back</p></Link></div>
-              </div>
+      <div className={`menu-main-container ${isOpen ? 'active' : 'inactive'}`}>
+        <div className="menu-container">
+          <div className="div row">
+            <div className="div-80 back-btn-container">
+              <div className="nav-icons" onClick={handleMenuClose}><Link><p>back</p></Link></div>
             </div>
-            <div className="div row">
-              <div className="div-80 menu-list-container">
-                <Link><h2>Sweets</h2></Link>
-                <Link><h2>Namkeens</h2></Link>
-                <Link><h2>Chocolates</h2></Link>
-              </div>
+          </div>
+          <div className="div row">
+            <div className={`div-80 menu-list-container" ${isOpen ? 'menushow' : 'menuhide'}`}>
+              <Link to='/sweets' onClick={handleMenuClose}><h2>Sweets</h2></Link>
+              <Link to='/namkeens' onClick={handleMenuClose}><h2>Namkeens</h2></Link>
+              <Link to='/chocolates' onClick={handleMenuClose}><h2>Chocolates</h2></Link>
             </div>
           </div>
         </div>
-      )}
+      </div>
+
 
     </>
   )
