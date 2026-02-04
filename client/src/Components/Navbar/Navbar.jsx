@@ -39,7 +39,7 @@ function Navbar() {
         <div className="menu-container">
           <div className="div row">
             <div className="div-80 back-btn-container">
-              <div className="nav-icons"><Link onClick={handleMenuClose}><p>back</p></Link></div>
+              <p onClick={handleMenuClose}>back</p>
             </div>
           </div>
           <div className="div row">
