@@ -43,7 +43,7 @@ function Navbar() {
             </div>
           </div>
           <div className="div row">
-            <div className={`div-80 menu-list-container" ${isOpen ? 'menushow' : 'menuhide'}`}>
+            <div className="div-80 menu-list-container">
               <Link to='/sweets' onClick={handleMenuClose}><h2>Sweets</h2></Link>
               <Link to='/namkeens' onClick={handleMenuClose}><h2>Namkeens</h2></Link>
               <Link to='/chocolates' onClick={handleMenuClose}><h2>Chocolates</h2></Link>
