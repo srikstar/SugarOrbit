@@ -48,7 +48,33 @@ a {
     -webkit-tap-highlight-color: transparent;
 }
 
+.div-m{
+    margin-bottom: 50px;
+}
+
 a:active {
     background-color: transparent;
     outline: none;
+}
+
+.main-section{
+    padding-top: 110px;
+}
+
+.para{
+    padding: calc(0.3vw + 0.3vh) 0px;
+    width: 800px;
+    text-align: start;
+}
+
+/* FONTS */
+
+@font-face {
+    font-family: 'BeautiqueDisplay-Regular';
+    src: url('./font/BeautiqueDisplay-Regular.otf');
+}
+
+@font-face {
+    font-family: 'BeautiqueDisplay-Medium';
+    src: url('./font/BeautiqueDisplay-Medium.otf');
 }

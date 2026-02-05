@@ -6,8 +6,9 @@
 
 /* MEDIA QUERIES */
 
-font-family: 'NeutralSans-Regular';
 font-family: "Inter", sans-serif;
 font-family: "Poppins", sans-serif;
+font-family: 'BeautiqueDisplay-Medium';
+font-family: 'BeautiqueDisplay-Regular';
 
-height: 80px;
+color: rgb(223, 136, 60);
