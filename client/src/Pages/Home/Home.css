@@ -1,6 +1,17 @@
-/* ============================================
-   FONTS - ALL TYPOGRAPHY STYLES
-   ============================================ */
+/* FONTS */
+
+.home-item-container,
+.collections-title,
+.collections-title-accent,
+.collections-header-text p,
+.category-card-content h3,
+.category-card-content p,
+.category-card-content span,
+.category-card-medium-content h3,
+.category-card-medium-content p,
+.home-bestseller-container span {
+    font-family: "Poppins", sans-serif;
+}
 
 .home-item-container h1 {
     font-family: 'BeautiqueDisplay-Medium';
@@ -10,14 +21,19 @@
     color: rgb(223, 136, 60);
 }
 
+.home-bestseller-container h1 {
+    font-family: 'BeautiqueDisplay-Medium';
+    letter-spacing: 2px;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    color: rgb(223, 136, 60);
+}
+
 .home-item-container p {
-    font-family: "Poppins", sans-serif;
     font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: 400;
 }
 
 .collections-title {
-    font-family: "Poppins", sans-serif;
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 600;
     color: #1a1a1a;
@@ -25,34 +41,30 @@
 }
 
 .collections-title-accent {
-    font-family: "Poppins", sans-serif;
     font-size: clamp(2.5rem, 6vw, 3.5rem);
     font-weight: 700;
+    letter-spacing: -1px;
     background: linear-gradient(135deg, #d4af37 0%, #f0c94b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -1px;
 }
 
 .collections-header-text p {
-    font-family: "Poppins", sans-serif;
     font-size: 1.1rem;
+    font-weight: 400;
     color: #555;
     line-height: 1.6;
     max-width: 600px;
-    font-weight: 400;
 }
 
 .category-card-content h3 {
-    font-family: "Poppins", sans-serif;
     font-size: clamp(1.8rem, 4vw, 2.5rem);
     font-weight: 700;
     line-height: 1.2;
 }
 
 .category-card-content p {
-    font-family: "Poppins", sans-serif;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -60,26 +72,30 @@
 }
 
 .category-card-content span {
-    font-family: "Poppins", sans-serif;
     font-size: 1rem;
     font-weight: 500;
     letter-spacing: 0.5px;
+    color: #d4af37;
 }
 
 .category-card-medium-content h3 {
-    font-family: "Poppins", sans-serif;
     font-size: clamp(1.3rem, 3vw, 1.8rem);
     font-weight: 700;
     line-height: 1.2;
 }
 
 .category-card-medium-content p {
-    font-family: "Poppins", sans-serif;
     font-size: 0.95rem;
     font-weight: 500;
     letter-spacing: 0.5px;
+    color: #d4af37;
 }
 
+.home-bestseller-container span{
+    font-weight: 500;
+    font-size: clamp(0.7rem, 2vw, 1.5rem);
+    color: black;
+}
 
 /* ============================================
    CONTAINERS & LAYOUT
@@ -88,7 +104,6 @@
 .home-wrapper-container {
     width: 100%;
     height: 70vh;
-    background-color: red;
 }
 
 .wrapper-image {
@@ -168,7 +183,6 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
-    z-index: 2;
 }
 
 .category-card-large:hover .category-card-content span {
@@ -176,15 +190,12 @@
     transform: translateY(0);
 }
 
-/* Right Side Cards Container */
 
 .category-cards-right {
     display: flex;
     flex-direction: column;
     gap: 40px;
 }
-
-/* Medium Cards (Right) */
 
 .category-card-medium {
     position: relative;
@@ -219,12 +230,35 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    z-index: 2;
 }
 
 .category-card-medium:hover .category-card-medium-content p {
     opacity: 1;
     transform: translateY(0);
+}
+
+.home-bestseller-container {
+    width: 100%;
+}
+
+.cards-main-container{
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: calc(1vh + 1vw) 0px;
+    overflow: hidden;
+}
+
+.card-maxcontainer{
+    width: max-content;
+    height: auto;
+    gap: 20px;
+}
+
+.cards-container {
+    width: clamp(250px, 20vw, 24vw);
+    height: clamp(400px, 60vh, 700px);
+    background-color: red;
 }
 
 

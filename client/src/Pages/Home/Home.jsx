@@ -42,7 +42,6 @@ function Home() {
             <div className="para">
               <p>Every flavor is carefully selected and crafted using the finest quality ingredients, delivering exceptional richness, perfect balance, and authentic taste in every bite.</p>
             </div>
-
             <div className="collection-main-container row-sb">
               <div className="collections-header-wrapper">
                 <div className="collections-categories-container">
@@ -73,6 +72,31 @@ function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Section 3 */}
+        <section className="home-bestseller-container row div-m">
+          <div className="div-80 div-w">
+            <h1><span>Our</span><br />Best Sellers</h1>
+
+            <div className="cards-main-container">
+              <div className="card-maxcontainer row">
+                <div className="cards-container">
+
+                </div>
+                <div className="cards-container">
+
+                </div>
+                <div className="cards-container">
+
+                </div>
+                <div className="cards-container">
+
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 

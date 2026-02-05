@@ -34,6 +34,7 @@
     position: fixed;
     background-color: white;
     top: 0px;
+    z-index: 5;
 }
 
 .navbar {
