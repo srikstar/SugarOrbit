@@ -26,6 +26,41 @@ function Home() {
     }
   ]
 
+  const items = [
+    {
+      id: 1,
+      name: 'Soan Papi',
+      description: 'Soan papdi is a popular dessert in the Indian subcontinent. It is usually cube-shaped or served as flakes, and has a crisp and flaky texture.',
+      itemsize: ['250g', '500g', '1 kg'],
+      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
+
+    },
+    {
+      id: 2,
+      name: 'Soan Papi',
+      description: 'Soan papdi is a popular dessert in the Indian subcontinent. It is usually cube-shaped or served as flakes, and has a crisp and flaky texture.',
+      itemsize: ['250g', '500g', '1 kg'],
+      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
+
+    },
+    {
+      id: 3,
+      name: 'Soan Papi',
+      description: 'Soan papdi is a popular dessert in the Indian subcontinent. It is usually cube-shaped or served as flakes, and has a crisp and flaky texture.',
+      itemsize: ['250g', '500g', '1 kg'],
+      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
+
+    },
+    {
+      id: 4,
+      name: 'Soan Papi',
+      description: 'Soan papdi is a popular dessert in the Indian subcontinent. It is usually cube-shaped or served as flakes, and has a crisp and flaky texture.',
+      itemsize: ['250g', '500g', '1 kg'],
+      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
+    }
+  ]
+
+
   return (
     <>
       <div className="main-section">
@@ -38,7 +73,7 @@ function Home() {
         {/* Section 2 */}
         <section className="home-item-container div-m row">
           <div className="div-80 div-w">
-            <h1>Explore the finest flavors</h1>
+            <h1><b>Explore the finest flavors</b></h1>
             <div className="para">
               <p>Every flavor is carefully selected and crafted using the finest quality ingredients, delivering exceptional richness, perfect balance, and authentic taste in every bite.</p>
             </div>
@@ -76,24 +111,35 @@ function Home() {
         </section>
 
         {/* Section 3 */}
-        <section className="home-bestseller-container row div-m">
+        <section className="home-seller-container row div-m">
           <div className="div-80 div-w">
-            <h1><span>Our</span><br />Best Sellers</h1>
+            <div className="seller-container row-sb-e">
+              <h1><b>Best Sellers</b></h1>
+              <div className="card-slide-container row-sb">
+                <span>←</span>
+                <span>→</span>
+              </div>
+            </div>
 
             <div className="cards-main-container">
               <div className="card-maxcontainer row">
-                <div className="cards-container">
-
-                </div>
-                <div className="cards-container">
-
-                </div>
-                <div className="cards-container">
-
-                </div>
-                <div className="cards-container">
-
-                </div>
+                {items && items.map((item) => (
+                  <div key={item.id} className="cards-container">
+                    <div className="item-image-container">
+                      <img className='item-image' src={item.image} alt={item.name} />
+                    </div>
+                    <h2>{item.name}</h2>
+                    <p className="item-para">{item.description}</p>
+                    <div className="item-weight-container row-fs">
+                      {item.itemsize.map((size) => (
+                        <div key={item.id} className="item-weight item-active row">
+                          <span>{size}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <buttom className="item-btn row">Add to Cart</buttom>
+                  </div>
+                ))}
               </div>
             </div>
 
