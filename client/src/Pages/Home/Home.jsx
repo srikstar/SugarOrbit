@@ -57,6 +57,13 @@ function Home() {
       description: 'Soan papdi is a popular dessert in the Indian subcontinent. It is usually cube-shaped or served as flakes, and has a crisp and flaky texture.',
       itemsize: ['250g', '500g', '1 kg'],
       image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
+    },
+    {
+      id: 5,
+      name: 'Soan Papi',
+      description: 'Soan papdi is a popular dessert in the Indian subcontinent. It is usually cube-shaped or served as flakes, and has a crisp and flaky texture.',
+      itemsize: ['250g', '500g', '1 kg'],
+      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
     }
   ]
 
@@ -96,7 +103,6 @@ function Home() {
                       <div key={cat.id} className="category-card-medium">
                         <img src={cat.image} alt={cat.name} />
                         <div className="card-overlay-gradient"></div>
-
                         <div className="category-card-medium-content">
                           <h3>{cat.name}</h3>
                           <p>Discover the range →</p>
@@ -110,17 +116,63 @@ function Home() {
           </div>
         </section>
 
-        {/* Section 3 */}
+        {/* Section 3 - Best Sellers */}
         <section className="home-seller-container row div-m">
           <div className="div-80 div-w">
             <div className="seller-container row-sb-e">
-              <h1><b>Best Sellers</b></h1>
+              <div>
+                <h1><b>Best Sellers</b></h1>
+                <p className='para'>Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance.</p>
+              </div>
+
               <div className="card-slide-container row-sb">
                 <span>←</span>
                 <span>→</span>
               </div>
             </div>
+            <div className="cards-main-container">
+              <div className="card-maxcontainer row">
+                {items && items.map((item) => (
+                  <div key={item.id} className="cards-container">
+                    <div className="item-image-container">
+                      <img className='item-image' src={item.image} alt={item.name} />
+                    </div>
+                    <h2>{item.name}</h2>
+                    <p className="item-para">{item.description}</p>
+                    <div className="item-weight-container row-fs">
+                      {item.itemsize.map((size, index) => (
+                        <div key={index} className="item-weight item-active row">
+                          <span>{size}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <button className="item-btn row">Add to Cart</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
 
+        {/* Section 4 */}
+        <section className="home-wrapper-container div-m">
+          <img className='wrapper-image' src={wrapper} alt="wrapper-image" />
+        </section>
+
+        {/* Section 5 - Namkeens
+        <section className="home-seller-container row div-m">
+          <div className="div-80 div-w">
+            <div className="seller-container row-sb-e">
+              <div>
+                <h1><b>Best Sellers</b></h1>
+                <p className='para'>Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance.</p>
+              </div>
+
+              <div className="card-slide-container row-sb">
+                <span>←</span>
+                <span>→</span>
+              </div>
+            </div>
             <div className="cards-main-container">
               <div className="card-maxcontainer row">
                 {items && items.map((item) => (
@@ -142,9 +194,11 @@ function Home() {
                 ))}
               </div>
             </div>
-
           </div>
-        </section>
+        </section> */}
+        
+        {/* Section 6 */}
+
 
       </div>
     </>

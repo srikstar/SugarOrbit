@@ -9,7 +9,8 @@
 .category-card-content span,
 .category-card-medium-content h3,
 .category-card-medium-content p,
-.home-seller-container span {
+.home-seller-container span,
+.para {
     font-family: "Poppins", sans-serif;
 }
 
@@ -30,9 +31,10 @@
 }
 
 
-.home-item-container p {
+.home-item-container p, .para {
     font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: 400;
+    color: grey;
 }
 
 .collections-title {
@@ -99,7 +101,7 @@
 }
 
 .card-slide-container span {
-    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-size: 2.5rem;
     font-weight: 500;
     color: rgb(131, 131, 131);
     cursor: pointer;
@@ -118,14 +120,15 @@
     margin: calc(0.3vh + 0.3vw) 0px calc(0.3vh + 0.5vw) 0px;
 }
 
-.cards-container p{
+.cards-container p {
     font-family: "Poppins", sans-serif;
     font-size: clamp(0.8rem, 3vw, 0.9rem);
     margin: calc(0.3vh + 0.3vw) 0px calc(0.3vh + 0.5vw) 0px;
     color: grey;
 }
 
-.item-weight-container span, .item-btn{
+.item-weight-container span,
+.item-btn {
     font-family: "Poppins", sans-serif;
     font-size: 15px;
     font-weight: 500;
@@ -286,18 +289,18 @@
 .card-maxcontainer {
     width: max-content;
     height: auto;
-    gap: 20px;
+    gap: 30px;
 }
 
 .cards-container {
-    width: clamp(280px, 22vw, 24vw);
+    width: clamp(280px, 22vw, 22vw);
     height: auto;
 }
 
 .card-slide-container {
     width: auto;
     height: auto;
-    gap: calc(1vh + 1vw);
+    gap: calc(1.5vh + 1.5vw);
 }
 
 .item-image-container {
@@ -315,7 +318,7 @@
 .item-weight-container {
     width: 100%;
     height: auto;
-    gap: 20px;
+    gap: 25px;
     margin: 13px 0px;
 }
 
@@ -325,11 +328,15 @@
     border: 1px solid black;
     border-radius: 5px;
     color: black;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
 }
 
-.item-active{
+.item-active {
     color: white;
     background-color: black;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
 }
 
 .item-btn {
@@ -342,11 +349,14 @@
     border-radius: 5px;
     margin: calc(1vh + 1vw) 0px;
     cursor: pointer;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
 }
 
-.item-btn:hover{
+.item-btn:hover {
     background-color: rgb(0, 0, 0);
     color: rgb(255, 255, 255);
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 
