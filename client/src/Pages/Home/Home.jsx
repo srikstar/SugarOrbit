@@ -1,6 +1,7 @@
 import React from 'react'
 
 import './Home.css'
+import Footer from '../../Components/Footer/Footer'
 
 function Home() {
 
@@ -159,12 +160,12 @@ function Home() {
           <img className='wrapper-image' src={wrapper} alt="wrapper-image" />
         </section>
 
-        {/* Section 5 - Namkeens
+        {/* Section 5 - Namkeens */}
         <section className="home-seller-container row div-m">
           <div className="div-80 div-w">
             <div className="seller-container row-sb-e">
               <div>
-                <h1><b>Best Sellers</b></h1>
+                <h1><b>Namkeens</b></h1>
                 <p className='para'>Our best sellers are customer favorites, loved for their irresistible flavors and perfect balance.</p>
               </div>
 
@@ -189,16 +190,15 @@ function Home() {
                         </div>
                       ))}
                     </div>
-                    <buttom className="item-btn row">Add to Cart</buttom>
+                    <button className="item-btn row">Add to Cart</button>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </section> */}
-        
-        {/* Section 6 */}
+        </section>
 
+        <Footer />
 
       </div>
     </>
