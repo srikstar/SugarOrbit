@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
 
-function Home() {
 
+function Home() {
   const wrapper = 'https://sangamsweets.in/cdn/shop/files/Banner_New_Gift_Hamper_1.png?v=1766405392'
   const categories = [
     {
@@ -68,6 +68,9 @@ function Home() {
     }
   ]
 
+  useEffect(() => {
+    document.title = "Sugar Orbit | Home";
+  }, [])
 
   return (
     <>
