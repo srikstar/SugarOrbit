@@ -293,7 +293,7 @@
 }
 
 .cards-container {
-    width: clamp(280px, 22vw, 22vw);
+    width: clamp(280px, 22vw, 18.6vw);
     height: auto;
 }
 
