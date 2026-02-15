@@ -3,7 +3,7 @@ import './Sweets.css'
 import Footer from '../../Components/Footer/Footer'
 import Items from '../../Components/Items/Items'
 
-function ProductCategory() {
+function Sweets() {
 
   const [page, setPage] = useState(1)
   const filterMenuRef = useRef(null)
@@ -287,4 +287,4 @@ function ProductCategory() {
   )
 }
 
-export default ProductCategory
+export default Sweets
