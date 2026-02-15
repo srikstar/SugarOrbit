@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import './Sweets.css'
 import Footer from '../../Components/Footer/Footer'
+import Items from '../../Components/Items/Items'
 
-function Sweets() {
+function ProductCategory() {
 
   const [page, setPage] = useState(1)
   const filterMenuRef = useRef(null)
@@ -31,7 +32,7 @@ function Sweets() {
     else document.title = `Sugar Orbit | Sweets`
   }, [page])
 
-  // Close menu when clicking outside
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (filterMenuRef.current && !filterMenuRef.current.contains(event.target)) {
@@ -104,9 +105,9 @@ function Sweets() {
     <>
       <div className="main-section">
 
-        <section className="sweets-main-container row">
+        <section className="category-main-container row">
           <div className="div-80">
-            <section className="sweets-section-one">
+            <section className="category-header-section">
               <h1 onClick={handleNextPage}>Sweets</h1>
               <div className="para">
                 <p>At Sugar Orbit, our sweets are crafted to perfection using premium ingredients and time-tested recipes. Each bite offers rich flavor, balanced sweetness, and a melt-in-your-mouth texture. 🍩✨</p>
@@ -131,10 +132,7 @@ function Sweets() {
                 </div>
               </div>
             </section>
-
             <section className="product-filter-container" ref={filterMenuRef}>
-
-              {/* Filter Label */}
               <div className="filter-header row-fs">
                 <span className="filter-label">Filter:</span>
 
@@ -226,8 +224,6 @@ function Sweets() {
                   )}
                 </div>
               </div>
-
-              {/* Applied Filters Tags */}
               {hasActiveFilters && (
                 <div className="active-filters-container row-fs">
                   {productTypeFilter.selected.map((item) => (
@@ -276,9 +272,11 @@ function Sweets() {
                   </button>
                 </div>
               )}
-
             </section>
 
+            <section className="product-items-container">
+              <Items />
+            </section>
           </div>
         </section>
 
@@ -289,4 +287,4 @@ function Sweets() {
   )
 }
 
-export default Sweets
+export default ProductCategory

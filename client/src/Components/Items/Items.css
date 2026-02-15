@@ -1,0 +1,126 @@
+/* FONTS */
+.item-details-container h1 {
+    font-family: 'BeautiqueDisplay-Medium';
+    font-size: clamp(0.9rem, 2vw, 2rem);
+    font-weight: bold;
+    margin: 10px 0px;
+}
+
+.item-details-container span {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    font-weight: bold;
+}
+
+.item-list-container p,
+.item-list-container button {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+.item-count-container>button {
+    font-size: 20px;
+}
+
+/* CONTAINERS */
+.items-display-container-main {
+    width: 100%;
+    height: auto;
+    gap: 10px;
+}
+
+.item-card-container {
+    width: 44%;
+    height: auto;
+    border-radius: 10px;
+    margin: calc(1vh + 1vh) 0px;
+    overflow: hidden;
+    border: 1px solid rgb(223, 136, 60);
+    padding: calc(0.5vh + 0.5vw);
+}
+
+.item-image-container {
+    width: 100%;
+    height: calc(20vh + 20vw);
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.item-details-container {
+    width: 100%;
+}
+
+.item-count-container {
+    border: 1px solid rgb(223, 136, 60);
+}
+
+.items-display-container-main button {
+    cursor: pointer;
+}
+
+.item-count-container button {
+    width: 33%;
+    height: inherit;
+    border: 0px;
+    background-color: transparent;
+    padding: calc(0.3vh + 0.3vw) 0px;
+}
+
+.item-list-container {
+    width: 100%;
+    padding: calc(0.5vh + 0.5vw) 0px;
+}
+
+.item-count-container,
+.item-add-container {
+    width: 47%;
+    height: auto;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.item-add-btn {
+    width: 100%;
+    height: inherit;
+    border: 0px;
+    background-color: #000000;
+    color: white;
+    padding: calc(0.5vh + 0.5vw) 0px;
+}
+
+.product-image,
+.product-image-hide {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: all 0.5s ease-in-out;
+    position: absolute;
+}
+
+.product-image {
+    opacity: 1;
+}
+
+.product-image-hide {
+    opacity: 0;
+}
+
+.item-image-container:hover .product-image {
+    opacity: 0;
+}
+
+.item-image-container:hover .product-image-hide {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width:600px) {
+    .item-count-container,.item-add-container{
+        width: 100%;
+        margin: 5px 0px;
+    }
+}

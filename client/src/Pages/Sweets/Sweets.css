@@ -2,7 +2,7 @@
 /*            FONTS              */
 /* ============================= */
 
-.sweets-main-container h1 {
+.category-main-container h1 {
   font-family: 'BeautiqueDisplay-Medium';
   letter-spacing: 2px;
   font-size: clamp(2.5rem, 5vw, 5rem);
@@ -26,7 +26,7 @@
 /*          CONTAINERS           */
 /* ============================= */
 
-.sweets-main-container {
+.category-main-container {
   width: 100%;
 }
 
@@ -39,12 +39,12 @@
     border-radius: 4px;
 }
 
-.sweets-section-one {
+.category-header-section {
   width: 100%;
   padding: calc(2vh + 2vw) 0;
 }
 
-.sweets-main-container .para {
+.category-main-container .para {
   margin: calc(1vh + 1vw) 0;
 }
 
@@ -73,7 +73,6 @@
 
 .product-filter-container {
   width: 100%;
-  margin-top: calc(1vh + 1vw);
   padding-bottom: calc(0.5vh + 0.5vw);
 }
 
@@ -337,6 +336,12 @@
   text-decoration: underline;
 }
 
+.product-items-container{
+  width: 100%;
+  height: auto;
+}
+
+
 /* ============================= */
 /*         RESPONSIVE            */
 /* ============================= */
@@ -354,17 +359,18 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 535px) {
   .filter-dropdown-menu {
-    position: fixed;
-    left: 5%;
-    right: 5%;
-    width: 90%;
+    position: absolute;
+    left: -50px;
+  }
+
+  .product-type-menu{
+        position: absolute;
+    left: -110px;
   }
 
   .price-inputs-container {
     flex-direction: column;
   }
 }
-
-
