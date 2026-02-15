@@ -181,7 +181,7 @@ function Home() {
               <div className="card-maxcontainer row">
                 {items && items.map((item) => (
                   <div key={item.id} className="cards-container">
-                    <div className="item-image-container">
+                    <div className="itemhome-image-container">
                       <img className='item-image' src={item.image} alt={item.name} />
                     </div>
                     <h2>{item.name}</h2>
