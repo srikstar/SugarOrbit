@@ -10,27 +10,27 @@ const Footer = () => {
         </div>
 
         <div className="footer-links row">
-          <div className="footer-col row">
+          <div className="footer-col row-fs">
             <h4>Shop Now</h4>
-            <ul className="column">
+            <ul className="column-s">
               <li><a href="#">Sweets</a></li>
               <li><a href="#">Namkeens</a></li>
               <li><a href="#">Chocolates</a></li>
             </ul>
           </div>
 
-          <div className="footer-col row">
+          <div className="footer-col row-fs">
             <h4>Quick Links</h4>
-            <ul className="column">
+            <ul className="column-s">
               <li><a href="#">FAQ's</a></li>
               <li><a href="#">Blogs</a></li>
               <li><a href="#">Contact ↗</a></li>
             </ul>
           </div>
 
-          <div className="footer-col row">
+          <div className="footer-col row-fs">
             <h4>Legal</h4>
-            <ul className="column">
+            <ul className="column-s">
               <li><a href="#">Terms & Conditions</a></li>
               <li><a href="#">Privacy Policy ↗</a></li>
               <li><a href="#">Cookies Preferences Center</a></li>
