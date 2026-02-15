@@ -11,7 +11,7 @@ function Items() {
                         <img className='product-image-hide' src="https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410" alt="product-image-hide" />
                     </div>
                     <div className="item-details-container">
-                        <h1>Mysure Pak</h1>
+                        <h2 className='item-name'>Mysure Pak</h2>
                         <span>₹ 260</span>
                         <div className="item-list-container row-sb">
                             <div className="item-count-container row-sb">
