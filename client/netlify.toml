@@ -1,11 +1,15 @@
 [build]
+  # Set the base directory to client folder
+  base = "client"
   # Build command
-  command = "cd client && npm run build"
-  # Output directory
-  publish = "client/dist"
+  command = "npm run build"
+  # Output directory (relative to base)
+  publish = "dist"
 
 [[redirects]]
   # Redirect all routes to index.html for client-side routing
   from = "/*"
   to = "/index.html"
   status = 200
+
+
