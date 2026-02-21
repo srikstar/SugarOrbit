@@ -19,7 +19,7 @@ function Navbar() {
     <>
       <div className="navbar-main-container row">
         <nav className="navbar div-80 row-sb">
-          <div className="nav-containers main-logo">
+          <div className="nav-containers">
             <Link to='/'><img className='main-logo' src="./donut.svg" alt="main-logo" /></Link>
           </div>
           <div className="nav-containers nav-links row">
