@@ -30,7 +30,7 @@ function Navbar() {
           <div className="nav-containers nav-icons-container row">
             <div className="nav-icons" onClick={handleMenuOpen}><Link className='row'><img className='nav-icon menu' src="./menu.png" alt="menu-logo" /></Link></div>
             <div className="nav-icons"><Link to='/cart' className='row'><img className='nav-icon' src="./cart.png" alt="cart-logo" /> <h4>Cart 0</h4></Link></div>
-            <div className="nav-icons"><Link className='row'><img className='nav-icon' src="./user.png" alt="user-logo" /> <h4>Profile</h4> </Link></div>
+            <div className="nav-icons"><Link className='row' to='/profile'><img className='nav-icon' src="./user.png" alt="user-logo" /> <h4>Profile</h4> </Link></div>
           </div>
         </nav>
       </div>

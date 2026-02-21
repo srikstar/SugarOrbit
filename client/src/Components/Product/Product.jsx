@@ -186,7 +186,7 @@ export default function Product() {
                             {/* Features */}
                             <div className="pp-features">
                                 <div className="pp-feat">
-                                    <span className="pp-feat-icon">🫙</span>
+                                    <span className="pp-feat-icon">❤️</span>
                                     <span className="pp-feat-label">Freshly Made</span>
                                     <span>to order</span>
                                 </div>
