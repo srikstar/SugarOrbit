@@ -75,7 +75,7 @@ function CartItem({ item, onRemove, onIncrease, onDecrease }) {
   )
 }
 
-function Cart({ onClose }) {
+function Cart({ onClose, isOpen }) {
   const [cartItems, setCartItems] = useState(initialCartItems)
 
   const handleRemove = (id) => {
@@ -102,7 +102,7 @@ function Cart({ onClose }) {
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="cart-main-container" onClick={onClose}>
+    <div className={`cart-main-container ${isOpen ? 'cart-open' : ''}`} onClick={onClose}>
       <div className="card-container column-s" onClick={(e) => e.stopPropagation()}>
 
         <div className="cart-header row-sb div">

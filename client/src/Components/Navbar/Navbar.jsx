@@ -21,7 +21,7 @@ function Navbar() {
   return (
     <>
 
-      {cartOpen && <Cart onClose={closeCart} />}
+      <Cart onClose={closeCart} isOpen={cartOpen} />
 
       <div className="navbar-main-container row">
         <nav className="navbar div-80 row-sb">
