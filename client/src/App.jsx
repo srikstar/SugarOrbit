@@ -7,7 +7,6 @@ import Sweets from './Pages/Sweets/Sweets'
 import Namkeen from './Pages/Namkeens/Namkeen'
 import Chocolates from './Pages/Chocolates/Chocolates'
 import Product from './Components/Product/Product'
-import Profile from './Pages/Profile/Profile'
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
         <Route path='/namkeens' element={<Namkeen />} />
         <Route path='/chocolates' element={<Chocolates />} />
         <Route path='/product' element={<Product />} />
-        <Route path='/profile' element={<Profile />} />
       </Routes>
     </BrowserRouter>
   )

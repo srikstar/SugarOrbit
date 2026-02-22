@@ -2,11 +2,24 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Navbar.css'
 import Cart from '../Cart/Cart'
+import Profile from '../Profile/Profile'
 
 function Navbar() {
 
   const [isOpen, setIsOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
+
+  const[profileOpen, setProfileOpen] = useState(false)
+
+  const openProfile = () =>{
+    setProfileOpen(true)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeProfile = () =>{
+    setProfileOpen(false)
+    document.body.style.overflow = ''
+  }
 
   const openCart = () => {
     setCartOpen(true)
@@ -22,6 +35,7 @@ function Navbar() {
     <>
 
       <Cart onClose={closeCart} isOpen={cartOpen} />
+      <Profile onClose={closeProfile} isOpen={profileOpen} />
 
       <div className="navbar-main-container row">
         <nav className="navbar div-80 row-sb">
@@ -48,8 +62,8 @@ function Navbar() {
                 <h4>Cart 0</h4>
               </Link>
             </div>
-            <div className="nav-icons">
-              <Link className='row' to='/profile'>
+            <div className="nav-icons" onClick={openProfile}>
+              <Link className='row'>
                 <img className='nav-icon' src="./user.png" alt="user-logo" />
                 <h4>Profile</h4>
               </Link>

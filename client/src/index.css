@@ -6,6 +6,7 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+
 /* FLEX DISPLAY */
 
 .row {
@@ -113,7 +114,7 @@ a:active {
 }
 
 @media screen and (max-width:1000px) {
-    .para{
+    .para {
         width: 100%;
     }
 }
