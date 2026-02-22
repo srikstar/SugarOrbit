@@ -7,6 +7,7 @@ import Sweets from './Pages/Sweets/Sweets'
 import Namkeen from './Pages/Namkeens/Namkeen'
 import Chocolates from './Pages/Chocolates/Chocolates'
 import Product from './Components/Product/Product'
+import Checkout from './Pages/Checkout/Checkout'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/namkeens' element={<Namkeen />} />
         <Route path='/chocolates' element={<Chocolates />} />
         <Route path='/product' element={<Product />} />
+        <Route path='/checkout' element={<Checkout />} />
       </Routes>
     </BrowserRouter>
   )

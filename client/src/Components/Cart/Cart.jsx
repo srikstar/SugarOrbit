@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import './Cart.css'
 
 const initialCartItems = [
@@ -52,7 +54,11 @@ const initialCartItems = [
   }
 ]
 
+
+
 function CartItem({ item, onRemove, onIncrease, onDecrease }) {
+
+
   return (
     <div className="cart-item">
       <img src={item.image} alt={item.name} className="cart-item-image" />
@@ -77,6 +83,12 @@ function CartItem({ item, onRemove, onIncrease, onDecrease }) {
 
 function Cart({ onClose, isOpen }) {
   const [cartItems, setCartItems] = useState(initialCartItems)
+
+  const navigate = useNavigate()
+
+  const handleCheckout = () => {
+    navigate("/checkout")
+  }
 
   const handleRemove = (id) => {
     setCartItems(prev => prev.filter(item => item.id !== id))
@@ -145,7 +157,7 @@ function Cart({ onClose, isOpen }) {
             <span className="cart-total-label">Total</span>
             <span className="cart-total-value">₹ {total.toFixed(2)}</span>
           </div>
-          <button className="checkout-btn div">Checkout</button>
+          <button className="checkout-btn div" onClick={handleCheckout}>Checkout</button>
         </div>
 
       </div>
