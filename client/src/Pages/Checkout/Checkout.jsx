@@ -1,16 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Checkout.css";
 
 const Checkout = () => {
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
+  const [cartItems, setCartItems] = useState([]);
+  const [cartLoading, setCartLoading] = useState(true);
+  const [cartError, setCartError] = useState(null);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        setCartLoading(true);
+        const response = await fetch("/api/cart");
+        if (!response.ok) throw new Error("Failed to fetch cart");
+        setCartItems([{
+          "id": "1",
+          "name": "Mysore Pak",
+          "variant": "Classic · 250g",
+          "price": 225,
+          "quantity": 1,
+          "emoji": "🍬"
+        }, {
+          "id": "2",
+          "name": "Kaju Katli",
+          "variant": "Premium · 250g",
+          "price": 300,
+          "quantity": 3,
+          "emoji": "🥮"
+        }]);
+      } catch (err) {
+        setCartError(err.message);
+      } finally {
+        setCartLoading(false);
+      }
+    };
+
+    fetchCart();
+  }, []);
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shipping = 100;
+  const total = subtotal + shipping;
 
   return (
     <div className="main-section">
-
-
       <div className="co-page">
-        <div className="co-main">
-          {/* LEFT */}
+        <div className="co-main div-80">
           <div className="co-left">
 
             <section className="co-section">
@@ -91,37 +126,43 @@ const Checkout = () => {
             </section>
 
             <div className="co-cta">
-              <button className="co-pay-btn">Pay now — ₹325.00</button>
+              <button className="co-pay-btn">
+                Pay now — ₹{total.toFixed(2)}
+              </button>
               <p className="co-pay-note">🔒 Encrypted & secure checkout via Razorpay</p>
             </div>
 
           </div>
 
-          {/* RIGHT */}
           <div className="co-right">
             <div className="co-order-title">Your Order</div>
 
-            <div className="co-order-item">
-              <div className="co-item-img">
-                🍬
-                <span className="co-item-qty">1</span>
+            {cartLoading && <p className="co-muted">Loading cart...</p>}
+            {cartError && <p className="co-muted" style={{ color: 'red' }}>Error: {cartError}</p>}
+
+            {!cartLoading && !cartError && cartItems.map((item) => (
+              <div className="co-order-item" key={item.id}>
+                <div className="co-item-img">
+                  {item.emoji}
+                  <span className="co-item-qty">{item.quantity}</span>
+                </div>
+                <div className="co-item-info">
+                  <div className="co-item-name">{item.name}</div>
+                  <div className="co-item-sub">{item.variant}</div>
+                </div>
+                <span className="co-item-price">₹{(item.price * item.quantity).toFixed(2)}</span>
               </div>
-              <div className="co-item-info">
-                <div className="co-item-name">Mysore Pak</div>
-                <div className="co-item-sub">Classic · 250g</div>
-              </div>
-              <span className="co-item-price">₹225.00</span>
-            </div>
+            ))}
 
             <div className="co-divider" />
 
             <div className="co-summary-row">
               <span>Subtotal</span>
-              <span>₹225.00</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
             <div className="co-summary-row">
               <span>Shipping</span>
-              <span>₹100.00</span>
+              <span>₹{shipping.toFixed(2)}</span>
             </div>
             <div className="co-summary-row">
               <span>Taxes</span>
@@ -132,7 +173,7 @@ const Checkout = () => {
 
             <div className="co-total-row">
               <span className="co-total-label">Total</span>
-              <span className="co-total-amount">₹325.00</span>
+              <span className="co-total-amount">₹{total.toFixed(2)}</span>
             </div>
 
             <div className="co-savings-badge">🎉 You saved ₹25 on this order!</div>

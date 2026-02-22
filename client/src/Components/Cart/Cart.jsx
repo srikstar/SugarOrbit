@@ -157,7 +157,10 @@ function Cart({ onClose, isOpen }) {
             <span className="cart-total-label">Total</span>
             <span className="cart-total-value">₹ {total.toFixed(2)}</span>
           </div>
-          <button className="checkout-btn div" onClick={handleCheckout}>Checkout</button>
+          <button className="checkout-btn div" onClick={() => {
+            onClose();
+            handleCheckout();
+          }}>Checkout</button>
         </div>
 
       </div>
