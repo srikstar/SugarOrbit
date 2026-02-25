@@ -102,6 +102,19 @@ function Profile({ onClose, isOpen }) {
   const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
 
+  const initialAddress = {
+    line1: '',
+    line2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: 'India',
+  }
+
+  const [address, setAddress] = useState(null)
+  const [addressDraft, setAddressDraft] = useState(initialAddress)
+  const [addingAddress, setAddingAddress] = useState(false)
+
   useEffect(() => {
     if (!isOpen || orders.length > 0) return
 
@@ -253,6 +266,148 @@ function Profile({ onClose, isOpen }) {
 
           <div className="profile-divider" />
 
+          {/* Address */}
+          <div className="profile-section">
+            <button
+              className="profile-section-toggle"
+              onClick={() =>
+                setAddressOpen((o) => !o)
+              }
+            >
+              <span className="profile-section-title">
+                Address
+              </span>
+              <span className="profile-section-icon">
+                {addressOpen ? '−' : '+'}
+              </span>
+            </button>
+
+            {addressOpen && (
+              <div className="profile-address-body">
+                {!address && !addingAddress && (
+                  <div className="profile-empty">
+                    No address saved.
+                    <br /><br />
+                    <button
+                      className="profile-action-btn save"
+                      onClick={() => {
+                        setAddingAddress(true)
+                        setAddressDraft('')
+                      }}
+                    >
+                      Add Address
+                    </button>
+                  </div>
+                )}
+
+                {addingAddress && (
+                  <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+                    <input
+                      className="profile-field-input"
+                      placeholder="Address Line 1"
+                      value={addressDraft.line1 || ''}
+                      onChange={(e) =>
+                        setAddressDraft({ ...addressDraft, line1: e.target.value })
+                      }
+                    />
+
+                    <input
+                      className="profile-field-input"
+                      placeholder="Address Line 2 (Apartment, suite, etc.)"
+                      value={addressDraft.line2 || ''}
+                      onChange={(e) =>
+                        setAddressDraft({ ...addressDraft, line2: e.target.value })
+                      }
+                    />
+
+                    <input
+                      className="profile-field-input"
+                      placeholder="City"
+                      value={addressDraft.city || ''}
+                      onChange={(e) =>
+                        setAddressDraft({ ...addressDraft, city: e.target.value })
+                      }
+                    />
+
+                    <input
+                      className="profile-field-input"
+                      placeholder="State / Province / Region"
+                      value={addressDraft.state || ''}
+                      onChange={(e) =>
+                        setAddressDraft({ ...addressDraft, state: e.target.value })
+                      }
+                    />
+
+                    <input
+                      className="profile-field-input"
+                      placeholder="ZIP / Postal Code"
+                      value={addressDraft.zip || ''}
+                      onChange={(e) =>
+                        setAddressDraft({ ...addressDraft, zip: e.target.value })
+                      }
+                    />
+
+                    <input
+                      className="profile-field-input"
+                      value="India"
+                      disabled
+                    />
+
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        className="profile-action-btn save"
+                        onClick={() => {
+                          if (
+                            addressDraft.line1 &&
+                            addressDraft.city &&
+                            addressDraft.state &&
+                            addressDraft.zip
+                          ) {
+                            setAddress({
+                              ...addressDraft,
+                              country: 'India',
+                            })
+                            setAddingAddress(false)
+                          }
+                        }}
+                      >
+                        Save
+                      </button>
+
+                      <button
+                        className="profile-action-btn cancel"
+                        onClick={() => setAddingAddress(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {address && !addingAddress && (
+                  <div style={{ padding: '16px 24px' }}>
+                    <div className="profile-field-value" style={{ marginBottom: '10px' }}>
+                      {address}
+                    </div>
+
+                    <button
+                      className="profile-action-btn edit"
+                      onClick={() => {
+                        setAddingAddress(true)
+                        setAddressDraft(address)
+                      }}
+                    >
+                      Edit Address
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="profile-divider" />
+
           {/* Orders */}
           <div className="profile-section">
             <button
@@ -292,33 +447,6 @@ function Profile({ onClose, isOpen }) {
                     </React.Fragment>
                   ))
                 )}
-              </div>
-            )}
-          </div>
-
-          <div className="profile-divider" />
-
-          {/* Address */}
-          <div className="profile-section">
-            <button
-              className="profile-section-toggle"
-              onClick={() =>
-                setAddressOpen((o) => !o)
-              }
-            >
-              <span className="profile-section-title">
-                Address
-              </span>
-              <span className="profile-section-icon">
-                {addressOpen ? '−' : '+'}
-              </span>
-            </button>
-
-            {addressOpen && (
-              <div className="profile-address-body">
-                <div className="profile-empty">
-                  No address saved.
-                </div>
               </div>
             )}
           </div>

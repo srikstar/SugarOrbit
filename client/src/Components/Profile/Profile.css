@@ -38,11 +38,12 @@
     color: #1a1a1a;
     border: 1px solid #d0cbc4;
     border-radius: 6px;
-    padding: 5px 10px;
+    padding: 8px 10px;
     background: #fff;
     outline: none;
     flex: 1;
     transition: border-color 0.2s;
+    resize: vertical;
 }
 
 .profile-field-input:focus {
@@ -97,6 +98,7 @@
     font-size: 13px;
     color: #999;
     padding: 24px;
+    text-align: center;
 }
 
 .profile-close-btn {
@@ -124,7 +126,7 @@
     font-weight: 500;
     border: none;
     border-radius: 20px;
-    padding: 5px 14px;
+    padding: 6px 14px;
     cursor: pointer;
     transition: background 0.2s;
 }

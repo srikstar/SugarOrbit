@@ -12,3 +12,34 @@ font-family: 'BeautiqueDisplay-Medium';
 font-family: 'BeautiqueDisplay-Regular';
 
 color: rgb(223, 136, 60);
+
+
+
+
+❌ Pages Likely Missing (Essential for Food E-commerce):
+
+About Us - Company story, mission
+Contact/Support - Customer support form, email, phone
+FAQs - Common questions about products, shipping, returns
+Terms & Conditions - Legal requirements
+Privacy Policy - Data handling
+Refund/Return Policy - Critical for food products (expiry, quality)
+Order History/Tracking - Track order status (could be in Profile, but might need separate page)
+Search Results - Search functionality landing page
+Login/Register - Authentication pages (if not using profile panel)
+404 Not Found - Error page for invalid routes
+Bulk Orders/Gifting - Special orders page (common for Indian sweets)
+Wishlist - Save favorite items
+
+
+Must-have:
+Contact Us
+FAQs
+Refund Policy
+404 Error page
+
+Nice-to-have:
+About Us
+Order Tracking
+Search Results
+Wishlist
