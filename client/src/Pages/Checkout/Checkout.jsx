@@ -175,8 +175,6 @@ const Checkout = () => {
               <span className="co-total-label">Total</span>
               <span className="co-total-amount">₹{total.toFixed(2)}</span>
             </div>
-
-            <div className="co-savings-badge">🎉 You saved ₹25 on this order!</div>
           </div>
         </div>
       </div>
