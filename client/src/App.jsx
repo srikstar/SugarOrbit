@@ -8,6 +8,7 @@ import Namkeen from './Pages/Namkeens/Namkeen'
 import Chocolates from './Pages/Chocolates/Chocolates'
 import Product from './Components/Product/Product'
 import Checkout from './Pages/Checkout/Checkout'
+import PaymentStatus from './Pages/PaymentStatus/PaymentStatus'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path='/chocolates' element={<Chocolates />} />
         <Route path='/product' element={<Product />} />
         <Route path='/checkout' element={<Checkout />} />
+        <Route path='/payment' element={<PaymentStatus />} />
       </Routes>
     </BrowserRouter>
   )

@@ -4,8 +4,8 @@
     margin: 0px;
     padding: 0px;
     -webkit-tap-highlight-color: transparent;
+    scrollbar-width:none
 }
-
 
 /* FLEX DISPLAY */
 
