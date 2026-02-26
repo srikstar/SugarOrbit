@@ -5,9 +5,9 @@ import Footer from '../../Components/Footer/Footer'
 const VISIBLE_CARDS = 3
 
 function Home() {
-  const [activeSize, setActiveSize]             = useState({})
+  const [activeSize, setActiveSize] = useState({})
   const [bestSellersIndex, setBestSellersIndex] = useState(0)
-  const [namkeensIndex, setNamekeensIndex]       = useState(0)
+  const [namkeensIndex, setNamekeensIndex] = useState(0)
 
   const heroImage =
     'https://sangamsweets.in/cdn/shop/files/Banner_New_Gift_Hamper_1.png?v=1766405392'
@@ -107,7 +107,6 @@ function Home() {
   /* ---- reusable carousel ---- */
 
   const ProductCarousel = ({ items, currentIndex, setIndex }) => {
-    const maxIndex   = items.length - VISIBLE_CARDS
     const translateX = -(currentIndex * (100 / VISIBLE_CARDS))
 
     return (
@@ -117,7 +116,7 @@ function Home() {
             className="carousel-track"
             style={{ transform: `translateX(${translateX}%)` }}
           >
-            {items.map(item => {
+            {items.map((item) => {
               const selectedSize = activeSize[item.id] || item.sizes[0]
               return (
                 <div key={item.id} className="carousel-slide">
@@ -126,11 +125,9 @@ function Home() {
                       <img src={item.image} alt={item.name} className="product-image" />
                       <div className="product-badge">{item.rating} ★</div>
                     </div>
-
                     <div className="product-info">
                       <h3 className="product-name">{item.name}</h3>
                       <p className="product-description">{item.description}</p>
-
                       <div className="size-selector">
                         {item.sizes.map(size => (
                           <button
@@ -142,7 +139,6 @@ function Home() {
                           </button>
                         ))}
                       </div>
-
                       <div className="product-footer">
                         <span className="product-price">{item.prices[selectedSize]}</span>
                         <button className="add-to-cart-btn">Add to Cart</button>
@@ -155,14 +151,12 @@ function Home() {
           </div>
         </div>
 
-        {/* Dot indicators */}
         <div className="carousel-dots">
-          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+          {Array.from({ length: items.length - VISIBLE_CARDS + 1 }).map((_, i) => (
             <button
               key={i}
               className={`carousel-dot ${i === currentIndex ? 'active' : ''}`}
               onClick={() => setIndex(i)}
-              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
@@ -270,6 +264,12 @@ function Home() {
             setIndex={setBestSellersIndex}
           />
         </div>
+      </section>
+
+      {/* Hero */}
+      <section className="hero-section">
+        <img src={heroImage} alt="Hero Banner" className="hero-image" />
+        <div className="hero-overlay" />
       </section>
 
       {/* Premium Namkeens */}
