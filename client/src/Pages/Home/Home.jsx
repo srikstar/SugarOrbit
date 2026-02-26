@@ -171,7 +171,7 @@ function Home() {
 
       {/* Hero */}
       <section className="hero-section">
-        <img src={heroImage} alt="Hero Banner" className="hero-image" />
+        <img src={heroImage} alt="Hero Banner" className="hero-image" draggable="false" />
         <div className="hero-overlay" />
       </section>
 
@@ -218,7 +218,7 @@ function Home() {
               {categories.slice(1, 3).map(cat => (
                 <div key={cat.id} className="category-card medium-card">
                   <div className="card-image-wrapper">
-                    <img src={cat.image} alt={cat.name} className="card-image" />
+                    <img src={cat.image} alt={cat.name} className="card-image" draggable="false" />
                   </div>
                   <div className="card-overlay" />
                   <div className="card-content">
