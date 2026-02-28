@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
 
@@ -256,36 +257,52 @@ function Home() {
             </div>
 
             <div className="categories-grid">
-              <div className="category-card large-card">
-                <div className="card-image-wrapper">
-                  <img src={categories[0].image} alt={categories[0].name} className="card-image" />
+
+              <Link to="/sweets">
+                <div className="category-card large-card">
+                  <div className="card-image-wrapper">
+                    <img
+                      src={categories[0].image}
+                      alt={categories[0].name}
+                      className="card-image"
+                      draggable="false"
+                    />
+                  </div>
+                  <div className="card-overlay" />
+                  <div className="card-content">
+                    <h3>{categories[0].name}</h3>
+                    <p>{categories[0].description}</p>
+                    <span className="card-link">
+                      Explore <span className="arrow">→</span>
+                    </span>
+                  </div>
                 </div>
-                <div className="card-overlay" />
-                <div className="card-content">
-                  <h3>{categories[0].name}</h3>
-                  <p>{categories[0].description}</p>
-                  <a href={categories[0].link} className="card-link">
-                    Explore <span className="arrow">→</span>
-                  </a>
-                </div>
-              </div>
+              </Link>
 
               <div className="categories-right">
-                {categories.slice(1, 3).map(cat => (
-                  <div key={cat.id} className="category-card medium-card">
-                    <div className="card-image-wrapper">
-                      <img src={cat.image} alt={cat.name} className="card-image" draggable="false" />
+                {categories.slice(1, 3).map((cat) => (
+                  <Link to={cat.link} key={cat.id}>
+                    <div className="category-card medium-card">
+                      <div className="card-image-wrapper">
+                        <img
+                          src={cat.image}
+                          alt={cat.name}
+                          className="card-image"
+                          draggable="false"
+                        />
+                      </div>
+                      <div className="card-overlay" />
+                      <div className="card-content">
+                        <h3>{cat.name}</h3>
+                        <span className="card-link">
+                          Explore <span className="arrow">→</span>
+                        </span>
+                      </div>
                     </div>
-                    <div className="card-overlay" />
-                    <div className="card-content">
-                      <h3>{cat.name}</h3>
-                      <a href={cat.link} className="card-link">
-                        Explore <span className="arrow">→</span>
-                      </a>
-                    </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
+
             </div>
           </div>
         </section>
