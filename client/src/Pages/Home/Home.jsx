@@ -1,13 +1,99 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
 
 const VISIBLE_CARDS = 3
+const DRAG_THRESHOLD = 50
 
+
+function ProductCarousel({
+  items,
+  currentIndex,
+  setIndex,
+  dragHandlers,
+  isDragging,
+  activeSize,
+  onSizeSelect,
+}) {
+  const translateX = -(currentIndex * (100 / VISIBLE_CARDS))
+
+  return (
+    <>
+      <div
+        className="carousel-wrapper"
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        {...dragHandlers}
+      >
+        <div
+          className="carousel-track"
+          style={{ transform: `translateX(${translateX}%)` }}
+        >
+          {items.map((item) => {
+            const selectedSize = activeSize[item.id] || item.sizes[0]
+            return (
+              <div key={item.id} className="carousel-slide">
+                <div className="product-card">
+                  <div className="product-image-wrapper">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="product-image"
+                      draggable="false"
+                    />
+                    <div className="product-badge">{item.rating} ★</div>
+                  </div>
+                  <div className="product-info">
+                    <h3 className="item-name">{item.name}</h3>
+                    <p className="product-description">{item.description}</p>
+                    <div className="size-selector">
+                      {item.sizes.map(size => (
+                        <button
+                          key={size}
+                          className={`size-btn ${selectedSize === size ? 'active' : ''}`}
+                          onClick={() => onSizeSelect(item.id, size)}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="product-footer">
+                      <span className="item-price">{item.prices[selectedSize]}</span>
+                      <button className="add-to-cart-btn">Add to Cart</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="carousel-dots">
+        {Array.from({ length: items.length - VISIBLE_CARDS + 1 }).map((_, i) => (
+          <button
+            key={i}
+            className={`carousel-dot ${i === currentIndex ? 'active' : ''}`}
+            onClick={() => setIndex(i)}
+          />
+        ))}
+      </div>
+    </>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Home
+───────────────────────────────────────────────────────────────────────────── */
 function Home() {
   const [activeSize, setActiveSize] = useState({})
   const [bestSellersIndex, setBestSellersIndex] = useState(0)
   const [namkeensIndex, setNamekeensIndex] = useState(0)
+  const [isDraggingBS, setIsDraggingBS] = useState(false)
+  const [isDraggingNK, setIsDraggingNK] = useState(false)
+
+  /* One ref per carousel — stores startX during drag */
+  const bsDragRef = useRef({ active: false, startX: 0 })
+  const nkDragRef = useRef({ active: false, startX: 0 })
 
   const heroImage =
     'https://sangamsweets.in/cdn/shop/files/Banner_New_Gift_Hamper_1.png?v=1766405392'
@@ -36,7 +122,6 @@ function Home() {
     },
   ]
 
-  // Each item has a prices map keyed by size
   const sweetItems = [
     {
       id: 1,
@@ -85,10 +170,9 @@ function Home() {
     },
   ]
 
-  // Namkeen items use ids starting at 100 so activeSize state stays separate
   const namkeenItems = sweetItems.map(item => ({ ...item, id: item.id + 100 }))
 
-  /* ---- helpers ---- */
+  /* ── Helpers ─────────────────────────────────────────────────────────────── */
 
   const handleSizeSelect = (itemId, size) =>
     setActiveSize(prev => ({ ...prev, [itemId]: size }))
@@ -100,72 +184,41 @@ function Home() {
     )
   }
 
+  /* ── Drag factory ────────────────────────────────────────────────────────── */
+  const makeDragHandlers = (dragRef, setIndex, total, setDragging) => {
+    const max = total - VISIBLE_CARDS
+
+    const start = (clientX) => {
+      dragRef.current = { active: true, startX: clientX }
+      setDragging(true)
+    }
+
+    const end = (clientX) => {
+      if (!dragRef.current?.active) return
+      const diff = dragRef.current.startX - clientX
+      if (diff > DRAG_THRESHOLD) setIndex(p => Math.min(p + 1, max))
+      else if (diff < -DRAG_THRESHOLD) setIndex(p => Math.max(p - 1, 0))
+      dragRef.current = { active: false, startX: 0 }
+      setDragging(false)
+    }
+
+    return {
+      onMouseDown: (e) => start(e.clientX),
+      onMouseUp: (e) => end(e.clientX),
+      onMouseLeave: (e) => end(e.clientX),
+      onTouchStart: (e) => start(e.touches[0].clientX),
+      onTouchEnd: (e) => end(e.changedTouches[0].clientX),
+    }
+  }
+
+  const bsDragHandlers = makeDragHandlers(bsDragRef, setBestSellersIndex, sweetItems.length, setIsDraggingBS)
+  const nkDragHandlers = makeDragHandlers(nkDragRef, setNamekeensIndex, namkeenItems.length, setIsDraggingNK)
+
   useEffect(() => {
     document.title = 'Sugar Orbit | Premium Sweets & Namkeens'
   }, [])
 
-  /* ---- reusable carousel ---- */
-
-  const ProductCarousel = ({ items, currentIndex, setIndex }) => {
-    const translateX = -(currentIndex * (100 / VISIBLE_CARDS))
-
-    return (
-      <>
-        <div className="carousel-wrapper">
-          <div
-            className="carousel-track"
-            style={{ transform: `translateX(${translateX}%)` }}
-          >
-            {items.map((item) => {
-              const selectedSize = activeSize[item.id] || item.sizes[0]
-              return (
-                <div key={item.id} className="carousel-slide">
-                  <div className="product-card">
-                    <div className="product-image-wrapper">
-                      <img src={item.image} alt={item.name} className="product-image" />
-                      <div className="product-badge">{item.rating} ★</div>
-                    </div>
-                    <div className="product-info">
-                      <h3 className="product-name">{item.name}</h3>
-                      <p className="product-description">{item.description}</p>
-                      <div className="size-selector">
-                        {item.sizes.map(size => (
-                          <button
-                            key={size}
-                            className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                            onClick={() => handleSizeSelect(item.id, size)}
-                          >
-                            {size}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="product-footer">
-                        <span className="product-price">{item.prices[selectedSize]}</span>
-                        <button className="add-to-cart-btn">Add to Cart</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="carousel-dots">
-          {Array.from({ length: items.length - VISIBLE_CARDS + 1 }).map((_, i) => (
-            <button
-              key={i}
-              className={`carousel-dot ${i === currentIndex ? 'active' : ''}`}
-              onClick={() => setIndex(i)}
-            />
-          ))}
-        </div>
-      </>
-    )
-  }
-
-  /* ---- render ---- */
-
+  /* ── Render ──────────────────────────────────────────────────────────────── */
   return (
     <div className="home-wrapper row">
 
@@ -176,133 +229,167 @@ function Home() {
       </section>
 
       {/* Intro */}
-      <section className="intro-section div-80">
-        <div className="container">
-          <div className="intro-content">
-            <h1 className="intro-title">
-              Taste the <span className="accent">Artistry</span> of Tradition
-            </h1>
-            <p className="intro-description">
-              Meticulously crafted with heritage recipes and premium ingredients, each sweet
-              tells a story of tradition and excellence. Discover the perfect blend of
-              authentic taste and modern craftsmanship.
-            </p>
+      <div className="carousels-gold-wrapper div row">
+        <section className="intro-section div-80">
+          <div className="container">
+            <div className="intro-content">
+              <h1 className="intro-title">
+                Taste the <span className="accent">Artistry</span> of Tradition
+              </h1>
+              <p className="intro-description">
+                Meticulously crafted with heritage recipes and premium ingredients, each sweet
+                tells a story of tradition and excellence. Discover the perfect blend of
+                authentic taste and modern craftsmanship.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       {/* Categories */}
-      <section className="categories-section div-80">
-        <div className="container">
-          <div className="section-header">
-            <h2>Explore Our Collections</h2>
-            <div className="header-accent" />
-          </div>
-
-          <div className="categories-grid">
-            <div className="category-card large-card">
-              <div className="card-image-wrapper">
-                <img src={categories[0].image} alt={categories[0].name} className="card-image" />
-              </div>
-              <div className="card-overlay" />
-              <div className="card-content">
-                <h3>{categories[0].name}</h3>
-                <p>{categories[0].description}</p>
-                <a href={categories[0].link} className="card-link">
-                  Explore <span className="arrow">→</span>
-                </a>
-              </div>
+      <div className="carousels-gold-wrapper div row">
+        <section className="categories-section div-80">
+          <div className="container">
+            <div className="section-header">
+              <h2>Explore Our Collections</h2>
+              <div className="header-accent" />
             </div>
 
-            <div className="categories-right">
-              {categories.slice(1, 3).map(cat => (
-                <div key={cat.id} className="category-card medium-card">
-                  <div className="card-image-wrapper">
-                    <img src={cat.image} alt={cat.name} className="card-image" draggable="false" />
-                  </div>
-                  <div className="card-overlay" />
-                  <div className="card-content">
-                    <h3>{cat.name}</h3>
-                    <a href={cat.link} className="card-link">
-                      Explore <span className="arrow">→</span>
-                    </a>
-                  </div>
+            <div className="categories-grid">
+              <div className="category-card large-card">
+                <div className="card-image-wrapper">
+                  <img src={categories[0].image} alt={categories[0].name} className="card-image" />
                 </div>
-              ))}
+                <div className="card-overlay" />
+                <div className="card-content">
+                  <h3>{categories[0].name}</h3>
+                  <p>{categories[0].description}</p>
+                  <a href={categories[0].link} className="card-link">
+                    Explore <span className="arrow">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="categories-right">
+                {categories.slice(1, 3).map(cat => (
+                  <div key={cat.id} className="category-card medium-card">
+                    <div className="card-image-wrapper">
+                      <img src={cat.image} alt={cat.name} className="card-image" draggable="false" />
+                    </div>
+                    <div className="card-overlay" />
+                    <div className="card-content">
+                      <h3>{cat.name}</h3>
+                      <a href={cat.link} className="card-link">
+                        Explore <span className="arrow">→</span>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      {/* Best Sellers */}
-      <section className="products-section div-80">
-        <div className="container">
-          <div className="section-header">
-            <div className="header-content">
-              <h2>Best Sellers</h2>
-              <p>Customer favorites loved for their irresistible flavors and perfect balance</p>
+      {/* ── Gold wrapper ── */}
+      <div className="carousels-gold-wrapper div">
+        {/* Best Sellers */}
+        <section className="products-section div-80">
+          <div className="container">
+            <div className="section-header">
+              <div className="header-content">
+                <h2>Best Sellers</h2>
+                <p>Customer favorites loved for their irresistible flavors and perfect balance</p>
+              </div>
+              <div className="scroll-controls">
+                <button
+                  className="scroll-btn"
+                  onClick={() => nav('left', setBestSellersIndex, sweetItems.length)}
+                  disabled={bestSellersIndex === 0}
+                  aria-label="Previous"
+                >←</button>
+                <button
+                  className="scroll-btn"
+                  onClick={() => nav('right', setBestSellersIndex, sweetItems.length)}
+                  disabled={bestSellersIndex >= sweetItems.length - VISIBLE_CARDS}
+                  aria-label="Next"
+                >→</button>
+              </div>
             </div>
-            <div className="scroll-controls">
-              <button
-                className="scroll-btn"
-                onClick={() => nav('left', setBestSellersIndex, sweetItems.length)}
-                disabled={bestSellersIndex === 0}
-                aria-label="Previous"
-              >←</button>
-              <button
-                className="scroll-btn"
-                onClick={() => nav('right', setBestSellersIndex, sweetItems.length)}
-                disabled={bestSellersIndex >= sweetItems.length - VISIBLE_CARDS}
-                aria-label="Next"
-              >→</button>
-            </div>
+
+            <ProductCarousel
+              items={sweetItems}
+              currentIndex={bestSellersIndex}
+              setIndex={setBestSellersIndex}
+              dragHandlers={bsDragHandlers}
+              isDragging={isDraggingBS}
+              activeSize={activeSize}
+              onSizeSelect={handleSizeSelect}
+            />
           </div>
+        </section>
 
-          <ProductCarousel
-            items={sweetItems}
-            currentIndex={bestSellersIndex}
-            setIndex={setBestSellersIndex}
-          />
+        {/* Gifting */}
+        <div className="carousels-gold-wrapper div row">
+          <section className="intro-section div">
+            <div className="container">
+              <div className="intro-content div-80">
+                <h1 className="intro-title">
+                  Celebrate Every Moment with <span className="accent">Perfect Gifting</span>
+                </h1>
+                <p className="intro-description">
+                  Thoughtfully curated gift hampers crafted with premium sweets and elegant packaging.
+                  Whether it's festivals, weddings, or corporate celebrations, make every occasion
+                  unforgettable with a touch of tradition and luxury.
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
-      </section>
 
-      {/* Hero */}
-      <section className="hero-section">
-        <img src={heroImage} alt="Hero Banner" className="hero-image" />
-        <div className="hero-overlay" />
-      </section>
+        {/* Mid Hero */}
+        <section className="hero-section">
+          <img src={heroImage} alt="Hero Banner" className="hero-image" draggable="false" />
+          <div className="hero-overlay" />
+        </section>
 
-      {/* Premium Namkeens */}
-      <section className="products-section namkeens-section div-80">
-        <div className="container">
-          <div className="section-header">
-            <div className="header-content">
-              <h2>Premium Namkeens</h2>
-              <p>Crispy, savory delights perfect for any occasion</p>
+        {/* Premium Namkeens */}
+        <section className="products-section namkeens-section div-80">
+          <div className="container">
+            <div className="section-header">
+              <div className="header-content">
+                <h2>Premium Namkeens</h2>
+                <p>Crispy, savory delights perfect for any occasion</p>
+              </div>
+              <div className="scroll-controls">
+                <button
+                  className="scroll-btn"
+                  onClick={() => nav('left', setNamekeensIndex, namkeenItems.length)}
+                  disabled={namkeensIndex === 0}
+                  aria-label="Previous"
+                >←</button>
+                <button
+                  className="scroll-btn"
+                  onClick={() => nav('right', setNamekeensIndex, namkeenItems.length)}
+                  disabled={namkeensIndex >= namkeenItems.length - VISIBLE_CARDS}
+                  aria-label="Next"
+                >→</button>
+              </div>
             </div>
-            <div className="scroll-controls">
-              <button
-                className="scroll-btn"
-                onClick={() => nav('left', setNamekeensIndex, namkeenItems.length)}
-                disabled={namkeensIndex === 0}
-                aria-label="Previous"
-              >←</button>
-              <button
-                className="scroll-btn"
-                onClick={() => nav('right', setNamekeensIndex, namkeenItems.length)}
-                disabled={namkeensIndex >= namkeenItems.length - VISIBLE_CARDS}
-                aria-label="Next"
-              >→</button>
-            </div>
+
+            <ProductCarousel
+              items={namkeenItems}
+              currentIndex={namkeensIndex}
+              setIndex={setNamekeensIndex}
+              dragHandlers={nkDragHandlers}
+              isDragging={isDraggingNK}
+              activeSize={activeSize}
+              onSizeSelect={handleSizeSelect}
+            />
           </div>
+        </section>
 
-          <ProductCarousel
-            items={namkeenItems}
-            currentIndex={namkeensIndex}
-            setIndex={setNamekeensIndex}
-          />
-        </div>
-      </section>
+      </div>{/* /carousels-gold-wrapper */}
 
       <Footer />
     </div>

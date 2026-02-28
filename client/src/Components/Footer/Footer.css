@@ -155,7 +155,6 @@
 .footer-watermark {
   width: 80%;
   margin: 0 auto;
-  padding: calc(2vh + 2vw) 0;
   font-size: clamp(4rem, 15vw, 25rem);
   font-weight: 800;
   color: #f1b854;
