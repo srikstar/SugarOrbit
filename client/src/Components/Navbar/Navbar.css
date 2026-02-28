@@ -35,6 +35,7 @@
     background-color: #faf2db;
     top: 0px;
     z-index: 5;
+    border-bottom: 1px solid gold;
 }
 
 .navbar {
