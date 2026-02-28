@@ -9,7 +9,7 @@
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-    scrollbar-width: thin;
+    scrollbar-width: none;
     user-select: none;
     -webkit-user-drag: none;
     -webkit-touch-callout: none;
@@ -29,23 +29,6 @@ body {
     overflow-x: hidden;
 }
 
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f5f1e8;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #d4af37;
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #c9884b;
-}
 
 /* =====================================================
    FONT FACES
@@ -548,9 +531,8 @@ select {
    ===================================================== */
 
 .main-section {
-    padding-top: 100px;
+    padding-top: 110px;
     width: 100%;
-    min-height: 100vh;
 }
 
 /* =====================================================

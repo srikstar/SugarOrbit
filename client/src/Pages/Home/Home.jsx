@@ -408,6 +408,9 @@ function Home() {
 
       </div>{/* /carousels-gold-wrapper */}
 
+
+      
+
       <Footer />
     </div>
   )

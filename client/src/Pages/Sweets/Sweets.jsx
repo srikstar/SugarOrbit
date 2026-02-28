@@ -110,7 +110,7 @@ function Sweets() {
             <section className="category-header-section">
               <h1 onClick={handleNextPage}>Sweets</h1>
               <div className="para">
-                <p>At Sugar Orbit, our sweets are crafted to perfection using premium ingredients and time-tested recipes. Each bite offers rich flavor, balanced sweetness, and a melt-in-your-mouth texture. 🍩✨</p>
+                <p>At Sugar Orbit, our desserts are crafted with the perfect blend of tradition and taste, using high-quality ingredients and authentic ghee blends. Each velvety bite delivers bold flavors, balanced seasoning, and a satisfying sweetness that keeps you coming back for more. 🍩✨</p>
               </div>
 
               <div className="badges-container-main row-sb">
