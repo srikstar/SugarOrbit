@@ -40,9 +40,7 @@ function Navbar() {
       <div className="navbar-main-container row">
         <nav className="navbar div-80 row-sb">
 
-          <div className="nav-containers">
-            <Link to='/'><img className='main-logo' src="./donut.svg" alt="main-logo" /></Link>
-          </div>
+          <Link to='/'><img className='main-logo' src="./donut.svg" alt="main-logo" /></Link>
 
           <div className="nav-containers nav-links row">
             <Link to='/sweets'><h3>Sweets</h3></Link>
