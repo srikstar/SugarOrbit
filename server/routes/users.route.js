@@ -5,17 +5,17 @@ const Users = require('../models/users.db.js')
 const userRoute = express.Router()
 
 
-// Profile Get
+// Profile GET
 userRoute.get('/get-user', async(req,res) => {
   try {
-    const user = await Users.findById('69a3c5d9fe9b2bd48e9944d5')
+    const user = await Users.find()
     return res.status(200).json({message : 'Fetched', data:user})
   } catch (error) {
     return res.staus(400).json({message : error})
   }
 })
 
-// Profile Edit
+// Profile EDIT
 userRoute.post('/edit-user', async (req, res) => {
   try {
     const {name, email, phoneno} = req.body;
@@ -80,6 +80,9 @@ userRoute.post('/edit-user', async (req, res) => {
     });
   }
 });
+
+// Profile ADD
+
 
 
 module.exports = userRoute
