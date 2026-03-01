@@ -1,5 +1,5 @@
 const express = require('express')
-const mongodb = require('./mongoose.js')
+const mongodb = require('./mongodb.js')
 const dotenv = require('dotenv')
 
 dotenv.config()
