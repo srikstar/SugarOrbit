@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch} from 'react-redux'
+
+
 import './Profile.css'
+import { getUser } from '../../API/user.api'
+import { setUserData } from '../../Redux/user.redux'
 
 const initialProfile = {
-  name: 'Srikanth',
-  email: 'srikanth.reddy.n@outlook.com',
-  phone: '7892438902',
+  name: 'dummy',
+  email: 'dummy',
+  phone: 'dummy',
 }
 
 const fetchOrders = () =>
@@ -102,6 +107,8 @@ function Profile({ onClose, isOpen }) {
   const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
 
+  const dispatch = useDispatch()
+
   const initialAddress = {
     line1: '',
     line2: '',
@@ -156,6 +163,19 @@ function Profile({ onClose, isOpen }) {
     setEditing(false)
     setDraft(profile)
   }
+
+  useEffect(() => {
+    const user = async () => {
+      try {
+        const response = await getUser()
+        console.log(response?.data)
+        dispatch(setUserData(response?.data))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    user()
+  }, [])
 
   return (
     <div

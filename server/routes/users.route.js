@@ -5,6 +5,16 @@ const Users = require('../models/users.db.js')
 const userRoute = express.Router()
 
 
+// Profile Get
+userRoute.get('/get-user', async(req,res) => {
+  try {
+    const user = await Users.findById('69a3c5d9fe9b2bd48e9944d5')
+    return res.status(200).json({message : 'Fetched', data:user})
+  } catch (error) {
+    return res.staus(400).json({message : error})
+  }
+})
+
 // Profile Edit
 userRoute.post('/edit-user', async (req, res) => {
   try {
