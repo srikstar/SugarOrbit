@@ -1,22 +1,25 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import './Navbar.css'
 import Cart from '../Cart/Cart'
 import Profile from '../Profile/Profile'
+import Auth from '../Auth/Auth'
 
 function Navbar() {
 
   const [isOpen, setIsOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
 
-  const[profileOpen, setProfileOpen] = useState(false)
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
 
-  const openProfile = () =>{
+  const openProfile = () => {
     setProfileOpen(true)
     document.body.style.overflow = 'hidden'
   }
 
-  const closeProfile = () =>{
+  const closeProfile = () => {
     setProfileOpen(false)
     document.body.style.overflow = ''
   }
@@ -35,7 +38,11 @@ function Navbar() {
     <>
 
       <Cart onClose={closeCart} isOpen={cartOpen} />
-      <Profile onClose={closeProfile} isOpen={profileOpen} />
+
+      {isLoggedIn
+        ? <Profile onClose={closeProfile} isOpen={profileOpen} />
+        : <Auth    onClose={closeProfile} isOpen={profileOpen} onAuthSuccess={closeProfile} />
+      }
 
       <div className="navbar-main-container row">
         <nav className="navbar div-80 row-sb">

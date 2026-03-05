@@ -178,6 +178,7 @@ function Profile({ onClose, isOpen }) {
   }, [])
 
   return (
+    
     <div
       className={`profile-main-container ${isOpen ? 'profile-open' : ''
         }`}
