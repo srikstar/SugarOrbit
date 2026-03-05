@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../FirebaseConfig'
-import { clearUserData } from '../../Redux/user.redux'
+import { clearUserData, setUserData } from '../../Redux/user.redux'
+import { clearAuthData } from '../../Redux/user.auth'
+import { getUser } from '../../API/user.api'
 
 
 
 import './Profile.css'
-import { getUser } from '../../API/user.api'
-import { setUserData } from '../../Redux/user.redux'
+
 
 const initialProfile = {
   name: 'dummy',
@@ -112,7 +113,7 @@ function Profile({ onClose, isOpen }) {
   const [ordersLoading, setOrdersLoading] = useState(false)
 
   const dispatch = useDispatch()
-  const authData = useSelector((state) => state.auth.data?.phone)
+  const authData = useSelector((state) => state.auth.data)
   console.log(authData)
 
   const initialAddress = {
@@ -173,13 +174,14 @@ function Profile({ onClose, isOpen }) {
   const handleLogout = async () => {
     await signOut(auth)
     dispatch(clearUserData())
+    dispatch(clearAuthData())
     onClose()
   }
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await getUser(authData?.phone)
+        const response = await getUser({ phoneno: authData?.phone })
         dispatch(setUserData(response?.data))
       } catch (error) {
         console.log(error)

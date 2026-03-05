@@ -12,7 +12,7 @@ function Navbar() {
   const [cartOpen, setCartOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
 
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
 
   const openProfile = () => {
     setProfileOpen(true)
