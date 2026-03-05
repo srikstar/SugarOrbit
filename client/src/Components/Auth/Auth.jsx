@@ -1,15 +1,36 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
+
 import './Auth.css'
+import { auth } from '../../FirebaseConfig'
+import { setUserData } from '../../Redux/user.redux'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 const isValidPhone = (v) => /^\d{10}$/.test(v)
 const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
 
-// Replace these with your actual API calls
-const requestOtp  = async (phone)            => { console.log('OTP →', phone) }
-const verifyLogin = async (phone, otp)       => { console.log('Login →', phone, otp) }
-const verifySignup = async (data, otp)       => { console.log('Signup →', data, otp) }
+// ─── Firebase OTP functions ──────────────────────────────────────────────────
+
+let confirmationResult = null
+
+const requestOtp = async (phone) => {
+  const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' })
+  confirmationResult = await signInWithPhoneNumber(auth, `+91${phone}`, verifier)
+}
+
+const verifyLogin = async (phone, otp) => {
+  const result = await confirmationResult.confirm(otp)
+  return result.user
+}
+
+const verifySignup = async (data, otp) => {
+  const result = await confirmationResult.confirm(otp)
+  // TODO: call your backend here to save name + email
+  // await axios.post('/api/users/register', { ...data, uid: result.user.uid })
+  return result.user
+}
 
 // ─── OTP input (6 boxes) ────────────────────────────────────────────────────
 
@@ -92,22 +113,19 @@ function Countdown({ seconds, onEnd }) {
 // ─── Main Auth component ─────────────────────────────────────────────────────
 
 function Auth({ onClose, isOpen, onAuthSuccess }) {
-  const [mode, setMode]         = useState('login')   // 'login' | 'signup'
-  const [step, setStep]         = useState('form')    // 'form'  | 'otp'
-  const [loading, setLoading]   = useState(false)
-  const [error, setError]       = useState('')
+  const [mode, setMode]           = useState('login')
+  const [step, setStep]           = useState('form')
+  const [loading, setLoading]     = useState(false)
+  const [error, setError]         = useState('')
   const [canResend, setCanResend] = useState(false)
 
-  // Login fields
-  const [phone, setPhone]       = useState('')
-
-  // Signup fields
-  const [name, setName]         = useState('')
-  const [email, setEmail]       = useState('')
+  const [phone, setPhone]             = useState('')
+  const [name, setName]               = useState('')
+  const [email, setEmail]             = useState('')
   const [signupPhone, setSignupPhone] = useState('')
+  const [otp, setOtp]                 = useState('')
 
-  // OTP
-  const [otp, setOtp]           = useState('')
+  const dispatch = useDispatch()   // ← added
 
   // ── reset on mode switch ──────────────────────────────────────────────────
   const switchMode = (m) => {
@@ -116,13 +134,12 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
     setSignupPhone(''); setOtp('')
   }
 
-  // ── reset on close ────────────────────────────────────────────────────────
   const handleClose = () => {
     switchMode('login')
     onClose()
   }
 
-  // ── step 1 submit ─────────────────────────────────────────────────────────
+  // ── step 1: send OTP ──────────────────────────────────────────────────────
   const handleFormSubmit = async () => {
     setError('')
     const p = mode === 'login' ? phone : signupPhone
@@ -135,7 +152,7 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
 
     setLoading(true)
     try {
-      await requestOtp(p)
+      await requestOtp(p)          // ← calls Firebase
       setStep('otp')
       setCanResend(false)
     } catch {
@@ -150,11 +167,14 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
     if (otp.length !== 6) return setError('Please enter the 6-digit OTP.')
     setError(''); setLoading(true)
     try {
-      if (mode === 'login') {
-        await verifyLogin(phone, otp)
-      } else {
-        await verifySignup({ name, email, phone: signupPhone }, otp)
-      }
+      // ── Firebase verify ──
+      const user = mode === 'login'
+        ? await verifyLogin(phone, otp)
+        : await verifySignup({ name, email, phone: signupPhone }, otp)
+
+      // ── Save to Redux ──
+      dispatch(setUserData({ phone: user.phoneNumber, uid: user.uid }))
+
       onAuthSuccess?.()
       handleClose()
     } catch {
@@ -171,7 +191,6 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
     try { await requestOtp(p) } catch { setError('Could not resend OTP.') }
   }
 
-  // ── masked phone for OTP screen ───────────────────────────────────────────
   const maskedPhone = (p) => p.replace(/(\d{2})\d{6}(\d{2})/, '$1••••••$2')
 
   return (
@@ -180,6 +199,9 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
       onClick={handleClose}
     >
       <div className="auth-panel" onClick={(e) => e.stopPropagation()}>
+
+        {/* ── invisible reCAPTCHA mount point ── */}
+        <div id="recaptcha-container" />   {/* ← ADDED HERE */}
 
         {/* Header */}
         <div className="auth-header">
@@ -199,7 +221,6 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
           {/* ── FORM STEP ────────────────────────────── */}
           {step === 'form' && (
             <>
-              {/* Mode toggle */}
               <div className="auth-toggle-row">
                 <button
                   className={`auth-toggle-btn ${mode === 'login' ? 'active' : ''}`}
@@ -217,7 +238,6 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
 
               <div className="auth-fields">
 
-                {/* Signup-only fields */}
                 {mode === 'signup' && (
                   <>
                     <div className="auth-field-group">
@@ -243,7 +263,6 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
                   </>
                 )}
 
-                {/* Phone */}
                 <div className="auth-field-group">
                   <label className="auth-label">Mobile number</label>
                   <div className="auth-phone-row">

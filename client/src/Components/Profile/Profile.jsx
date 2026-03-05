@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { signOut } from 'firebase/auth'
+import { auth } from '../../FirebaseConfig'
+import { clearUserData } from '../../Redux/user.redux'
+
 
 
 import './Profile.css'
@@ -164,6 +168,12 @@ function Profile({ onClose, isOpen }) {
     setDraft(profile)
   }
 
+  const handleLogout = async () => {
+    await signOut(auth)
+    dispatch(clearUserData())
+    onClose()
+  }
+
   useEffect(() => {
     const user = async () => {
       try {
@@ -178,7 +188,7 @@ function Profile({ onClose, isOpen }) {
   }, [])
 
   return (
-    
+
     <div
       className={`profile-main-container ${isOpen ? 'profile-open' : ''
         }`}
@@ -477,7 +487,7 @@ function Profile({ onClose, isOpen }) {
 
         {/* Footer */}
         <div className="profile-footer div">
-          <button className="profile-logout-btn">
+          <button className="profile-logout-btn" onClick={handleLogout}>
             Log Out
           </button>
         </div>
