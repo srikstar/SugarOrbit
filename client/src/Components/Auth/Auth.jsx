@@ -4,7 +4,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 
 import './Auth.css'
 import { auth } from '../../FirebaseConfig'
-import { setUserData } from '../../Redux/user.redux'
+import { setAuthData } from '../../Redux/user.auth'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -173,7 +173,7 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
         : await verifySignup({ name, email, phone: signupPhone }, otp)
 
       // ── Save to Redux ──
-      dispatch(setUserData({ phone: user.phoneNumber, uid: user.uid }))
+      dispatch(setAuthData({ phone: user.phoneNumber, uid: user.uid }))
 
       onAuthSuccess?.()
       handleClose()

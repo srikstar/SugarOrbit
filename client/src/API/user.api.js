@@ -6,9 +6,10 @@ const user = axios.create({
     withCredentials :true
 })
 
-export const getUser = async() =>{
+
+export const getUser = async({phoneno}) =>{
     try {
-        const response = await user.get('/api/users/get-user')
+        const response = await user.get(`/api/users/get-user/${phoneno}`)
         return response?.data
     } catch (error) {
         return error.response?.data || { message: "Something went wrong" }

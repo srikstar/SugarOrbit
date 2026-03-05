@@ -6,12 +6,16 @@ const userRoute = express.Router()
 
 
 // Profile GET
-userRoute.get('/get-user', async(req,res) => {
+userRoute.get('/get-user/:phoneno', async(req,res) => {
   try {
-    const user = await Users.find()
+    const user = await Users.find({phoneno : req.params.phoneno})
     return res.status(200).json({message : 'Fetched', data:user})
   } catch (error) {
-    return res.staus(400).json({message : error})
+    return res.status(400).json(
+      { message : "No account found! did you mean to sign up?",
+        isLoggedIn: false
+      }
+    )
   }
 })
 
