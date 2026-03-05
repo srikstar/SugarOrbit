@@ -23,7 +23,7 @@ userRoute.post('/edit-user', async (req, res) => {
     if (!phoneno || typeof phoneno !== 'string' || !/^[0-9]{10}$/.test(phoneno)) {
       return res.status(400).json({
         message: 'Invalid phone number',
-        isAuth: false
+        isLoggedIn: false
       });
     }
 
@@ -31,7 +31,7 @@ userRoute.post('/edit-user', async (req, res) => {
     if (!user) {
       return res.status(404).json({
         message: 'User not found',
-        isAuth: false
+        isLoggedIn: false
       });
     }
 
@@ -39,7 +39,7 @@ userRoute.post('/edit-user', async (req, res) => {
       if (!validator.isEmail(email)) {
         return res.status(400).json({
           message: 'Invalid email format',
-          isAuth: true
+          isLoggedIn: true
         });
       }
 
@@ -47,7 +47,7 @@ userRoute.post('/edit-user', async (req, res) => {
       if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
         return res.status(400).json({
           message: 'Email already in use',
-          isAuth: true
+          isLoggedIn: true
         });
       }
 
@@ -58,7 +58,7 @@ userRoute.post('/edit-user', async (req, res) => {
       if (typeof name !== 'string' || name.length < 2 || name.length > 50) {
         return res.status(400).json({
           message: 'Invalid name',
-          isAuth: true
+          isLoggedIn: true
         });
       }
       user.name = name.trim();
@@ -68,7 +68,7 @@ userRoute.post('/edit-user', async (req, res) => {
 
     return res.status(200).json({
       message: 'User updated successfully',
-      isAuth: true,
+      isLoggedIn: true,
       isSuccess: true
     });
 
