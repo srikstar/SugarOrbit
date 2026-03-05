@@ -160,6 +160,7 @@
   font-size: 13px;
   font-weight: 500;
   color: #1a1a1a;
+  caret-color: #1a1a1a; /* ← fix: explicit dark caret */
   background: #fff;
   border: 1px solid #d0cbc4;
   border-radius: 8px;
