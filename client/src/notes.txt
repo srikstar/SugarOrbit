@@ -43,3 +43,26 @@ About Us
 Order Tracking
 Search Results
 Wishlist
+
+
+
+{
+  auth: {
+    isLoggedIn: true,
+    data: {
+      phone: '+917892438902',
+      uid: '2Fo71nnIwmTUMuaF6qYoNIjQd1r1'
+    }
+  },
+  user: {
+    data: {
+      _id: '69a4d2a7fe9b2bd48e9946b3',
+      name: 'Rahul Verma',
+      email: 'rahul.verma@gmail.com',
+      phoneno: '+917892438902',
+      address: '12th Cross, JP Nagar, Bangalore, Karnataka 560078',
+      createdAt: '2026-03-02T10:18:25.410Z',
+      updatedAt: '2026-03-02T10:42:11.125Z'
+    }
+  }
+}

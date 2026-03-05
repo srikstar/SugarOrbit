@@ -6,15 +6,12 @@ import { clearUserData, setUserData } from '../../Redux/user.redux'
 import { clearAuthData } from '../../Redux/user.auth'
 import { getUser } from '../../API/user.api'
 
-
-
 import './Profile.css'
 
-
 const initialProfile = {
-  name: 'dummy',
-  email: 'dummy',
-  phone: 'dummy',
+  name: '',
+  email: '',
+  phone: '',
 }
 
 const fetchOrders = () =>
@@ -54,16 +51,12 @@ const STATUS_COLORS = {
 }
 
 function OrderCard({ order }) {
-  const statusStyle =
-    STATUS_COLORS[order.status] || STATUS_COLORS.PENDING
+  const statusStyle = STATUS_COLORS[order.status] || STATUS_COLORS.PENDING
 
   return (
     <div className="profile-order-card">
       <div className="profile-order-card-header">
-        <span className="profile-order-id">
-          Order #{order.orderId}
-        </span>
-
+        <span className="profile-order-id">Order #{order.orderId}</span>
         <span
           className="profile-order-status"
           style={{
@@ -74,16 +67,11 @@ function OrderCard({ order }) {
         >
           {order.status}
         </span>
-
-        <span className="profile-order-total">
-          ₹{order.total.toFixed(2)}
-        </span>
+        <span className="profile-order-total">₹{order.total.toFixed(2)}</span>
       </div>
 
       <div className="profile-order-card-section">
-        <span className="profile-order-card-label">
-          ITEMS
-        </span>
+        <span className="profile-order-card-label">ITEMS</span>
         {order.items.map((item, i) => (
           <p key={i} className="profile-order-card-item">
             {item.name} ({item.size}) × {item.quantity}
@@ -92,12 +80,8 @@ function OrderCard({ order }) {
       </div>
 
       <div className="profile-order-card-section">
-        <span className="profile-order-card-label">
-          ORDERED ON
-        </span>
-        <p className="profile-order-card-date">
-          {order.orderedOn}
-        </p>
+        <span className="profile-order-card-label">ORDERED ON</span>
+        <p className="profile-order-card-date">{order.orderedOn}</p>
       </div>
     </div>
   )
@@ -114,7 +98,7 @@ function Profile({ onClose, isOpen }) {
 
   const dispatch = useDispatch()
   const authData = useSelector((state) => state.auth.data)
-  console.log(authData)
+  const userData = useSelector((state) => state.user.data)
 
   const initialAddress = {
     line1: '',
@@ -130,30 +114,32 @@ function Profile({ onClose, isOpen }) {
   const [addingAddress, setAddingAddress] = useState(false)
 
   useEffect(() => {
+    if (userData) {
+      setProfile({
+        name: userData.name || '',
+        email: userData.email || '',
+        phone: userData.phoneno || authData?.phone || '',
+      })
+    }
+  }, [userData])
+
+  useEffect(() => {
     if (!isOpen || orders.length > 0) return
 
     let ignore = false
 
     const loadOrders = async () => {
       setOrdersLoading(true)
-
       try {
         const data = await fetchOrders()
-        if (!ignore) {
-          setOrders(data)
-        }
+        if (!ignore) setOrders(data)
       } finally {
-        if (!ignore) {
-          setOrdersLoading(false)
-        }
+        if (!ignore) setOrdersLoading(false)
       }
     }
 
     loadOrders()
-
-    return () => {
-      ignore = true
-    }
+    return () => { ignore = true }
   }, [isOpen, orders.length])
 
   const handleEdit = () => {
@@ -181,8 +167,10 @@ function Profile({ onClose, isOpen }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await getUser({ phoneno: authData?.phone })
-        dispatch(setUserData(response?.data))
+        const response = await getUser(authData?.phone)
+        if (response?.data) {
+          dispatch(setUserData(response.data))
+        }
       } catch (error) {
         console.log(error)
       }
@@ -192,24 +180,18 @@ function Profile({ onClose, isOpen }) {
       fetchUser()
     }
   }, [authData?.phone])
-  return (
 
+  return (
     <div
-      className={`profile-main-container ${isOpen ? 'profile-open' : ''
-        }`}
+      className={`profile-main-container ${isOpen ? 'profile-open' : ''}`}
       onClick={onClose}
     >
-      <div
-        className="profile-panel"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="profile-panel" onClick={(e) => e.stopPropagation()}>
+
         {/* Header */}
         <div className="profile-header row-sb div">
           <span className="profile-title">Profile</span>
-          <button
-            className="profile-close-btn row"
-            onClick={onClose}
-          >
+          <button className="profile-close-btn row" onClick={onClose}>
             ✕ Close
           </button>
         </div>
@@ -223,79 +205,44 @@ function Profile({ onClose, isOpen }) {
             <div className="profile-info-top">
               {editing ? (
                 <>
-                  <button
-                    className="profile-action-btn save"
-                    onClick={handleSave}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="profile-action-btn cancel"
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </button>
+                  <button className="profile-action-btn save" onClick={handleSave}>Save</button>
+                  <button className="profile-action-btn cancel" onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
-                <button
-                  className="profile-action-btn edit"
-                  onClick={handleEdit}
-                >
-                  Edit
-                </button>
+                <button className="profile-action-btn edit" onClick={handleEdit}>Edit</button>
               )}
             </div>
 
             <div className="profile-field">
-              <span className="profile-field-label">
-                Name
-              </span>
+              <span className="profile-field-label">Name</span>
               {editing ? (
                 <input
                   className="profile-field-input"
                   value={draft.name}
-                  onChange={(e) =>
-                    setDraft({
-                      ...draft,
-                      name: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                 />
               ) : (
-                <span className="profile-field-value">
-                  {profile.name}
-                </span>
+                <span className="profile-field-value">{profile.name || '—'}</span>
               )}
             </div>
 
             <div className="profile-field">
-              <span className="profile-field-label">
-                Email
-              </span>
+              <span className="profile-field-label">Email</span>
               {editing ? (
                 <input
                   className="profile-field-input"
                   value={draft.email}
-                  onChange={(e) =>
-                    setDraft({
-                      ...draft,
-                      email: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setDraft({ ...draft, email: e.target.value })}
                 />
               ) : (
-                <span className="profile-field-value">
-                  {profile.email}
-                </span>
+                <span className="profile-field-value">{profile.email || '—'}</span>
               )}
             </div>
 
             <div className="profile-field">
-              <span className="profile-field-label">
-                Ph No
-              </span>
+              <span className="profile-field-label">Ph No</span>
               <span className="profile-field-value profile-field-static">
-                {profile.phone}
+                {profile.phone || '—'}
               </span>
             </div>
           </div>
@@ -306,16 +253,10 @@ function Profile({ onClose, isOpen }) {
           <div className="profile-section">
             <button
               className="profile-section-toggle"
-              onClick={() =>
-                setAddressOpen((o) => !o)
-              }
+              onClick={() => setAddressOpen((o) => !o)}
             >
-              <span className="profile-section-title">
-                Address
-              </span>
-              <span className="profile-section-icon">
-                {addressOpen ? '−' : '+'}
-              </span>
+              <span className="profile-section-title">Address</span>
+              <span className="profile-section-icon">{addressOpen ? '−' : '+'}</span>
             </button>
 
             {addressOpen && (
@@ -326,10 +267,7 @@ function Profile({ onClose, isOpen }) {
                     <br /><br />
                     <button
                       className="profile-action-btn save"
-                      onClick={() => {
-                        setAddingAddress(true)
-                        setAddressDraft('')
-                      }}
+                      onClick={() => { setAddingAddress(true); setAddressDraft('') }}
                     >
                       Add Address
                     </button>
@@ -338,104 +276,33 @@ function Profile({ onClose, isOpen }) {
 
                 {addingAddress && (
                   <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-
-                    <input
-                      className="profile-field-input"
-                      placeholder="Address Line 1"
-                      value={addressDraft.line1 || ''}
-                      onChange={(e) =>
-                        setAddressDraft({ ...addressDraft, line1: e.target.value })
-                      }
-                    />
-
-                    <input
-                      className="profile-field-input"
-                      placeholder="Address Line 2 (Apartment, suite, etc.)"
-                      value={addressDraft.line2 || ''}
-                      onChange={(e) =>
-                        setAddressDraft({ ...addressDraft, line2: e.target.value })
-                      }
-                    />
-
-                    <input
-                      className="profile-field-input"
-                      placeholder="City"
-                      value={addressDraft.city || ''}
-                      onChange={(e) =>
-                        setAddressDraft({ ...addressDraft, city: e.target.value })
-                      }
-                    />
-
-                    <input
-                      className="profile-field-input"
-                      placeholder="State / Province / Region"
-                      value={addressDraft.state || ''}
-                      onChange={(e) =>
-                        setAddressDraft({ ...addressDraft, state: e.target.value })
-                      }
-                    />
-
-                    <input
-                      className="profile-field-input"
-                      placeholder="ZIP / Postal Code"
-                      value={addressDraft.zip || ''}
-                      onChange={(e) =>
-                        setAddressDraft({ ...addressDraft, zip: e.target.value })
-                      }
-                    />
-
-                    <input
-                      className="profile-field-input"
-                      value="India"
-                      disabled
-                    />
-
+                    <input className="profile-field-input" placeholder="Address Line 1" value={addressDraft.line1 || ''} onChange={(e) => setAddressDraft({ ...addressDraft, line1: e.target.value })} />
+                    <input className="profile-field-input" placeholder="Address Line 2 (Apartment, suite, etc.)" value={addressDraft.line2 || ''} onChange={(e) => setAddressDraft({ ...addressDraft, line2: e.target.value })} />
+                    <input className="profile-field-input" placeholder="City" value={addressDraft.city || ''} onChange={(e) => setAddressDraft({ ...addressDraft, city: e.target.value })} />
+                    <input className="profile-field-input" placeholder="State / Province / Region" value={addressDraft.state || ''} onChange={(e) => setAddressDraft({ ...addressDraft, state: e.target.value })} />
+                    <input className="profile-field-input" placeholder="ZIP / Postal Code" value={addressDraft.zip || ''} onChange={(e) => setAddressDraft({ ...addressDraft, zip: e.target.value })} />
+                    <input className="profile-field-input" value="India" disabled />
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button
                         className="profile-action-btn save"
                         onClick={() => {
-                          if (
-                            addressDraft.line1 &&
-                            addressDraft.city &&
-                            addressDraft.state &&
-                            addressDraft.zip
-                          ) {
-                            setAddress({
-                              ...addressDraft,
-                              country: 'India',
-                            })
+                          if (addressDraft.line1 && addressDraft.city && addressDraft.state && addressDraft.zip) {
+                            setAddress({ ...addressDraft, country: 'India' })
                             setAddingAddress(false)
                           }
                         }}
                       >
                         Save
                       </button>
-
-                      <button
-                        className="profile-action-btn cancel"
-                        onClick={() => setAddingAddress(false)}
-                      >
-                        Cancel
-                      </button>
+                      <button className="profile-action-btn cancel" onClick={() => setAddingAddress(false)}>Cancel</button>
                     </div>
                   </div>
                 )}
 
                 {address && !addingAddress && (
                   <div style={{ padding: '16px 24px' }}>
-                    <div className="profile-field-value" style={{ marginBottom: '10px' }}>
-                      {address}
-                    </div>
-
-                    <button
-                      className="profile-action-btn edit"
-                      onClick={() => {
-                        setAddingAddress(true)
-                        setAddressDraft(address)
-                      }}
-                    >
-                      Edit Address
-                    </button>
+                    <div className="profile-field-value" style={{ marginBottom: '10px' }}>{address.line1}, {address.city}</div>
+                    <button className="profile-action-btn edit" onClick={() => { setAddingAddress(true); setAddressDraft(address) }}>Edit Address</button>
                   </div>
                 )}
               </div>
@@ -448,38 +315,23 @@ function Profile({ onClose, isOpen }) {
           <div className="profile-section">
             <button
               className="profile-section-toggle"
-              onClick={() =>
-                setOrdersOpen((o) => !o)
-              }
+              onClick={() => setOrdersOpen((o) => !o)}
             >
-              <span className="profile-section-title">
-                Orders
-              </span>
-              <span className="profile-section-icon">
-                {ordersOpen ? '−' : '+'}
-              </span>
+              <span className="profile-section-title">Orders</span>
+              <span className="profile-section-icon">{ordersOpen ? '−' : '+'}</span>
             </button>
 
             {ordersOpen && (
               <div className="profile-orders-list">
                 {ordersLoading ? (
-                  <div className="profile-empty">
-                    Loading orders…
-                  </div>
+                  <div className="profile-empty">Loading orders…</div>
                 ) : orders.length === 0 ? (
-                  <div className="profile-empty">
-                    No orders yet.
-                  </div>
+                  <div className="profile-empty">No orders yet.</div>
                 ) : (
                   orders.map((order, index) => (
-                    <React.Fragment
-                      key={order.orderId}
-                    >
+                    <React.Fragment key={order.orderId}>
                       <OrderCard order={order} />
-                      {index <
-                        orders.length - 1 && (
-                          <div className="profile-divider" />
-                        )}
+                      {index < orders.length - 1 && <div className="profile-divider" />}
                     </React.Fragment>
                   ))
                 )}
@@ -492,9 +344,7 @@ function Profile({ onClose, isOpen }) {
 
         {/* Footer */}
         <div className="profile-footer div">
-          <button className="profile-logout-btn" onClick={handleLogout}>
-            Log Out
-          </button>
+          <button className="profile-logout-btn" onClick={handleLogout}>Log Out</button>
         </div>
       </div>
     </div>

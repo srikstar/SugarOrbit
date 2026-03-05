@@ -8,19 +8,15 @@ const user = axios.create({
 })
 
 
-export const getUser = async ({ phoneno }) => {
+export const getUser = async (phoneno) => {
     try {
         const auth = getAuth();
         const currentUser = auth.currentUser;
         const token = await currentUser.getIdToken();
-        const response = await user.get(`/api/users/get-user/${phoneno}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+        const response = await user.get(`/api/users/get-user/${phoneno}`);
         return response?.data;
     } catch (error) {
+        console.log(error)
         return error.response?.data || { message: "Something went wrong" };
     }
 };

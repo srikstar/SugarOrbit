@@ -7,10 +7,10 @@ const userRoute = express.Router()
 
 
 // Profile GET
-userRoute.get('/get-user/:phoneno', verifyFirebaseToken, async (req, res) => {
+userRoute.get('/get-user/:phoneno', async (req, res) => {
   try {
 
-    const user = await Users.findOne({ phoneno: req.params.phoneno })
+    const user = await Users.findOne({ phoneno: req.params.phoneno }).select('-_id -createdAt -updatedAt')
 
     if (!user) {
       return res.status(404).json({
@@ -18,13 +18,6 @@ userRoute.get('/get-user/:phoneno', verifyFirebaseToken, async (req, res) => {
         isLoggedIn: false
       })
     }
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    })
 
     return res.status(200).json({
       message: "Fetched",
