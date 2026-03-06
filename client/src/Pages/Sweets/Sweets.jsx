@@ -7,7 +7,6 @@ import Items from '../../Components/Items/Items'
 import Footer from '../../Components/Footer/Footer'
 import '../Sweets/Sweets.css'
 
-// Map :category param → readable label
 const CATEGORY_META = {
   sweets: { label: 'Sweets', description: 'Crafted with authentic ghee blends...' },
   namkeens: { label: 'Namkeens', description: 'Bold flavors, balanced seasoning...' },
@@ -22,17 +21,14 @@ const PRODUCT_TYPES = [
   'Sweets Laddus'
 ]
 
-function Category() {
-  const { category } = useParams()           // ← reads :category from URL path
-  const [searchParams, setSearchParams] = useSearchParams()  // ← reads ?key=value
+function Sweets() {
+  const { category } = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
   const filterMenuRef = useRef(null)
   const [loading, setLoading] = useState(false)
 
-  // ── Initialize state FROM the URL ──────────────────────────────
-  const [page, setPage] = useState(
-    Number(searchParams.get('page')) || 1
-  )
+  const [page, setPage] = useState(Number(searchParams.get('page')) || 1)
 
   const [priceFilter, setPriceFilter] = useState({
     isOpen: false,
@@ -42,45 +38,43 @@ function Category() {
 
   const [productTypeFilter, setProductTypeFilter] = useState({
     isOpen: false,
-    selected: searchParams.getAll('type') || []   // ← getAll not get
+    selected: searchParams.getAll('type') || []
   })
 
   const meta = CATEGORY_META[category] || { label: category, description: '' }
 
-  // ── Sync state → URL bar ───────────────────────────────────────
   useEffect(() => {
-    const params = {}
-    if (priceFilter.minPrice > 0) params.minPrice = priceFilter.minPrice
-    if (priceFilter.maxPrice < 860) params.maxPrice = priceFilter.maxPrice
-    if (productTypeFilter.selected[0]) params.type = productTypeFilter.selected[0]
-    if (page > 1) params.page = page
-
-    setSearchParams(params, { replace: true })   // replace: true = no extra browser history entry
+    const fetchData = async () => {
+      setLoading(true)
+      const result = await getSweets({
+        low: priceFilter.minPrice,
+        high: priceFilter.maxPrice,
+        type: productTypeFilter.selected,
+        page
+      })
+      if (result?.data) {
+        dispatch(setSweetData(result.data))
+      }
+      setLoading(false)
+    }
+    fetchData()
   }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page])
 
-
-  // Writing — set each value separately
   useEffect(() => {
     const params = new URLSearchParams()
-
     if (priceFilter.minPrice > 0) params.set('minPrice', priceFilter.minPrice)
     if (priceFilter.maxPrice < 860) params.set('maxPrice', priceFilter.maxPrice)
     if (page > 1) params.set('page', page)
-
-    // append creates repeated keys: ?type=A&type=B&type=C
     productTypeFilter.selected.forEach(t => params.append('type', t))
-
     setSearchParams(params, { replace: true })
   }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page])
 
-  // ── Page title ────────────────────────────────────────────────
   useEffect(() => {
     document.title = page > 1
       ? `Sugar Orbit | ${meta.label} - Page ${page}`
       : `Sugar Orbit | ${meta.label}`
   }, [category, page])
 
-  // ── Click outside closes dropdowns ────────────────────────────
   useEffect(() => {
     const handler = (e) => {
       if (filterMenuRef.current && !filterMenuRef.current.contains(e.target)) {
@@ -92,15 +86,16 @@ function Category() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // ── Filter handlers ───────────────────────────────────────────
   const togglePriceFilter = () => {
     setPriceFilter(p => ({ ...p, isOpen: !p.isOpen }))
     setProductTypeFilter(p => ({ ...p, isOpen: false }))
   }
+
   const toggleProductTypeFilter = () => {
     setProductTypeFilter(p => ({ ...p, isOpen: !p.isOpen }))
     setPriceFilter(p => ({ ...p, isOpen: false }))
   }
+
   const resetPriceFilter = () => setPriceFilter(p => ({ ...p, minPrice: 0, maxPrice: 860 }))
   const resetTypeFilter = () => setProductTypeFilter(p => ({ ...p, selected: [] }))
 
@@ -116,12 +111,9 @@ function Category() {
       <div className="main-section">
         <section className="category-main-container row">
           <div className="div-80">
-
-            {/* Header */}
             <section className="category-header-section">
               <h1>{meta.label}</h1>
               <div className="para"><p>{meta.description}</p></div>
-
               <div className="badges-container-main row-sb">
                 <div className="badges-container column">
                   <img className='badge-icon' src="/package.svg" alt="package" />
@@ -142,12 +134,10 @@ function Category() {
               </div>
             </section>
 
-            {/* Filters */}
             <section className="product-filter-container" ref={filterMenuRef}>
               <div className="filter-header row-fs">
                 <span className="filter-label">Filter:</span>
 
-                {/* Price */}
                 <div className="filter-dropdown-wrapper">
                   <button className="filter-btn" onClick={togglePriceFilter}>
                     <span>Price</span>
@@ -175,7 +165,6 @@ function Category() {
                   )}
                 </div>
 
-                {/* Product Type */}
                 <div className="filter-dropdown-wrapper">
                   <button className="filter-btn" onClick={toggleProductTypeFilter}>
                     <span>Product Type</span>
@@ -210,7 +199,6 @@ function Category() {
                 </div>
               </div>
 
-              {/* Active filter tags */}
               {hasActiveFilters && (
                 <div className="active-filters-container row-fs">
                   {productTypeFilter.selected.map(item => (
@@ -237,11 +225,9 @@ function Category() {
               )}
             </section>
 
-            {/* Products */}
             <section className="product-items-container">
               <Items data={sweets} loading={loading} />
             </section>
-
           </div>
         </section>
       </div>
@@ -250,4 +236,4 @@ function Category() {
   )
 }
 
-export default Category
+export default Sweets

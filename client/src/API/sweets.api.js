@@ -12,7 +12,7 @@ export const getSweets = async ({ low = 0, high = 10000, type = [], page = 1 } =
         const params = new URLSearchParams()
 
         params.set('page', page)
-        params.set('limit', 10)
+        params.set('limit', 8)
         params.set('minPrice', low)
         params.set('maxPrice', high)
 
