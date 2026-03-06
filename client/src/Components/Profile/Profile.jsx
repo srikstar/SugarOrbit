@@ -6,6 +6,7 @@ import { clearUserData } from '../../Redux/user.redux'
 import { clearAuthData } from '../../Redux/user.auth'
 
 import './Profile.css'
+import { editUser } from '../../API/user.api'
 
 const initialProfile = {
   name: '',
@@ -146,7 +147,24 @@ function Profile({ onClose, isOpen }) {
     setEditing(true)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
+
+    try {
+      const response = await editUser({
+        name: draft.name,
+        email: draft.email,
+        phoneno: authData?.phone
+      })
+      if (response?.isSuccess) {
+        setProfile(draft)
+        setEditing(false)
+      } else {
+        console.log(response?.message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
     setProfile(draft)
     setEditing(false)
   }

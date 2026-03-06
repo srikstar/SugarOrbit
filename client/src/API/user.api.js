@@ -24,7 +24,7 @@ export const editUser = async ({ name, email, phoneno }) => {
         const auth = getAuth();
         const currentUser = auth.currentUser;
         const token = await currentUser.getIdToken();
-        const response = await user.post("/api/users/edit-user", { name, email, phoneno },
+        const response = await user.post(`/api/users/edit-user/${phoneno}`, { name, email },
             {
                 headers: {
                     Authorization: `Bearer ${token}`

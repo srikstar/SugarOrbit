@@ -34,18 +34,19 @@ userRoute.get('/get-user/:phoneno', async (req, res) => {
 })
 
 // Profile EDIT
-userRoute.post('/edit-user', verifyFirebaseToken, async (req, res) => {
+userRoute.post('/edit-user/:phoneno', async (req, res) => {
   try {
-    const { name, email, phoneno } = req.body;
+    const { name, email } = req.body;
+    const phone = req.params.phoneno;
 
-    if (!phoneno || typeof phoneno !== 'string' || !/^[0-9]{10}$/.test(phoneno)) {
+    if (!phone || typeof phone !== 'string' || !/^(\+91)?[0-9]{10}$/.test(phone)) {
       return res.status(400).json({
         message: 'Invalid phone number',
         isLoggedIn: false
       });
     }
 
-    const user = await Users.findOne({ phoneno }).select('+email');
+    const user = await Users.findOne({ phoneno: phone }).select('+email');
     if (!user) {
       return res.status(404).json({
         message: 'User not found',
@@ -53,25 +54,34 @@ userRoute.post('/edit-user', verifyFirebaseToken, async (req, res) => {
       });
     }
 
+    // EMAIL UPDATE
     if (email) {
-      if (!validator.isEmail(email)) {
-        return res.status(400).json({
-          message: 'Invalid email format',
-          isLoggedIn: true
-        });
-      }
+      const newEmail = email.toLowerCase().trim();
 
-      const existingEmail = await Users.findOne({ email: email.toLowerCase() });
-      if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
-        return res.status(400).json({
-          message: 'Email already in use',
-          isLoggedIn: true
-        });
-      }
+      // Only continue if email is different
+      if (newEmail !== user.email) {
 
-      user.email = email.toLowerCase().trim();
+        if (!validator.isEmail(newEmail)) {
+          return res.status(400).json({
+            message: 'Invalid email format',
+            isLoggedIn: true
+          });
+        }
+
+        const existingEmail = await Users.findOne({ email: newEmail });
+
+        if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
+          return res.status(400).json({
+            message: 'Email already in use',
+            isLoggedIn: true
+          });
+        }
+
+        user.email = newEmail;
+      }
     }
 
+    // NAME UPDATE
     if (name) {
       if (typeof name !== 'string' || name.length < 2 || name.length > 50) {
         return res.status(400).json({
@@ -79,6 +89,7 @@ userRoute.post('/edit-user', verifyFirebaseToken, async (req, res) => {
           isLoggedIn: true
         });
       }
+
       user.name = name.trim();
     }
 
