@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 
 const userRoute = require('./routes/users.route.js')
+const sweetsRoute = require('./routes/sweets.route.js')
 
 dotenv.config()
 const port = process.env.PORT
@@ -18,6 +19,8 @@ app.use(cors({
 }))
 
 app.use('/api/users', userRoute)
+app.use('/api/product', sweetsRoute)
+
 
 app.listen(port, () =>{
     console.log(`Server : UP | ${port}`)

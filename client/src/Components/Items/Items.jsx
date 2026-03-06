@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Items.css'
 
 function Items() {
+    const [count, setCount] = useState(1)
+
     return (
         <>
             <section className="items-display-container-main row-sb">
@@ -15,9 +17,9 @@ function Items() {
                         <span>₹ 260</span>
                         <div className="item-list-container row-sb">
                             <div className="item-count-container row-sb">
-                                <button>-</button>
-                                <p>1</p>
-                                <button>+</button>
+                                <button onClick={() => setCount(c => Math.max(1, c - 1))}>-</button>
+                                <p>{count}</p>
+                                <button onClick={() => setCount(c => c + 1)}>+</button>
                             </div>
                             <div className="item-add-container">
                                 <button className='item-add-btn'>Add to Cart</button>

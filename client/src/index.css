@@ -578,7 +578,7 @@ select {
     }
 
     .main-section {
-        padding-top: 80px;
+        padding-top: 100px;
     }
 }
 
@@ -612,10 +612,6 @@ select {
     .para {
         font-size: 0.9rem;
     }
-
-    .main-section {
-        padding-top: 70px;
-    }
 }
 
 @media screen and (max-width: 480px) {
@@ -636,7 +632,7 @@ select {
     }
 
     .main-section {
-        padding-top: 60px;
+        padding-top: 100px;
     }
 }
 
