@@ -15,6 +15,7 @@ const authSlice = createSlice({
             state.data = action.payload
         },
         clearAuthData: () => {
+            localStorage.removeItem('authState')
             return initialState
         }
     }

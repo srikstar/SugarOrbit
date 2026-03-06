@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../FirebaseConfig'
-import { clearUserData, setUserData } from '../../Redux/user.redux'
+import { clearUserData } from '../../Redux/user.redux'
 import { clearAuthData } from '../../Redux/user.auth'
-import { getUser } from '../../API/user.api'
 
 import './Profile.css'
 
@@ -163,23 +162,6 @@ function Profile({ onClose, isOpen }) {
     dispatch(clearAuthData())
     onClose()
   }
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await getUser(authData?.phone)
-        if (response?.data) {
-          dispatch(setUserData(response.data))
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    if (authData?.phone) {
-      fetchUser()
-    }
-  }, [authData?.phone])
 
   return (
     <div

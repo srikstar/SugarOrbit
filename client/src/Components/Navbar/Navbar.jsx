@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import './Navbar.css'
 import Cart from '../Cart/Cart'
 import Profile from '../Profile/Profile'
 import Auth from '../Auth/Auth'
+import { useEffect } from 'react'
+import { getUser } from '../../API/user.api'
+import { setUserData } from '../../Redux/user.redux'
 
 function Navbar() {
 
@@ -13,6 +16,27 @@ function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false)
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
+
+  const dispatch = useDispatch()
+  const authData = useSelector((state) => state.auth.data)
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getUser(authData?.phone)
+        if (response?.data) {
+          dispatch(setUserData(response.data))
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (authData?.phone) {
+      fetchUser()
+    }
+  }, [authData?.phone])
 
   const openProfile = () => {
     setProfileOpen(true)
@@ -41,7 +65,7 @@ function Navbar() {
 
       {isLoggedIn
         ? <Profile onClose={closeProfile} isOpen={profileOpen} />
-        : <Auth    onClose={closeProfile} isOpen={profileOpen} onAuthSuccess={closeProfile} />
+        : <Auth onClose={closeProfile} isOpen={profileOpen} onAuthSuccess={closeProfile} />
       }
 
       <div className="navbar-main-container row">

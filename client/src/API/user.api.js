@@ -10,9 +10,6 @@ const user = axios.create({
 
 export const getUser = async (phoneno) => {
     try {
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-        const token = await currentUser.getIdToken();
         const response = await user.get(`/api/users/get-user/${phoneno}`);
         return response?.data;
     } catch (error) {
