@@ -2,6 +2,9 @@ import React, { useEffect, useState, useRef } from 'react'
 import './Sweets.css'
 import Footer from '../../Components/Footer/Footer'
 import Items from '../../Components/Items/Items'
+import { getSweets } from '../../API/sweets.api'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSweetData } from '../../Redux/sweets.redux'
 
 function Sweets() {
 
@@ -16,6 +19,8 @@ function Sweets() {
     isOpen: false,
     selected: []
   })
+
+  const dispatch = useDispatch()
 
   const productTypes = [
     { name: 'Ganesh Chaturithi' },
@@ -34,6 +39,19 @@ function Sweets() {
 
 
   useEffect(() => {
+
+    const handleSweetsData = async () => {
+      try {
+        const repsonse = await getSweets()
+        dispatch(setSweetData(repsonse?.data))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    handleSweetsData()
+
+
     const handleClickOutside = (event) => {
       if (filterMenuRef.current && !filterMenuRef.current.contains(event.target)) {
         setPriceFilter(prev => ({ ...prev, isOpen: false }))
@@ -43,6 +61,7 @@ function Sweets() {
 
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
+
   }, [])
 
   const handleNextPage = () => {
@@ -100,6 +119,19 @@ function Sweets() {
   }
 
   const hasActiveFilters = priceFilter.minPrice > 0 || priceFilter.maxPrice < 860 || productTypeFilter.selected.length > 0
+
+  const sweets = useSelector(state => state.sweets)
+  const filteredSweets = sweets?.filter((item) => {
+    const matchesType =
+      productTypeFilter.selected.length === 0 ||
+      productTypeFilter.selected.includes(item.productType)
+
+    const itemPrice = item.productPrice?.find(p => p.size === '250g')?.price ?? 0
+    const matchesPrice =
+      itemPrice >= priceFilter.minPrice && itemPrice <= priceFilter.maxPrice
+
+    return matchesType && matchesPrice
+  })
 
   return (
     <>
@@ -275,7 +307,7 @@ function Sweets() {
             </section>
 
             <section className="product-items-container">
-              <Items />
+              <Items data={filteredSweets} />
             </section>
           </div>
         </section>

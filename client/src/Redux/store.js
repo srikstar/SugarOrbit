@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './user.redux.js'
 import authReducer from './user.auth.js'
+import sweetReducer from './sweets.redux.js'
 
 const loadAuth = () => {
   try {
@@ -12,7 +13,8 @@ const loadAuth = () => {
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    user: userReducer
+    user: userReducer,
+    sweets: sweetReducer
   },
   preloadedState: {
     auth: loadAuth()
