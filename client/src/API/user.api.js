@@ -20,6 +20,7 @@ export const getUser = async (phoneno) => {
 
 
 export const editUser = async ({ name, email, phoneno }) => {
+    console.log(name, email, phoneno)
     try {
         const auth = getAuth();
         const currentUser = auth.currentUser;

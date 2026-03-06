@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       validate: {
         validator: function (value) {
-          return /^[0-9]{10}$/.test(value);
+          return /^\+91[0-9]{10}$/.test(value);
         },
         message: "Invalid phone number"
       }
