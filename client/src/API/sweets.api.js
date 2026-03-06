@@ -7,11 +7,25 @@ const sweet = axios.create({
 })
 
 
-export const getSweets = async ({low,high,type,page}) =>{
+export const getSweets = async ({ low = 0, high = 10000, type = [], page = 1 } = {}) => {
     try {
-        const response = await sweet.get(`/api/product/sweets?page=${page}&limit=10&productType=${type}&minPrice=${low}&maxPrice=${high}`)
+        const params = new URLSearchParams()
+
+        params.set('page', page)
+        params.set('limit', 10)
+        params.set('minPrice', low)
+        params.set('maxPrice', high)
+
+        if (Array.isArray(type)) {
+            type.forEach(t => params.append('productType', t))
+        } else if (type) {
+            params.set('productType', type)
+        }
+
+        const response = await sweet.get(`/api/product/sweets?${params.toString()}`)
         return response?.data
+
     } catch (error) {
-        return error?.message?.data
+        return error?.response?.data 
     }
 }
