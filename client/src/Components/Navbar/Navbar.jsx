@@ -75,8 +75,8 @@ function Navbar() {
 
           <div className="nav-containers nav-links row">
             <Link to='/sweets'><h3>Sweets</h3></Link>
-            <Link to='/namkeens'><h3>Namkeens</h3></Link>
-            <Link to='/chocolates'><h3>Chocolates</h3></Link>
+            {/* <Link to='/namkeens'><h3>Namkeens</h3></Link>
+          <Link to='/chocolates'><h3>Chocolates</h3></Link> */}
           </div>
 
           <div className="nav-containers nav-icons-container row">

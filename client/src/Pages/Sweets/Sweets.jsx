@@ -8,9 +8,18 @@ import Footer from '../../Components/Footer/Footer'
 import '../Sweets/Sweets.css'
 
 const CATEGORY_META = {
-  sweets: { label: 'Sweets', description: 'Crafted with authentic ghee blends...' },
-  namkeens: { label: 'Namkeens', description: 'Bold flavors, balanced seasoning...' },
-  chocolates: { label: 'Chocolates', description: 'Pure indulgence in every bite...' },
+  sweets: {
+    label: 'Sweets',
+    description: 'At Sugar Orbit, our sweets are crafted with authentic ghee and the finest ingredients, keeping alive the rich traditions of Indian mithai. Each piece is a celebration of flavor, texture, and heritage — made fresh with no preservatives. 🪔✨'
+  },
+  namkeens: {
+    label: 'Namkeens',
+    description: 'At Sugar Orbit, our namkeens are crafted with the perfect blend of tradition and taste, using high-quality ingredients and authentic spice mixes. Each crunchy bite delivers bold flavors, balanced seasoning, and a satisfying crispness that keeps you coming back for more. 🌶️✨'
+  },
+  chocolates: {
+    label: 'Chocolates',
+    description: 'At Sugar Orbit, our chocolates are pure indulgence — crafted with premium cocoa and infused with Indian-inspired flavors. Every bite is a smooth, rich experience that bridges classic confectionery with a homegrown twist. 🍫✨'
+  },
 }
 
 const PRODUCT_TYPES = [
@@ -21,12 +30,20 @@ const PRODUCT_TYPES = [
   'Sweets Laddus'
 ]
 
+
 function Sweets() {
   const { category } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
   const filterMenuRef = useRef(null)
   const [loading, setLoading] = useState(false)
+
+  const [pagination, setPagination] = useState({
+    totalPages: 1,
+    hasNext: false,
+    hasPrev: false,
+    total: 0
+  })
 
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1)
 
@@ -54,11 +71,17 @@ function Sweets() {
       })
       if (result?.data) {
         dispatch(setSweetData(result.data))
+        setPagination(result.pagination)
       }
       setLoading(false)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
     fetchData()
   }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page])
+
+  useEffect(() => {
+    setPage(1)
+  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected])
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -112,8 +135,8 @@ function Sweets() {
         <section className="category-main-container row">
           <div className="div-80">
             <section className="category-header-section">
-              <h1>{meta.label}</h1>
-              <div className="para"><p>{meta.description}</p></div>
+              <h1>Sweets</h1>
+              <div className="para"><p>At Sugar Orbit, our sweets are crafted with authentic ghee and the finest ingredients, keeping alive the rich traditions of Indian mithai. Each piece is a celebration of flavor, texture, and heritage — made fresh with no preservatives. 🪔✨'</p></div>
               <div className="badges-container-main row-sb">
                 <div className="badges-container column">
                   <img className='badge-icon' src="/package.svg" alt="package" />
@@ -230,6 +253,48 @@ function Sweets() {
             </section>
           </div>
         </section>
+
+        {/* Pagination */}
+        {pagination.totalPages > 1 && (
+          <section className="pagination-container">
+            <button
+              className="page-btn"
+              onClick={() => setPage(p => p - 1)}
+              disabled={!pagination.hasPrev}
+            >
+              ← Prev
+            </button>
+
+            <div className="page-numbers">
+              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                .filter(p => p === 1 || p === pagination.totalPages || Math.abs(p - page) <= 1)
+                .reduce((acc, p, idx, arr) => {
+                  if (idx > 0 && p - arr[idx - 1] > 1) acc.push('...')
+                  acc.push(p)
+                  return acc
+                }, [])
+                .map((p, idx) =>
+                  p === '...'
+                    ? <span key={`ellipsis-${idx}`} className="page-ellipsis">…</span>
+                    : <button
+                      key={p}
+                      className={`page-num-btn ${p === page ? 'active' : ''}`}
+                      onClick={() => setPage(p)}
+                    >
+                      {p}
+                    </button>
+                )}
+            </div>
+
+            <button
+              className="page-btn"
+              onClick={() => setPage(p => p + 1)}
+              disabled={!pagination.hasNext}
+            >
+              Next →
+            </button>
+          </section>
+        )}
       </div>
       <Footer />
     </>

@@ -58,7 +58,7 @@ const sweetSchema = new mongoose.Schema(
             required: [true, 'Product type is required'],
             trim: true,
             enum: {
-                values: ['Ganesh Chaturithi', 'Sweet Chikki', 'Sweet Dryfruits', 'Sweet Ghee Sweets', 'Sweet Laddus'],
+                values: ['Ganesh Chaturithi', 'Sweets Chikki', 'Sweets Dryfruits', 'Sweets Ghee Sweets', 'Sweets Laddus'],
                 message: '{VALUE} is not a valid product type'
             }
         },

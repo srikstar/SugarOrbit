@@ -6,7 +6,6 @@ const sweetsRoute = express.Router()
 // ADD
 sweetsRoute.post('/add/sweets', async (req, res) => {
     try {
-
         if (!Array.isArray(req.body)) {
             return res.status(400).json({
                 message: 'Request body must be an array'
