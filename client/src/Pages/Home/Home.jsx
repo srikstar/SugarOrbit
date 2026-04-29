@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom'
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
 
+import { homeSweets } from '../../API/home.api'
+
 const VISIBLE_CARDS = 3
 const DRAG_THRESHOLD = 50
+
 
 
 function ProductCarousel({

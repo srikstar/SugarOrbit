@@ -5,25 +5,25 @@ const chocolatesRoute = express.Router()
 
 // ADD
 chocolatesRoute.post('/add/chocolates', async (req, res) => {
-  try {
-    if (!Array.isArray(req.body)) {
-      return res.status(400).json({
-        message: 'Request body must be an array'
-      });
+    try {
+        if (!Array.isArray(req.body)) {
+            return res.status(400).json({
+                message: 'Request body must be an array'
+            });
+        }
+
+        const chocolates = await Chocolates.insertMany(req.body, { ordered: false });
+
+        return res.status(201).json({
+            message: 'Chocolates added successfully',
+            count: chocolates.length
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
     }
-    
-    const chocolates = await Chocolates.insertMany(req.body, { ordered: false });
-
-    return res.status(201).json({
-      message: 'Chocolates added successfully',
-      count: chocolates.length
-    });
-
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message
-    });
-  }
 });
 
 // GET

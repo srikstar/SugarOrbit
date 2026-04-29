@@ -5,9 +5,9 @@ Sugar Orbit
 ----------
 Image of the Home Page - Update * 2 - Amazon S3 , Cloudflare CDN  - Done
 Enable Namkeens, Chocolates   - Done
-DB : Namkeens , Chocolates  
-Sweets : Top 5 sells
-Namkeens : Top 5 sells
+DB : Namkeens , Chocolates    - Done
+Sweets : Top 5 sells          - Done 
+Namkeens : Top 5 sells        - Done
 Home page : UI design fixes
 
 
