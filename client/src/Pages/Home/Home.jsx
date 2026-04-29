@@ -2,13 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
-
 import { homeSweets } from '../../API/home.api'
+import { setHomeSweetData } from '../../Redux/home.js'
 
 const VISIBLE_CARDS = 3
 const DRAG_THRESHOLD = 50
-
-
 
 function ProductCarousel({
   items,
@@ -101,6 +99,22 @@ function Home() {
 
   const heroImage = 'https://sugar-orbit-assets.s3.ap-south-1.amazonaws.com/homepage.png'
   const shopImage = './shopimg.png'
+
+
+  useEffect(() => {
+    const handleSweets = async () => {
+      try {
+        const response = await homeSweets()
+        console.log(response?.data)
+        setHomeSweetData(response?.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    handleSweets()
+  },[])
+
 
   const categories = [
     {
@@ -412,7 +426,7 @@ function Home() {
       </div>{/* /carousels-gold-wrapper */}
 
 
-      
+
 
       <Footer />
     </div>
