@@ -96,8 +96,8 @@ function Home() {
   const bsDragRef = useRef({ active: false, startX: 0 })
   const nkDragRef = useRef({ active: false, startX: 0 })
 
-  const heroImage =
-    'https://sangamsweets.in/cdn/shop/files/Banner_New_Gift_Hamper_1.png?v=1766405392'
+  const heroImage = 'https://sugar-orbit-assets.s3.ap-south-1.amazonaws.com/homepage.png'
+  const shopImage = './shopimg.png'
 
   const categories = [
     {
@@ -366,7 +366,7 @@ function Home() {
 
         {/* Mid Hero */}
         <section className="hero-section">
-          <img src={heroImage} alt="Hero Banner" className="hero-image" draggable="false" />
+          <img src={shopImage} alt="Hero Banner" className="shop-image" draggable="false" />
           <div className="hero-overlay" />
         </section>
 

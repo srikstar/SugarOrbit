@@ -1,10 +1,10 @@
 const express = require('express')
-const Sweets = require('../models/sweets.db.js')
+const Namkeens = require('../models/namkeens.db.js')
 
-const sweetsRoute = express.Router()
+const namkeensRoute = express.Router()
 
 // ADD
-sweetsRoute.post('/add/sweets', async (req, res) => {
+namkeensRoute.post('/add/namkeens', async (req, res) => {
   try {
     if (!Array.isArray(req.body)) {
       return res.status(400).json({
@@ -12,11 +12,11 @@ sweetsRoute.post('/add/sweets', async (req, res) => {
       });
     }
     
-    const sweets = await Sweets.insertMany(req.body, { ordered: false });
+    const namkeens = await Namkeens.insertMany(req.body, { ordered: false });
 
     return res.status(201).json({
-      message: 'Sweets added successfully',
-      count: sweets.length
+      message: 'Namkeens added successfully',
+      count: namkeens.length
     });
 
   } catch (error) {
@@ -27,7 +27,7 @@ sweetsRoute.post('/add/sweets', async (req, res) => {
 });
 
 // GET
-sweetsRoute.get('/sweets', async (req, res) => {
+namkeensRoute.get('/namkeens', async (req, res) => {
     try {
         const {
             page = 1,
@@ -60,14 +60,14 @@ sweetsRoute.get('/sweets', async (req, res) => {
         const skip = (pageNum - 1) * limitNum
 
         // ── Query ─────────────────────────────────────────────
-        const [sweets, total] = await Promise.all([
-            Sweets.find(filter).skip(skip).limit(limitNum),
-            Sweets.countDocuments(filter)           // total for frontend pagination
+        const [namkeens, total] = await Promise.all([
+            Namkeens.find(filter).skip(skip).limit(limitNum),
+            Namkeens.countDocuments(filter)           // total for frontend pagination
         ])
 
         return res.status(200).json({
-            message: 'All sweets fetched',
-            data: sweets,
+            message: 'All Namkeens fetched',
+            data: namkeens,
             pagination: {
                 total,
                 page: pageNum,
@@ -94,4 +94,4 @@ sweetsRoute.get('/sweets', async (req, res) => {
 // UPDATE
 
 
-module.exports = sweetsRoute
+module.exports = namkeensRoute

@@ -5,6 +5,8 @@ const cors = require('cors')
 
 const userRoute = require('./routes/users.route.js')
 const sweetsRoute = require('./routes/sweets.route.js')
+const namkeensRoute = require('./routes/namkeens.route.js')
+const chocolatesRoute = require('./routes/chocolates.route.js')
 
 dotenv.config()
 const port = process.env.PORT
@@ -20,6 +22,8 @@ app.use(cors({
 
 app.use('/api/users', userRoute)
 app.use('/api/product', sweetsRoute)
+app.use('/api/product', namkeensRoute)
+app.use('/api/product', chocolatesRoute)
 
 
 app.listen(port, () =>{

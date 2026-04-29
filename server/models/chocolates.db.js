@@ -17,7 +17,7 @@ const priceSchema = new mongoose.Schema(
     { _id: false }
 )
 
-const sweetSchema = new mongoose.Schema(
+const chocolatesSchema = new mongoose.Schema(
     {
         productName: {
             type: String,
@@ -58,7 +58,13 @@ const sweetSchema = new mongoose.Schema(
             required: [true, 'Product type is required'],
             trim: true,
             enum: {
-                values: ['Ganesh Chaturithi', 'Sweets Chikki', 'Sweets Dryfruits', 'Sweets Ghee Sweets', 'Sweets Laddus'],
+                values: [
+                    'Chocolates Bars',
+                    'Chocolates Truffles',
+                    'Chocolates Gift Packs',
+                    'Chocolates Cookies',
+                    'Chocolates Bites'
+                ],
                 message: '{VALUE} is not a valid product type'
             }
         },
@@ -94,12 +100,12 @@ const sweetSchema = new mongoose.Schema(
     }
 )
 
-sweetSchema.set('toJSON', {
+chocolatesSchema.set('toJSON', {
     transform: (doc, ret) => {
         delete ret.__v
         return ret
     }
 })
 
-const Sweets = mongoose.model('Sweets', sweetSchema)
-module.exports = Sweets
+const Chocolates = mongoose.model('Chocolates', chocolatesSchema)
+module.exports = Chocolates

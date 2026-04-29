@@ -1,0 +1,43 @@
+Sugar Orbit
+------------
+
+~Home Page
+----------
+Image of the Home Page - Update * 2 - Amazon S3 , Cloudflare CDN  - Done
+Enable Namkeens, Chocolates   - Done
+DB : Namkeens , Chocolates  
+Sweets : Top 5 sells
+Namkeens : Top 5 sells
+Home page : UI design fixes
+
+
+~Sweets
+-------
+Filter : Propogation fixes
+Static Images * 10 - Amazon S3 , Cloudflare CDN
+Count Btn Fix
+Add to Cart - Details to store in Cloud / Redux
+
+
+~Namkeens
+---------
+Filter : Propogation fixes
+Static Images * 10 - Amazon S3 , Cloudflare CDN
+Count Btn Fix
+Add to Cart - Details to store in Cloud / Redux
+
+~Chocolates
+-----------
+Filter : Propogation fixes
+Static Images * 10 - Amazon S3 , Cloudflare CDN
+Count Btn Fix
+Add to Cart - Details to store in Cloud / Redux
+
+
+~Profile
+---------
+Login shou
+
+
+
+

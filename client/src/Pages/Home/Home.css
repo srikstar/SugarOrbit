@@ -138,6 +138,15 @@
   animation: heroZoom 14s ease-out forwards;
 }
 
+.shop-image {
+  width: 100%;
+  height: calc(30vh + 30vw);
+  object-fit: contain;
+  display: block;
+  transform: scale(1.04);
+  animation: heroZoom 14s ease-out forwards;
+}
+
 @keyframes heroZoom {
   from {
     transform: scale(1.08);
