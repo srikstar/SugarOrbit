@@ -8,7 +8,7 @@ Enable Namkeens, Chocolates   - Done
 DB : Namkeens , Chocolates    - Done
 Sweets : Top 5 sells          - Done 
 Namkeens : Top 5 sells        - Done
-Home page : UI design fixes   - 
+Home page : UI design fixes   - Done
 
 
 ~Sweets

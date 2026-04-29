@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
-import { homeSweets } from '../../API/home.api'
-import { setHomeSweetData } from '../../Redux/home.js'
+import { homeSweets, homeNamkeens } from '../../API/home.api'
+import { setHomeSweetData, setHomeNamkeenData} from '../../Redux/home.js'
 
 const VISIBLE_CARDS = 3
 const DRAG_THRESHOLD = 50
@@ -31,35 +32,38 @@ function ProductCarousel({
           style={{ transform: `translateX(${translateX}%)` }}
         >
           {items.map((item) => {
-            const selectedSize = activeSize[item.id] || item.sizes[0]
+            const sizes = item.productPrice.map((p) => p.size)
+            const selectedSize = activeSize[item._id] || sizes[0]
+            const selectedPrice = item.productPrice.find((p) => p.size === selectedSize)?.price
+
             return (
-              <div key={item.id} className="carousel-slide">
+              <div key={item._id} className="carousel-slide">
                 <div className="product-card">
                   <div className="product-image-wrapper">
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={item.productImages[0]}
+                      alt={item.productName}
                       className="product-image"
                       draggable="false"
                     />
-                    <div className="product-badge">{item.rating} ★</div>
+                    <div className="product-badge">{item.totalOrders} orders</div>
                   </div>
                   <div className="product-info">
-                    <h3 className="item-name">{item.name}</h3>
-                    <p className="product-description">{item.description}</p>
+                    <h3 className="item-name">{item.productName}</h3>
+                    <p className="product-description">{item.productDescription}</p>
                     <div className="size-selector">
-                      {item.sizes.map(size => (
+                      {sizes.map((size) => (
                         <button
                           key={size}
                           className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                          onClick={() => onSizeSelect(item.id, size)}
+                          onClick={() => onSizeSelect(item._id, size)}
                         >
                           {size}
                         </button>
                       ))}
                     </div>
                     <div className="product-footer">
-                      <span className="item-price">{item.prices[selectedSize]}</span>
+                      <span className="item-price">₹{selectedPrice}</span>
                       <button className="add-to-cart-btn">Add to Cart</button>
                     </div>
                   </div>
@@ -100,20 +104,30 @@ function Home() {
   const heroImage = 'https://sugar-orbit-assets.s3.ap-south-1.amazonaws.com/homepage.png'
   const shopImage = './shopimg.png'
 
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const handleSweets = async () => {
       try {
         const response = await homeSweets()
-        console.log(response?.data)
-        setHomeSweetData(response?.data)
+        dispatch(setHomeSweetData(response?.data))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const handleNamkeens = async () => {
+      try {
+        const response = await homeNamkeens()
+        dispatch(setHomeNamkeenData(response?.data))
       } catch (error) {
         console.log(error)
       }
     }
 
     handleSweets()
-  },[])
+    handleNamkeens()
+  }, [])
 
 
   const categories = [
@@ -140,55 +154,8 @@ function Home() {
     },
   ]
 
-  const sweetItems = [
-    {
-      id: 1,
-      name: 'Soan Papdi',
-      description: 'Delicate, flaky texture with traditional taste',
-      sizes: ['250g', '500g', '1kg'],
-      prices: { '250g': '₹299', '500g': '₹549', '1kg': '₹999' },
-      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
-      rating: 4.8,
-    },
-    {
-      id: 2,
-      name: 'Gulab Jamun',
-      description: 'Soft, spongy balls in sweet syrup',
-      sizes: ['250g', '500g', '1kg'],
-      prices: { '250g': '₹349', '500g': '₹649', '1kg': '₹1,199' },
-      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
-      rating: 4.9,
-    },
-    {
-      id: 3,
-      name: 'Kaju Katli',
-      description: 'Silky cashew fudge with cardamom essence',
-      sizes: ['250g', '500g', '1kg'],
-      prices: { '250g': '₹399', '500g': '₹749', '1kg': '₹1,399' },
-      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
-      rating: 5.0,
-    },
-    {
-      id: 4,
-      name: 'Rasgulla',
-      description: 'Fluffy, spongy dumplings in light syrup',
-      sizes: ['250g', '500g', '1kg'],
-      prices: { '250g': '₹279', '500g': '₹529', '1kg': '₹979' },
-      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
-      rating: 4.7,
-    },
-    {
-      id: 5,
-      name: 'Barfi Assorted',
-      description: 'Mix of milk, coconut & chocolate barfi',
-      sizes: ['250g', '500g', '1kg'],
-      prices: { '250g': '₹449', '500g': '₹849', '1kg': '₹1,549' },
-      image: 'https://bombaysweets.in/cdn/shop/files/Milk_Soanpapdi_1000x1000_1346e3df-f1d0-4f02-a2b5-7bca2c0fbc4b.jpg?v=1698835796',
-      rating: 4.9,
-    },
-  ]
-
-  const namkeenItems = sweetItems.map(item => ({ ...item, id: item.id + 100 }))
+  const sweetItems = useSelector(state => state.home.sweets)
+  const namkeenItems = useSelector(state => state.home.namkeens)
 
   /* ── Helpers ─────────────────────────────────────────────────────────────── */
 

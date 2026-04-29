@@ -1,15 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const homeSweetsReducer = createSlice({
-    name: "homeSweets",
-    initialState: [],   
+const homeReducer = createSlice({
+    name: "homeData",
+    initialState: {
+        sweets: [],
+        namkeens: []
+    },
 
     reducers: {
         setHomeSweetData: (state, action) => {
-            return action.payload || []
+            state.sweets = action.payload
+        },
+        setHomeNamkeenData: (state, action) => {
+            state.namkeens = action.payload
         }
     }
 })
 
-export const { setHomeSweetData } = homeSweetsReducer.actions
-export default homeSweetsReducer.reducer
+export const { setHomeSweetData, setHomeNamkeenData } = homeReducer.actions
+export default homeReducer.reducer

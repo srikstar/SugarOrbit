@@ -16,3 +16,13 @@ export const homeSweets = async () => {
         return error?.response?.data 
     }
 }
+
+export const homeNamkeens = async () => {
+    try {
+        const response = await home.get(`/api/home/namkeens`)
+        return response?.data
+
+    } catch (error) {
+        return error?.response?.data 
+    }
+}
