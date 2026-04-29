@@ -3,6 +3,8 @@ import userReducer from './user.redux.js'
 import authReducer from './user.auth.js'
 import sweetReducer from './sweets.redux.js'
 import homeReducer from './home.js'
+import namkeensReducer from './namkeens.redux.js'
+import chocolateReducer from './chocolates.redux.js'
 
 const loadAuth = () => {
   try {
@@ -16,7 +18,9 @@ const store = configureStore({
     auth: authReducer,
     user: userReducer,
     sweets: sweetReducer,
-    home : homeReducer
+    home : homeReducer,
+    namkeens : namkeensReducer,
+    chocolate : chocolateReducer
   },
   preloadedState: {
     auth: loadAuth()
