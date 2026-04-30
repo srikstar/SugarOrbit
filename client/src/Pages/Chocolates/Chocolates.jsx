@@ -110,7 +110,7 @@ function Chocolates() {
     productTypeFilter.selected.length > 0
 
   const chocolates = useSelector(state => state.chocolates)
-    console.log(chocolates)
+  
 
   return (
     <>
