@@ -26,6 +26,7 @@ app.use('/api/product', sweetsRoute)
 app.use('/api/product', namkeensRoute)
 app.use('/api/product', chocolatesRoute)
 app.use('/api/home', homeRoute)
+app.use('/product', homeRoute)
 
 
 app.listen(port, () =>{

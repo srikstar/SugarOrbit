@@ -40,4 +40,32 @@ homeRoute.get('/namkeens', async (req, res) => {
     }
 })
 
+
+// GET PARTICULAR SWEET
+homeRoute.get('/:type/:name', async (req, res) => {
+    try {
+        const { type, name } = req.params
+
+        let Model
+
+        if (type === 'sweets') Model = Sweets
+        else if (type === 'namkeens') Model = Namkeens
+        else if (type === 'chocolates') Model = Chocolates
+        else {
+            return res.status(400).json({ message: 'Invalid type' })
+        }
+
+        const product = await Model.findOne({ name })
+
+        if (!product) {
+            return res.status(404).json({ message: 'Not found' })
+        }
+
+        res.json(product)
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
 module.exports = homeRoute

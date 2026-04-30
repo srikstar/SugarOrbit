@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
 
+// PRICE
 const priceSchema = new mongoose.Schema(
     {
         size: {
@@ -17,6 +17,44 @@ const priceSchema = new mongoose.Schema(
     { _id: false }
 )
 
+// REVIEWS
+const reviewSchema = new mongoose.Schema(
+    {
+        stars: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 5
+        },
+        text: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: [500, 'Review text must be under 500 characters']
+        },
+        author: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: [100, 'Author name must be under 100 characters']
+        },
+        date: {
+            type: String,
+            required: true,
+            trim: true
+        }
+    },
+    { _id: false }
+)
+
+
+function deriveBadge(totalOrders) {
+    if (totalOrders >= 200) return 'Bestseller'
+    if (totalOrders > 50) return 'Premium'
+    return 'Freshly Made'
+}
+
+// SCHEMA
 const sweetSchema = new mongoose.Schema(
     {
         productName: {
@@ -29,17 +67,17 @@ const sweetSchema = new mongoose.Schema(
         },
         productIngredients: {
             type: String,
-            required: [true, 'Product Ingredients is required'],
+            required: [true, 'Product ingredients are required'],
             trim: true,
-            minlength: [2, 'Product Ingredients must be at least 2 characters'],
-            maxlength: [100, 'Product Ingredients must be under 100 characters']
+            minlength: [2, 'Product ingredients must be at least 2 characters'],
+            maxlength: [100, 'Product ingredients must be under 100 characters']
         },
         productDescription: {
             type: String,
-            required: [true, 'Product Description is required'],
+            required: [true, 'Product description is required'],
             trim: true,
-            minlength: [2, 'Product Description must be at least 2 characters'],
-            maxlength: [40, 'Product Description must be under 100 characters']
+            minlength: [2, 'Product description must be at least 2 characters'],
+            maxlength: [300, 'Product description must be under 300 characters']
         },
         productPrice: {
             type: [priceSchema],
@@ -49,35 +87,81 @@ const sweetSchema = new mongoose.Schema(
                     const sizes = arr.map(p => p.size)
                     return ['250g', '500g', '1KG'].every(s => sizes.includes(s))
                 },
-                message: 'Prices for all sizes (250g, 500g, 1KG) are required'
+                message: 'Prices for all three sizes (250g, 500g, 1KG) are required'
             }
         },
-
         productType: {
             type: String,
             required: [true, 'Product type is required'],
             trim: true,
-            enum: {
-                values: ['Ganesh Chaturithi', 'Sweets Chikki', 'Sweets Dryfruits', 'Sweets Ghee Sweets', 'Sweets Laddus'],
-                message: '{VALUE} is not a valid product type'
-            }
+            minlength: [2, 'Product type must be at least 2 characters'],
+            maxlength: [100, 'Product type must be under 100 characters']
         },
 
+        
         productDetails: {
             type: String,
             required: [true, 'Product details are required'],
             trim: true,
             maxlength: [1000, 'Product details must be under 1000 characters']
         },
+        shippingInfo: {
+            type: String,
+            required: [true, 'Shipping & returns info is required'],
+            trim: true,
+            maxlength: [1000, 'Shipping info must be under 1000 characters']
+        },
+        faqContent: {
+            type: String,
+            required: [true, 'FAQ content is required'],
+            trim: true,
+            maxlength: [2000, 'FAQ content must be under 2000 characters']
+        },
 
+        
         productImages: {
             type: [String],
             required: [true, 'At least one image is required'],
             validate: {
-                validator: (arr) => arr.length > 0 && arr.length <= 5,
+                validator: (arr) => arr.length >= 1 && arr.length <= 5,
                 message: 'Product must have between 1 and 5 images'
             }
         },
+
+        productBadge: {
+            type: String,
+            enum: ['Bestseller', 'Premium', 'Freshly Made'],
+            default: 'Freshly Made'
+        },
+
+        
+        shelfLifeDays: {
+            type: Number,
+            required: [true, 'Shelf life is required'],
+            min: [1, 'Shelf life must be at least 1 day'],
+            default: 60
+        },
+
+        
+        reviews: {
+            type: [reviewSchema],
+            default: []
+        },
+
+        
+        averageRating: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 5
+        },
+        totalReviews: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
+
+        
         totalOrders: {
             type: Number,
             default: 0,
@@ -86,16 +170,43 @@ const sweetSchema = new mongoose.Schema(
         isAvailable: {
             type: Boolean,
             default: true
-        },
-
+        }
     },
-    {
-        timestamps: true
-    }
+    { timestamps: true }
 )
 
+sweetSchema.pre('save', function (next) {
+    // 1. Badge from order count
+    this.productBadge = deriveBadge(this.totalOrders)
+
+    // 2. Rating summary from embedded reviews
+    if (this.reviews && this.reviews.length > 0) {
+        this.totalReviews = this.reviews.length
+        const sum = this.reviews.reduce((acc, r) => acc + r.stars, 0)
+        this.averageRating = Math.round((sum / this.totalReviews) * 10) / 10
+    } else {
+        this.totalReviews = 0
+        this.averageRating = 0
+    }
+
+    next()
+})
+
+sweetSchema.pre('findOneAndUpdate', function (next) {
+    const update = this.getUpdate()
+    const incoming = update?.$set?.totalOrders ?? update?.totalOrders
+
+    if (incoming !== undefined) {
+        // Merge the derived badge into whatever $set already exists
+        update.$set = update.$set || {}
+        update.$set.productBadge = deriveBadge(incoming)
+    }
+
+    next()
+})
+
 sweetSchema.set('toJSON', {
-    transform: (doc, ret) => {
+    transform: (_doc, ret) => {
         delete ret.__v
         return ret
     }
