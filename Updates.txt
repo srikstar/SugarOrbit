@@ -13,8 +13,8 @@ Home page : UI design fixes   - Done
 
 ~Sweets
 -------
-Filter : Propogation fixes
-Static Images * 10 - Amazon S3 , Cloudflare CDN
+Filter : Propogation fixes                            - Done
+Static Images * 10 - Amazon S3 , Cloudflare CDN                            - Done
 Count Btn Fix
 Add to Cart - Details to store in Cloud / Redux
 
