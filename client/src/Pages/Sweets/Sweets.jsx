@@ -22,14 +22,6 @@ const CATEGORY_META = {
   },
 }
 
-const PRODUCT_TYPES = [
-  'Ganesh Chaturithi',
-  'Sweets Chikki',
-  'Sweets Dryfruits',
-  'Sweets Ghee',
-  'Sweets Laddus'
-]
-
 
 function Sweets() {
   const { category } = useParams()
@@ -37,6 +29,8 @@ function Sweets() {
   const dispatch = useDispatch()
   const filterMenuRef = useRef(null)
   const [loading, setLoading] = useState(false)
+  const [productType, setProductType] = useState([])
+  const [maxPrice, setMaxPrice] = useState(null)
 
   const [pagination, setPagination] = useState({
     totalPages: 1,
@@ -50,7 +44,7 @@ function Sweets() {
   const [priceFilter, setPriceFilter] = useState({
     isOpen: false,
     minPrice: Number(searchParams.get('minPrice')) || 0,
-    maxPrice: Number(searchParams.get('maxPrice')) || 860
+    maxPrice: Number(searchParams.get('maxPrice')) || 0 // 0 = use server maxPrice
   })
 
   const [productTypeFilter, setProductTypeFilter] = useState({
@@ -60,7 +54,27 @@ function Sweets() {
 
   const meta = CATEGORY_META[category] || { label: category, description: '' }
 
+  
   useEffect(() => {
+    const fetchMeta = async () => {
+      const result = await getSweets({ page: 1 })
+      if (result) {
+        const fetchedMax = result.maxPrice || 860
+        setMaxPrice(fetchedMax)
+        setProductType(result.productType || [])
+        setPriceFilter(p => ({
+          ...p,
+          maxPrice: p.maxPrice || fetchedMax
+        }))
+      }
+    }
+    fetchMeta()
+  }, [category]) // re-run when category changes
+
+  // Step 2: fetch products — only runs after maxPrice is resolved
+  useEffect(() => {
+    if (maxPrice === null) return // wait until meta is loaded
+
     const fetchData = async () => {
       setLoading(true)
       const result = await getSweets({
@@ -77,20 +91,22 @@ function Sweets() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
     fetchData()
-  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page])
+  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page, maxPrice])
+  // maxPrice only changes once (on mount), so it's safe here
 
   useEffect(() => {
     setPage(1)
   }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected])
 
   useEffect(() => {
+    if (maxPrice === null) return
     const params = new URLSearchParams()
     if (priceFilter.minPrice > 0) params.set('minPrice', priceFilter.minPrice)
-    if (priceFilter.maxPrice < 860) params.set('maxPrice', priceFilter.maxPrice)
+    if (priceFilter.maxPrice < maxPrice) params.set('maxPrice', priceFilter.maxPrice)
     if (page > 1) params.set('page', page)
     productTypeFilter.selected.forEach(t => params.append('type', t))
     setSearchParams(params, { replace: true })
-  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page])
+  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page, maxPrice])
 
   useEffect(() => {
     document.title = page > 1
@@ -119,12 +135,14 @@ function Sweets() {
     setPriceFilter(p => ({ ...p, isOpen: false }))
   }
 
-  const resetPriceFilter = () => setPriceFilter(p => ({ ...p, minPrice: 0, maxPrice: 860 }))
-  const resetTypeFilter = () => setProductTypeFilter(p => ({ ...p, selected: [] }))
+  const resetPriceFilter = () =>
+    setPriceFilter(p => ({ ...p, minPrice: 0, maxPrice }))
+  const resetTypeFilter = () =>
+    setProductTypeFilter(p => ({ ...p, selected: [] }))
 
   const hasActiveFilters =
     priceFilter.minPrice > 0 ||
-    priceFilter.maxPrice < 860 ||
+    (maxPrice !== null && priceFilter.maxPrice < maxPrice) ||
     productTypeFilter.selected.length > 0
 
   const sweets = useSelector(state => state.sweets)
@@ -135,8 +153,8 @@ function Sweets() {
         <section className="category-main-container row">
           <div className="div-80">
             <section className="category-header-section">
-              <h1>Sweets</h1>
-              <div className="para"><p>At Sugar Orbit, our sweets are crafted with authentic ghee and the finest ingredients, keeping alive the rich traditions of Indian mithai. Each piece is a celebration of flavor, texture, and heritage — made fresh with no preservatives. 🪔✨'</p></div>
+              <h1>{meta.label}</h1>
+              <div className="para"><p>{meta.description}</p></div>
               <div className="badges-container-main row-sb">
                 <div className="badges-container column">
                   <img className='badge-icon' src="/package.svg" alt="package" />
@@ -169,7 +187,7 @@ function Sweets() {
                   {priceFilter.isOpen && (
                     <div className="filter-dropdown-menu">
                       <div className="price-filter-content">
-                        <p className="max-price-text">The highest price is ₹860</p>
+                        <p className="max-price-text">The highest price is ₹{maxPrice ?? '...'}</p>
                         <div className="price-inputs-container">
                           <div className="price-input-group">
                             <span>From</span>
@@ -200,7 +218,7 @@ function Sweets() {
                           <p>{productTypeFilter.selected.length} selected</p>
                         </div>
                         <div className="product-list">
-                          {PRODUCT_TYPES.map(name => (
+                          {productType.map(name => (
                             <label key={name} className="product-checkbox-item">
                               <input type="checkbox"
                                 checked={productTypeFilter.selected.includes(name)}
@@ -234,7 +252,7 @@ function Sweets() {
                       </button>
                     </div>
                   ))}
-                  {(priceFilter.minPrice > 0 || priceFilter.maxPrice < 860) && (
+                  {(priceFilter.minPrice > 0 || (maxPrice !== null && priceFilter.maxPrice < maxPrice)) && (
                     <div className="filter-tag">
                       <span className="tag-label">Price:</span>
                       <span className="tag-value">₹{priceFilter.minPrice} – ₹{priceFilter.maxPrice}</span>
@@ -254,7 +272,6 @@ function Sweets() {
           </div>
         </section>
 
-        {/* Pagination */}
         {pagination.totalPages > 1 && (
           <section className="pagination-container">
             <button
