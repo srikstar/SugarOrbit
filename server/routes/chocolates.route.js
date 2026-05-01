@@ -36,6 +36,7 @@ chocolatesRoute.get('/chocolates', async (req, res) => {
             minPrice = 0,
             maxPrice = 10000
         } = req.query
+
         const filter = {}
 
         if (productType && productType.length > 0) {
@@ -46,7 +47,6 @@ chocolatesRoute.get('/chocolates', async (req, res) => {
             filter.productType = { $in: types }
         }
 
-
         if (minPrice || maxPrice) {
             filter['productPrice.price'] = {
                 $gte: Number(minPrice),
@@ -54,20 +54,27 @@ chocolatesRoute.get('/chocolates', async (req, res) => {
             }
         }
 
-        // ── Pagination ────────────────────────────────────────
         const pageNum = Math.max(1, Number(page))
         const limitNum = Math.max(1, Number(limit))
         const skip = (pageNum - 1) * limitNum
 
-        // ── Query ─────────────────────────────────────────────
-        const [chocolates, total] = await Promise.all([
+        const [chocolates, total, productTypes, maxPriceResult] = await Promise.all([
             Chocolates.find(filter).skip(skip).limit(limitNum),
-            Chocolates.countDocuments(filter)           // total for frontend pagination
+            Chocolates.countDocuments(filter),
+            Chocolates.distinct('productType'),
+            Chocolates.aggregate([
+                { $unwind: '$productPrice' },
+                { $group: { _id: null, maxPrice: { $max: '$productPrice.price' } } }
+            ])
         ])
+
+        const resolvedMaxPrice = maxPriceResult[0]?.maxPrice ?? 10000
 
         return res.status(200).json({
             message: 'All Chocolates fetched',
             data: chocolates,
+            productType: productTypes,
+            maxPrice: resolvedMaxPrice,
             pagination: {
                 total,
                 page: pageNum,

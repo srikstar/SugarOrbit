@@ -36,6 +36,7 @@ namkeensRoute.get('/namkeens', async (req, res) => {
             minPrice = 0,
             maxPrice = 10000
         } = req.query
+
         const filter = {}
 
         if (productType && productType.length > 0) {
@@ -46,7 +47,6 @@ namkeensRoute.get('/namkeens', async (req, res) => {
             filter.productType = { $in: types }
         }
 
-
         if (minPrice || maxPrice) {
             filter['productPrice.price'] = {
                 $gte: Number(minPrice),
@@ -54,20 +54,27 @@ namkeensRoute.get('/namkeens', async (req, res) => {
             }
         }
 
-        // ── Pagination ────────────────────────────────────────
         const pageNum = Math.max(1, Number(page))
         const limitNum = Math.max(1, Number(limit))
         const skip = (pageNum - 1) * limitNum
 
-        // ── Query ─────────────────────────────────────────────
-        const [namkeens, total] = await Promise.all([
+        const [namkeens, total, productTypes, maxPriceResult] = await Promise.all([
             Namkeens.find(filter).skip(skip).limit(limitNum),
-            Namkeens.countDocuments(filter)           // total for frontend pagination
+            Namkeens.countDocuments(filter),
+            Namkeens.distinct('productType'),
+            Namkeens.aggregate([
+                { $unwind: '$productPrice' },
+                { $group: { _id: null, maxPrice: { $max: '$productPrice.price' } } }
+            ])
         ])
+
+        const resolvedMaxPrice = maxPriceResult[0]?.maxPrice ?? 10000
 
         return res.status(200).json({
             message: 'All Namkeens fetched',
             data: namkeens,
+            productType: productTypes,
+            maxPrice: resolvedMaxPrice,
             pagination: {
                 total,
                 page: pageNum,
