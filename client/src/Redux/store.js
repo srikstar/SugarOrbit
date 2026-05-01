@@ -20,7 +20,7 @@ const store = configureStore({
     sweets: sweetReducer,
     home : homeReducer,
     namkeens : namkeensReducer,
-    chocolate : chocolateReducer
+    chocolates : chocolateReducer
   },
   preloadedState: {
     auth: loadAuth()
