@@ -7,19 +7,13 @@ import Items from '../../Components/Items/Items'
 import Footer from '../../Components/Footer/Footer'
 import './Namkeen.css'
 
-const PRODUCT_TYPES = [
-  'Ganesh Chaturithi',
-  'Sweets Chikki',
-  'Sweets Dryfruits',
-  'Sweets Ghee',
-  'Sweets Laddus'
-]
-
 function Namkeen() {
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
   const filterMenuRef = useRef(null)
   const [loading, setLoading] = useState(false)
+  const [productType, setProductType] = useState([])
+  const [maxPrice, setMaxPrice] = useState(null)
 
   const [pagination, setPagination] = useState({
     totalPages: 1,
@@ -33,7 +27,7 @@ function Namkeen() {
   const [priceFilter, setPriceFilter] = useState({
     isOpen: false,
     minPrice: Number(searchParams.get('minPrice')) || 0,
-    maxPrice: Number(searchParams.get('maxPrice')) || 860
+    maxPrice: Number(searchParams.get('maxPrice')) || 0
   })
 
   const [productTypeFilter, setProductTypeFilter] = useState({
@@ -41,7 +35,27 @@ function Namkeen() {
     selected: searchParams.getAll('type') || []
   })
 
+  // Step 1: fetch meta (maxPrice + productTypes) once on mount
   useEffect(() => {
+    const fetchMeta = async () => {
+      const result = await getNamkeens({ page: 1 })
+      if (result) {
+        const fetchedMax = result.maxPrice || 860
+        setMaxPrice(fetchedMax)
+        setProductType(result.productType || [])
+        setPriceFilter(p => ({
+          ...p,
+          maxPrice: p.maxPrice || fetchedMax
+        }))
+      }
+    }
+    fetchMeta()
+  }, [])
+
+  // Step 2: fetch products — only runs after maxPrice is resolved
+  useEffect(() => {
+    if (maxPrice === null) return
+
     const fetchData = async () => {
       setLoading(true)
       const result = await getNamkeens({
@@ -58,20 +72,21 @@ function Namkeen() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
     fetchData()
-  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page])
+  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page, maxPrice])
 
   useEffect(() => {
     setPage(1)
   }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected])
 
   useEffect(() => {
+    if (maxPrice === null) return
     const params = new URLSearchParams()
     if (priceFilter.minPrice > 0) params.set('minPrice', priceFilter.minPrice)
-    if (priceFilter.maxPrice < 860) params.set('maxPrice', priceFilter.maxPrice)
+    if (priceFilter.maxPrice < maxPrice) params.set('maxPrice', priceFilter.maxPrice)
     if (page > 1) params.set('page', page)
     productTypeFilter.selected.forEach(t => params.append('type', t))
     setSearchParams(params, { replace: true })
-  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page])
+  }, [priceFilter.minPrice, priceFilter.maxPrice, productTypeFilter.selected, page, maxPrice])
 
   useEffect(() => {
     document.title = page > 1
@@ -100,16 +115,17 @@ function Namkeen() {
     setPriceFilter(p => ({ ...p, isOpen: false }))
   }
 
-  const resetPriceFilter = () => setPriceFilter(p => ({ ...p, minPrice: 0, maxPrice: 860 }))
-  const resetTypeFilter = () => setProductTypeFilter(p => ({ ...p, selected: [] }))
+  const resetPriceFilter = () =>
+    setPriceFilter(p => ({ ...p, minPrice: 0, maxPrice }))
+  const resetTypeFilter = () =>
+    setProductTypeFilter(p => ({ ...p, selected: [] }))
 
   const hasActiveFilters =
     priceFilter.minPrice > 0 ||
-    priceFilter.maxPrice < 860 ||
+    (maxPrice !== null && priceFilter.maxPrice < maxPrice) ||
     productTypeFilter.selected.length > 0
 
   const namkeens = useSelector(state => state.namkeens)
-  console.log(namkeens)
 
   return (
     <>
@@ -153,7 +169,7 @@ function Namkeen() {
                   {priceFilter.isOpen && (
                     <div className="filter-dropdown-menu">
                       <div className="price-filter-content">
-                        <p className="max-price-text">The highest price is ₹860</p>
+                        <p className="max-price-text">The highest price is ₹{maxPrice ?? '...'}</p>
                         <div className="price-inputs-container">
                           <div className="price-input-group">
                             <span>From</span>
@@ -184,7 +200,7 @@ function Namkeen() {
                           <p>{productTypeFilter.selected.length} selected</p>
                         </div>
                         <div className="product-list">
-                          {PRODUCT_TYPES.map(name => (
+                          {productType.map(name => (
                             <label key={name} className="product-checkbox-item">
                               <input type="checkbox"
                                 checked={productTypeFilter.selected.includes(name)}
@@ -218,7 +234,7 @@ function Namkeen() {
                       </button>
                     </div>
                   ))}
-                  {(priceFilter.minPrice > 0 || priceFilter.maxPrice < 860) && (
+                  {(priceFilter.minPrice > 0 || (maxPrice !== null && priceFilter.maxPrice < maxPrice)) && (
                     <div className="filter-tag">
                       <span className="tag-label">Price:</span>
                       <span className="tag-value">₹{priceFilter.minPrice} – ₹{priceFilter.maxPrice}</span>

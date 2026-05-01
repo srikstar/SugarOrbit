@@ -44,7 +44,7 @@ function Sweets() {
   const [priceFilter, setPriceFilter] = useState({
     isOpen: false,
     minPrice: Number(searchParams.get('minPrice')) || 0,
-    maxPrice: Number(searchParams.get('maxPrice')) || 0 // 0 = use server maxPrice
+    maxPrice: Number(searchParams.get('maxPrice')) || 0 
   })
 
   const [productTypeFilter, setProductTypeFilter] = useState({
