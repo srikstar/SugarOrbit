@@ -36,20 +36,20 @@ userRoute.get('/get-user/:phoneno', async (req, res) => {
 // Profile EDIT
 userRoute.post('/edit-user/:phoneno', verifyFirebaseToken, async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, address } = req.body;
     const phone = req.params.phoneno;
-
+ 
     if (!phone || !/^\+91[0-9]{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Invalid phone number', isLoggedIn: false });
     }
-
+ 
     const user = await Users.findOne({ phoneno: phone }).select('-orders');
     if (!user) {
       return res.status(404).json({ message: 'User not found', isLoggedIn: false });
     }
-
+ 
     const updates = {};
-
+ 
     if (email) {
       const newEmail = email.toLowerCase().trim();
       if (newEmail !== user.email) {
@@ -63,18 +63,26 @@ userRoute.post('/edit-user/:phoneno', verifyFirebaseToken, async (req, res) => {
         updates.email = newEmail;
       }
     }
-
+ 
     if (name) {
       if (typeof name !== 'string' || name.length < 2 || name.length > 50) {
         return res.status(400).json({ message: 'Invalid name', isLoggedIn: true });
       }
       updates.name = name.trim();
     }
-
+ 
+    if (address !== undefined) {
+      const trimmed = address.trim();
+      if (trimmed.length > 200) {
+        return res.status(400).json({ message: 'Address too long (max 200 characters)', isLoggedIn: true });
+      }
+      updates.address = trimmed || 'Address not added';
+    }
+ 
     await Users.updateOne({ phoneno: phone }, { $set: updates });
-
+ 
     return res.status(200).json({ message: 'User updated successfully', isLoggedIn: true, isSuccess: true });
-
+ 
   } catch (error) {
     console.error('edit-user error:', error.message, error);
     return res.status(500).json({ message: 'Internal server error', isSuccess: false });
@@ -82,6 +90,49 @@ userRoute.post('/edit-user/:phoneno', verifyFirebaseToken, async (req, res) => {
 });
 
 // Profile ADD
+userRoute.post('/register', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { name, email, phoneno } = req.body;
+ 
+    if (!phoneno || !/^\+91[0-9]{10}$/.test(phoneno)) {
+      return res.status(400).json({ message: 'Invalid phone number', isSuccess: false });
+    }
+ 
+    if (!name || typeof name !== 'string' || name.length < 2 || name.length > 50) {
+      return res.status(400).json({ message: 'Invalid name', isSuccess: false });
+    }
+ 
+    const cleanEmail = email?.toLowerCase().trim();
+    if (!cleanEmail || !validator.isEmail(cleanEmail)) {
+      return res.status(400).json({ message: 'Invalid email format', isSuccess: false });
+    }
+ 
+    // Prevent duplicate registrations
+    const existingPhone = await Users.findOne({ phoneno });
+    if (existingPhone) {
+      return res.status(409).json({ message: 'Account already exists. Please log in.', isSuccess: false });
+    }
+ 
+    const existingEmail = await Users.findOne({ email: cleanEmail });
+    if (existingEmail) {
+      return res.status(409).json({ message: 'Email already in use', isSuccess: false });
+    }
+ 
+    const newUser = new Users({
+      name:    name.trim(),
+      email:   cleanEmail,
+      phoneno: phoneno
+    });
+ 
+    await newUser.save();
+ 
+    return res.status(201).json({ message: 'Account created successfully', isSuccess: true });
+ 
+  } catch (error) {
+    console.error('register error:', error.message, error);
+    return res.status(500).json({ message: 'Internal server error', isSuccess: false });
+  }
+});
 
 
 

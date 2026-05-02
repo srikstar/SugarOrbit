@@ -5,6 +5,8 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 import './Auth.css'
 import { auth } from '../../FirebaseConfig'
 import { setAuthData } from '../../Redux/user.auth'
+import { setUserData } from '../../Redux/user.redux'
+import { getUser, registerUser } from '../../API/user.api'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -20,15 +22,8 @@ const requestOtp = async (phone) => {
   confirmationResult = await signInWithPhoneNumber(auth, `+91${phone}`, verifier)
 }
 
-const verifyLogin = async (phone, otp) => {
+const verifyOtp = async (otp) => {
   const result = await confirmationResult.confirm(otp)
-  return result.user
-}
-
-const verifySignup = async (data, otp) => {
-  const result = await confirmationResult.confirm(otp)
-  // TODO: call your backend here to save name + email
-  // await axios.post('/api/users/register', { ...data, uid: result.user.uid })
   return result.user
 }
 
@@ -125,7 +120,7 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
   const [signupPhone, setSignupPhone] = useState('')
   const [otp, setOtp]                 = useState('')
 
-  const dispatch = useDispatch()   // ← added
+  const dispatch = useDispatch()
 
   // ── reset on mode switch ──────────────────────────────────────────────────
   const switchMode = (m) => {
@@ -152,7 +147,7 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
 
     setLoading(true)
     try {
-      await requestOtp(p)          // ← calls Firebase
+      await requestOtp(p)
       setStep('otp')
       setCanResend(false)
     } catch {
@@ -162,18 +157,44 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
     }
   }
 
-  // ── step 2: verify OTP ────────────────────────────────────────────────────
+  // ── step 2: verify OTP → save to DB → store in Redux ─────────────────────
   const handleOtpSubmit = async () => {
     if (otp.length !== 6) return setError('Please enter the 6-digit OTP.')
     setError(''); setLoading(true)
-    try {
-      // ── Firebase verify ──
-      const user = mode === 'login'
-        ? await verifyLogin(phone, otp)
-        : await verifySignup({ name, email, phone: signupPhone }, otp)
 
-      // ── Save to Redux ──
-      dispatch(setAuthData({ phone: user.phoneNumber, uid: user.uid }))
+    try {
+      // 1. Confirm OTP with Firebase
+      const firebaseUser = await verifyOtp(otp)
+
+      // 2. Persist auth identifiers (phone + uid) in Redux + localStorage
+      dispatch(setAuthData({ phone: firebaseUser.phoneNumber, uid: firebaseUser.uid }))
+
+      // 3a. SIGNUP → register in DB, then read back the created record
+      if (mode === 'signup') {
+        const registerResult = await registerUser({
+          name:    name.trim(),
+          email:   email.toLowerCase().trim(),
+          phoneno: firebaseUser.phoneNumber   // e.g. "+919876543210"
+        })
+
+        if (!registerResult?.isSuccess) {
+          setError(registerResult?.message || 'Registration failed. Please try again.')
+          setLoading(false)
+          return
+        }
+      }
+
+      // 3b. LOGIN + post-signup → fetch full user record from DB and store in Redux
+      const dbUser = await getUser(firebaseUser.phoneNumber)
+
+      if (dbUser?.isLoggedIn === false) {
+        // Phone exists in Firebase but not in DB — treat as unregistered
+        setError('No account found. Please sign up first.')
+        setLoading(false)
+        return
+      }
+
+      dispatch(setUserData(dbUser))
 
       onAuthSuccess?.()
       handleClose()
@@ -201,7 +222,7 @@ function Auth({ onClose, isOpen, onAuthSuccess }) {
       <div className="auth-panel" onClick={(e) => e.stopPropagation()}>
 
         {/* ── invisible reCAPTCHA mount point ── */}
-        <div id="recaptcha-container" />   {/* ← ADDED HERE */}
+        <div id="recaptcha-container" />
 
         {/* Header */}
         <div className="auth-header">

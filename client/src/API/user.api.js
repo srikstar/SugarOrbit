@@ -19,13 +19,14 @@ export const getUser = async (phoneno) => {
 };
 
 
-export const editUser = async ({ name, email, phoneno }) => {
-    console.log(name, email, phoneno)
+export const registerUser = async ({ name, email, phoneno }) => {
     try {
         const auth = getAuth();
         const currentUser = auth.currentUser;
         const token = await currentUser.getIdToken();
-        const response = await user.post(`/api/users/edit-user/${phoneno}`, { name, email },
+        const response = await user.post(
+            `/api/users/register`,
+            { name, email, phoneno },
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -38,3 +39,20 @@ export const editUser = async ({ name, email, phoneno }) => {
     }
 };
 
+export const editUser = async ({ name, email, address, phoneno }) => {
+    try {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+        const token = await currentUser.getIdToken();
+        const response = await user.post(
+            `/api/users/edit-user/${phoneno}`,
+            { name, email, address },
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            }
+        );
+        return response?.data;
+    } catch (error) {
+        return error.response?.data || { message: "Something went wrong" };
+    }
+};
