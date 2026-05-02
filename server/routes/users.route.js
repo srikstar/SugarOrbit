@@ -34,55 +34,73 @@ userRoute.get('/get-user/:phoneno', async (req, res) => {
 })
 
 // Profile EDIT
+// POST /api/users/edit-user/:phoneno
 userRoute.post('/edit-user/:phoneno', verifyFirebaseToken, async (req, res) => {
   try {
     const { name, email, address } = req.body;
     const phone = req.params.phoneno;
- 
+
     if (!phone || !/^\+91[0-9]{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Invalid phone number', isLoggedIn: false });
     }
- 
+
     const user = await Users.findOne({ phoneno: phone }).select('-orders');
     if (!user) {
       return res.status(404).json({ message: 'User not found', isLoggedIn: false });
     }
- 
+
     const updates = {};
- 
-    if (email) {
+
+    // ── name ──────────────────────────────────────────────────────────────────
+    if (name !== undefined) {
+      if (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 50) {
+        return res.status(400).json({ message: 'Invalid name', isLoggedIn: true });
+      }
+      updates.name = name.trim();
+    }
+
+    // ── email ─────────────────────────────────────────────────────────────────
+    if (email !== undefined) {
       const newEmail = email.toLowerCase().trim();
+      if (!validator.isEmail(newEmail)) {
+        return res.status(400).json({ message: 'Invalid email format', isLoggedIn: true });
+      }
       if (newEmail !== user.email) {
-        if (!validator.isEmail(newEmail)) {
-          return res.status(400).json({ message: 'Invalid email format', isLoggedIn: true });
-        }
-        const existingEmail = await Users.findOne({ email: newEmail }).select('-orders');
+        const existingEmail = await Users.findOne({ email: newEmail }).select('_id');
         if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
           return res.status(400).json({ message: 'Email already in use', isLoggedIn: true });
         }
         updates.email = newEmail;
       }
     }
- 
-    if (name) {
-      if (typeof name !== 'string' || name.length < 2 || name.length > 50) {
-        return res.status(400).json({ message: 'Invalid name', isLoggedIn: true });
-      }
-      updates.name = name.trim();
-    }
- 
+
+    // ── address ───────────────────────────────────────────────────────────────
+    // FIX: set the entire address object at once instead of dot-notation fields.
+    // Dot-notation fails when the existing field value is a plain string (old data).
     if (address !== undefined) {
-      const trimmed = address.trim();
-      if (trimmed.length > 200) {
-        return res.status(400).json({ message: 'Address too long (max 200 characters)', isLoggedIn: true });
+      const { building = '', street = '', city = '', state = '', pincode = '', country = 'India' } = address;
+
+      if (!city.trim()) {
+        return res.status(400).json({ message: 'City is required', isLoggedIn: true });
       }
-      updates.address = trimmed || 'Address not added';
+      if (pincode && !/^[1-9][0-9]{5}$/.test(pincode.trim())) {
+        return res.status(400).json({ message: 'Enter a valid 6-digit pincode', isLoggedIn: true });
+      }
+
+      updates.address = {
+        building: building.trim(),
+        street:   street.trim(),
+        city:     city.trim(),
+        state:    state.trim(),
+        pincode:  pincode.trim(),
+        country:  country.trim() || 'India',
+      };
     }
- 
+
     await Users.updateOne({ phoneno: phone }, { $set: updates });
- 
+
     return res.status(200).json({ message: 'User updated successfully', isLoggedIn: true, isSuccess: true });
- 
+
   } catch (error) {
     console.error('edit-user error:', error.message, error);
     return res.status(500).json({ message: 'Internal server error', isSuccess: false });

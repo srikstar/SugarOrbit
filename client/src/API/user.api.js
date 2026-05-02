@@ -47,12 +47,10 @@ export const editUser = async ({ name, email, address, phoneno }) => {
         const response = await user.post(
             `/api/users/edit-user/${phoneno}`,
             { name, email, address },
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
         );
         return response?.data;
     } catch (error) {
-        return error.response?.data || { message: "Something went wrong" };
+        return error.response?.data || { message: 'Something went wrong' };
     }
 };

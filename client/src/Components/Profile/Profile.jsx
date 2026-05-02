@@ -2,16 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../FirebaseConfig'
-import { clearUserData } from '../../Redux/user.redux'
+import { clearUserData, setUserData } from '../../Redux/user.redux'
 import { clearAuthData } from '../../Redux/user.auth'
 
 import './Profile.css'
 import { editUser } from '../../API/user.api'
 
-const initialProfile = {
-  name: '',
-  email: '',
-  phone: '',
+// ─── constants ───────────────────────────────────────────────────────────────
+
+const initialProfile = { name: '', email: '', phone: '' }
+
+const emptyAddress = {
+  building: '',
+  street:   '',
+  city:     '',
+  state:    '',
+  pincode:  '',
+  country:  'India',
 }
 
 const fetchOrders = () =>
@@ -25,7 +32,7 @@ const fetchOrders = () =>
           orderedOn: '15 Dec, 06:12 pm',
           items: [
             { name: 'Motichoor Laddu', size: '200g', quantity: 2 },
-            { name: 'Kaju Katli', size: '200g', quantity: 1 },
+            { name: 'Kaju Katli',      size: '200g', quantity: 1 },
           ],
         },
         {
@@ -35,7 +42,7 @@ const fetchOrders = () =>
           orderedOn: '10 Dec, 01:45 pm',
           items: [
             { name: 'Besan Laddu', size: '250g', quantity: 3 },
-            { name: 'Mysore Pak', size: '200g', quantity: 1 },
+            { name: 'Mysore Pak',  size: '200g', quantity: 1 },
           ],
         },
       ]),
@@ -44,32 +51,26 @@ const fetchOrders = () =>
   )
 
 const STATUS_COLORS = {
-  PICKEDUP: { bg: '#e8f5e9', text: '#2e7d32', border: '#2e7d32' },
+  PICKEDUP:  { bg: '#e8f5e9', text: '#2e7d32', border: '#2e7d32' },
   DELIVERED: { bg: '#e3f2fd', text: '#1565c0', border: '#1565c0' },
   CANCELLED: { bg: '#fce4ec', text: '#b71c1c', border: '#b71c1c' },
-  PENDING: { bg: '#fff8e1', text: '#f57f17', border: '#f57f17' },
+  PENDING:   { bg: '#fff8e1', text: '#f57f17', border: '#f57f17' },
 }
 
-function OrderCard({ order }) {
-  const statusStyle = STATUS_COLORS[order.status] || STATUS_COLORS.PENDING
+// ─── OrderCard ────────────────────────────────────────────────────────────────
 
+function OrderCard({ order }) {
+  const s = STATUS_COLORS[order.status] || STATUS_COLORS.PENDING
   return (
     <div className="profile-order-card">
       <div className="profile-order-card-header">
         <span className="profile-order-id">Order #{order.orderId}</span>
-        <span
-          className="profile-order-status"
-          style={{
-            background: statusStyle.bg,
-            color: statusStyle.text,
-            border: `1px solid ${statusStyle.border}`,
-          }}
-        >
+        <span className="profile-order-status"
+          style={{ background: s.bg, color: s.text, border: `1px solid ${s.border}` }}>
           {order.status}
         </span>
         <span className="profile-order-total">₹{order.total.toFixed(2)}</span>
       </div>
-
       <div className="profile-order-card-section">
         <span className="profile-order-card-label">ITEMS</span>
         {order.items.map((item, i) => (
@@ -78,7 +79,6 @@ function OrderCard({ order }) {
           </p>
         ))}
       </div>
-
       <div className="profile-order-card-section">
         <span className="profile-order-card-label">ORDERED ON</span>
         <p className="profile-order-card-date">{order.orderedOn}</p>
@@ -87,48 +87,56 @@ function OrderCard({ order }) {
   )
 }
 
+// ─── Profile ──────────────────────────────────────────────────────────────────
+
 function Profile({ onClose, isOpen }) {
+  // profile
   const [profile, setProfile] = useState(initialProfile)
   const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState(initialProfile)
-  const [ordersOpen, setOrdersOpen] = useState(true)
-  const [addressOpen, setAddressOpen] = useState(false)
-  const [orders, setOrders] = useState([])
+  const [draft, setDraft]     = useState(initialProfile)
+
+  // address
+  const [addressOpen,    setAddressOpen]    = useState(false)
+  const [editingAddress, setEditingAddress] = useState(false)
+  const [addressDraft,   setAddressDraft]   = useState(emptyAddress)
+  const [addressLoading, setAddressLoading] = useState(false)
+  const [addressError,   setAddressError]   = useState('')
+
+  // orders
+  const [ordersOpen,    setOrdersOpen]    = useState(true)
+  const [orders,        setOrders]        = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
 
   const dispatch = useDispatch()
   const authData = useSelector((state) => state.auth.data)
   const userData = useSelector((state) => state.user.data)
 
-  const initialAddress = {
-    line1: '',
-    line2: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: 'India',
+  // address from Redux (object with sub-fields)
+  const savedAddress = userData?.address || emptyAddress
+  const hasAddress   = !!(savedAddress.city || savedAddress.street || savedAddress.building)
+
+  // format address for display
+  const formatAddress = (a) => {
+    const parts = [a.building, a.street, a.city, a.state, a.pincode, a.country].filter(Boolean)
+    return parts.join(', ')
   }
 
-  const [address, setAddress] = useState(null)
-  const [addressDraft, setAddressDraft] = useState(initialAddress)
-  const [addingAddress, setAddingAddress] = useState(false)
-
+  // ── seed profile from Redux ───────────────────────────────────────────────
   useEffect(() => {
     if (userData) {
       setProfile({
-        name: userData.name || '',
-        email: userData.email || '',
+        name:  userData.name    || '',
+        email: userData.email   || '',
         phone: userData.phoneno || authData?.phone || '',
       })
     }
   }, [userData])
 
+  // ── fetch orders when panel opens ─────────────────────────────────────────
   useEffect(() => {
     if (!isOpen || orders.length > 0) return
-
     let ignore = false
-
-    const loadOrders = async () => {
+    const load = async () => {
       setOrdersLoading(true)
       try {
         const data = await fetchOrders()
@@ -137,43 +145,64 @@ function Profile({ onClose, isOpen }) {
         if (!ignore) setOrdersLoading(false)
       }
     }
-
-    loadOrders()
+    load()
     return () => { ignore = true }
   }, [isOpen, orders.length])
 
-  const handleEdit = () => {
-    setDraft(profile)
-    setEditing(true)
-  }
+  // ── profile handlers ──────────────────────────────────────────────────────
+  const handleEdit   = () => { setDraft(profile); setEditing(true) }
+  const handleCancel = () => { setEditing(false); setDraft(profile) }
 
   const handleSave = async () => {
-
     try {
-      const response = await editUser({
-        name: draft.name,
-        email: draft.email,
-        phoneno: authData?.phone
-      })
+      const response = await editUser({ name: draft.name, email: draft.email, phoneno: authData?.phone })
       if (response?.isSuccess) {
         setProfile(draft)
+        dispatch(setUserData({ ...userData, name: draft.name, email: draft.email }))
         setEditing(false)
       } else {
         console.log(response?.message)
       }
-    } catch (error) {
-      console.log(error)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  // ── address handlers ──────────────────────────────────────────────────────
+  const handleAddressEdit = () => {
+    setAddressDraft(hasAddress ? { ...emptyAddress, ...savedAddress } : emptyAddress)
+    setAddressError('')
+    setEditingAddress(true)
+  }
+
+  const handleAddressCancel = () => { setEditingAddress(false); setAddressError('') }
+
+  const handleAddressSave = async () => {
+    if (!addressDraft.city.trim()) return setAddressError('City is required.')
+    if (addressDraft.pincode && !/^[1-9][0-9]{5}$/.test(addressDraft.pincode.trim())) {
+      return setAddressError('Enter a valid 6-digit pincode.')
     }
 
-    setProfile(draft)
-    setEditing(false)
+    setAddressLoading(true)
+    setAddressError('')
+    try {
+      const response = await editUser({ address: addressDraft, phoneno: authData?.phone })
+      if (response?.isSuccess) {
+        dispatch(setUserData({ ...userData, address: addressDraft }))
+        setEditingAddress(false)
+      } else {
+        setAddressError(response?.message || 'Failed to save address.')
+      }
+    } catch {
+      setAddressError('Something went wrong. Please try again.')
+    } finally {
+      setAddressLoading(false)
+    }
   }
 
-  const handleCancel = () => {
-    setEditing(false)
-    setDraft(profile)
-  }
+  const setField = (key, val) => setAddressDraft((prev) => ({ ...prev, [key]: val }))
 
+  // ── logout ────────────────────────────────────────────────────────────────
   const handleLogout = async () => {
     await signOut(auth)
     dispatch(clearUserData())
@@ -191,21 +220,19 @@ function Profile({ onClose, isOpen }) {
         {/* Header */}
         <div className="profile-header row-sb div">
           <span className="profile-title">Profile</span>
-          <button className="profile-close-btn row" onClick={onClose}>
-            ✕ Close
-          </button>
+          <button className="profile-close-btn row" onClick={onClose}>✕ Close</button>
         </div>
 
         <div className="profile-divider" />
 
-        {/* Body */}
         <div className="profile-body">
-          {/* Info */}
+
+          {/* ── Info ─────────────────────────────────────────────────────── */}
           <div className="profile-info-section div">
             <div className="profile-info-top">
               {editing ? (
                 <>
-                  <button className="profile-action-btn save" onClick={handleSave}>Save</button>
+                  <button className="profile-action-btn save"   onClick={handleSave}>Save</button>
                   <button className="profile-action-btn cancel" onClick={handleCancel}>Cancel</button>
                 </>
               ) : (
@@ -215,94 +242,165 @@ function Profile({ onClose, isOpen }) {
 
             <div className="profile-field">
               <span className="profile-field-label">Name</span>
-              {editing ? (
-                <input
-                  className="profile-field-input"
-                  value={draft.name}
-                  onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-                />
-              ) : (
-                <span className="profile-field-value">{profile.name || '—'}</span>
-              )}
+              {editing
+                ? <input className="profile-field-input" value={draft.name}
+                    onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
+                : <span className="profile-field-value">{profile.name || '—'}</span>}
             </div>
 
             <div className="profile-field">
               <span className="profile-field-label">Email</span>
-              {editing ? (
-                <input
-                  className="profile-field-input"
-                  value={draft.email}
-                  onChange={(e) => setDraft({ ...draft, email: e.target.value })}
-                />
-              ) : (
-                <span className="profile-field-value">{profile.email || '—'}</span>
-              )}
+              {editing
+                ? <input className="profile-field-input" value={draft.email}
+                    onChange={(e) => setDraft({ ...draft, email: e.target.value })} />
+                : <span className="profile-field-value">{profile.email || '—'}</span>}
             </div>
 
             <div className="profile-field">
               <span className="profile-field-label">Ph No</span>
-              <span className="profile-field-value profile-field-static">
-                {profile.phone || '—'}
-              </span>
+              <span className="profile-field-value profile-field-static">{profile.phone || '—'}</span>
             </div>
           </div>
 
           <div className="profile-divider" />
 
-          {/* Address */}
+          {/* ── Address ──────────────────────────────────────────────────── */}
           <div className="profile-section">
-            <button
-              className="profile-section-toggle"
-              onClick={() => setAddressOpen((o) => !o)}
-            >
+            <button className="profile-section-toggle" onClick={() => setAddressOpen((o) => !o)}>
               <span className="profile-section-title">Address</span>
               <span className="profile-section-icon">{addressOpen ? '−' : '+'}</span>
             </button>
 
             {addressOpen && (
               <div className="profile-address-body">
-                {!address && !addingAddress && (
-                  <div className="profile-empty">
-                    No address saved.
-                    <br /><br />
-                    <button
-                      className="profile-action-btn save"
-                      onClick={() => { setAddingAddress(true); setAddressDraft('') }}
-                    >
-                      Add Address
+
+                {/* display */}
+                {!editingAddress && (
+                  <div style={{ padding: '12px 24px' }}>
+                    {hasAddress ? (
+                      <>
+                        {savedAddress.building && (
+                          <p className="profile-field-value" style={{ margin: '2px 0' }}>
+                            {savedAddress.building}
+                          </p>
+                        )}
+                        {savedAddress.street && (
+                          <p className="profile-field-value" style={{ margin: '2px 0' }}>
+                            {savedAddress.street}
+                          </p>
+                        )}
+                        <p className="profile-field-value" style={{ margin: '2px 0' }}>
+                          {[savedAddress.city, savedAddress.state].filter(Boolean).join(', ')}
+                          {savedAddress.pincode ? ` – ${savedAddress.pincode}` : ''}
+                        </p>
+                        <p className="profile-field-value" style={{ margin: '2px 0 12px' }}>
+                          {savedAddress.country || 'India'}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="profile-field-value"
+                        style={{ color: '#aaa', fontStyle: 'italic', marginBottom: '12px' }}>
+                        No address saved.
+                      </p>
+                    )}
+                    <button className="profile-action-btn save" onClick={handleAddressEdit}>
+                      {hasAddress ? 'Edit Address' : 'Add Address'}
                     </button>
                   </div>
                 )}
 
-                {addingAddress && (
-                  <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <input className="profile-field-input" placeholder="Address Line 1" value={addressDraft.line1 || ''} onChange={(e) => setAddressDraft({ ...addressDraft, line1: e.target.value })} />
-                    <input className="profile-field-input" placeholder="Address Line 2 (Apartment, suite, etc.)" value={addressDraft.line2 || ''} onChange={(e) => setAddressDraft({ ...addressDraft, line2: e.target.value })} />
-                    <input className="profile-field-input" placeholder="City" value={addressDraft.city || ''} onChange={(e) => setAddressDraft({ ...addressDraft, city: e.target.value })} />
-                    <input className="profile-field-input" placeholder="State / Province / Region" value={addressDraft.state || ''} onChange={(e) => setAddressDraft({ ...addressDraft, state: e.target.value })} />
-                    <input className="profile-field-input" placeholder="ZIP / Postal Code" value={addressDraft.zip || ''} onChange={(e) => setAddressDraft({ ...addressDraft, zip: e.target.value })} />
-                    <input className="profile-field-input" value="India" disabled />
+                {/* edit form */}
+                {editingAddress && (
+                  <div style={{ padding: '12px 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+                    <div className="profile-field" style={{ flexDirection: 'column', gap: '4px' }}>
+                      <label className="profile-field-label">Flat / House No., Building</label>
+                      <input
+                        className="profile-field-input"
+                        placeholder="e.g. Flat 4B, Orchid Towers"
+                        value={addressDraft.building}
+                        onChange={(e) => setField('building', e.target.value)}
+                        maxLength={100}
+                      />
+                    </div>
+
+                    <div className="profile-field" style={{ flexDirection: 'column', gap: '4px' }}>
+                      <label className="profile-field-label">Street / Area / Locality</label>
+                      <input
+                        className="profile-field-input"
+                        placeholder="e.g. MG Road, Koramangala"
+                        value={addressDraft.street}
+                        onChange={(e) => setField('street', e.target.value)}
+                        maxLength={100}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      <div className="profile-field" style={{ flexDirection: 'column', gap: '4px' }}>
+                        <label className="profile-field-label">City *</label>
+                        <input
+                          className="profile-field-input"
+                          placeholder="e.g. Bengaluru"
+                          value={addressDraft.city}
+                          onChange={(e) => setField('city', e.target.value)}
+                          maxLength={50}
+                        />
+                      </div>
+                      <div className="profile-field" style={{ flexDirection: 'column', gap: '4px' }}>
+                        <label className="profile-field-label">State</label>
+                        <input
+                          className="profile-field-input"
+                          placeholder="e.g. Karnataka"
+                          value={addressDraft.state}
+                          onChange={(e) => setField('state', e.target.value)}
+                          maxLength={50}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      <div className="profile-field" style={{ flexDirection: 'column', gap: '4px' }}>
+                        <label className="profile-field-label">Pincode</label>
+                        <input
+                          className="profile-field-input"
+                          placeholder="e.g. 560001"
+                          value={addressDraft.pincode}
+                          onChange={(e) => setField('pincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          inputMode="numeric"
+                          maxLength={6}
+                        />
+                      </div>
+                      <div className="profile-field" style={{ flexDirection: 'column', gap: '4px' }}>
+                        <label className="profile-field-label">Country</label>
+                        <input
+                          className="profile-field-input"
+                          value={addressDraft.country}
+                          onChange={(e) => setField('country', e.target.value)}
+                          maxLength={50}
+                        />
+                      </div>
+                    </div>
+
+                    {addressError && (
+                      <p style={{ fontSize: '0.85rem', color: '#e05555', margin: 0 }}>{addressError}</p>
+                    )}
+
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button
                         className="profile-action-btn save"
-                        onClick={() => {
-                          if (addressDraft.line1 && addressDraft.city && addressDraft.state && addressDraft.zip) {
-                            setAddress({ ...addressDraft, country: 'India' })
-                            setAddingAddress(false)
-                          }
-                        }}
+                        onClick={handleAddressSave}
+                        disabled={addressLoading}
                       >
-                        Save
+                        {addressLoading ? 'Saving…' : 'Save'}
                       </button>
-                      <button className="profile-action-btn cancel" onClick={() => setAddingAddress(false)}>Cancel</button>
+                      <button
+                        className="profile-action-btn cancel"
+                        onClick={handleAddressCancel}
+                        disabled={addressLoading}
+                      >
+                        Cancel
+                      </button>
                     </div>
-                  </div>
-                )}
-
-                {address && !addingAddress && (
-                  <div style={{ padding: '16px 24px' }}>
-                    <div className="profile-field-value" style={{ marginBottom: '10px' }}>{address.line1}, {address.city}</div>
-                    <button className="profile-action-btn edit" onClick={() => { setAddingAddress(true); setAddressDraft(address) }}>Edit Address</button>
                   </div>
                 )}
               </div>
@@ -311,12 +409,9 @@ function Profile({ onClose, isOpen }) {
 
           <div className="profile-divider" />
 
-          {/* Orders */}
+          {/* ── Orders ───────────────────────────────────────────────────── */}
           <div className="profile-section">
-            <button
-              className="profile-section-toggle"
-              onClick={() => setOrdersOpen((o) => !o)}
-            >
+            <button className="profile-section-toggle" onClick={() => setOrdersOpen((o) => !o)}>
               <span className="profile-section-title">Orders</span>
               <span className="profile-section-icon">{ordersOpen ? '−' : '+'}</span>
             </button>

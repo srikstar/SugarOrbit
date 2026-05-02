@@ -1,6 +1,51 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
+const addressSchema = new mongoose.Schema(
+  {
+    building: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+      default: ''           // flat no., house no., building name
+    },
+    street: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+      default: ''           // street, area, locality
+    },
+    city: {
+      type: String,
+      trim: true,
+      maxlength: 50,
+      default: ''
+    },
+    state: {
+      type: String,
+      trim: true,
+      maxlength: 50,
+      default: ''
+    },
+    pincode: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: (v) => v === '' || /^[1-9][0-9]{5}$/.test(v),
+        message: 'Invalid pincode'
+      },
+      default: ''
+    },
+    country: {
+      type: String,
+      trim: true,
+      maxlength: 50,
+      default: 'India'
+    }
+  },
+  { _id: false }            // no separate _id for the subdocument
+)
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -18,10 +63,8 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       validate: {
-        validator: function (value) {
-          return validator.isEmail(value);
-        },
-        message: "Invalid email format"
+        validator: (value) => validator.isEmail(value),
+        message: 'Invalid email format'
       }
     },
 
@@ -30,37 +73,31 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       validate: {
-        validator: function (value) {
-          return /^\+91[0-9]{10}$/.test(value);
-        },
-        message: "Invalid phone number"
+        validator: (value) => /^\+91[0-9]{10}$/.test(value),
+        message: 'Invalid phone number'
       }
     },
 
     address: {
-      type: String,
-      trim: true,
-      maxlength: 200,
-      default: "Address not added"
+      type: addressSchema,
+      default: () => ({})   // initialises all sub-fields to their own defaults
     },
 
     orders: {
       type: [mongoose.Schema.Types.ObjectId],
-      ref: "Orders",
+      ref: 'Orders',
       default: []
     }
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 );
 
-userSchema.set("toJSON", {
-  transform: function (doc, ret) {
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
     delete ret.__v;
     return ret;
   }
 });
 
-const Users = mongoose.model("Users", userSchema);
+const Users = mongoose.model('Users', userSchema);
 module.exports = Users;
