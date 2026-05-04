@@ -17,6 +17,10 @@ function Navbar() {
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
 
+  const totalItems = useSelector(state =>
+    state.cart.reduce((sum, item) => sum + item.quantity, 0)
+  )
+
   const dispatch = useDispatch()
   const authData = useSelector((state) => state.auth.data)
 
@@ -88,7 +92,7 @@ function Navbar() {
             <div className="nav-icons" onClick={openCart}>
               <Link className='row'>
                 <img className='nav-icon' src="./cart.png" alt="cart-logo" />
-                <h4>Cart 0</h4>
+                <h4>Cart <span className='tot-items'>{totalItems}</span></h4>
               </Link>
             </div>
             <div className="nav-icons" onClick={openProfile}>

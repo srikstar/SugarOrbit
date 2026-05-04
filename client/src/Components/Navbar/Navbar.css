@@ -48,6 +48,10 @@
     height: 50px;
 }
 
+.tot-items{
+    color: rgb(250, 115, 5);
+}
+
 .nav-links {
     width: auto;
     height: auto;
