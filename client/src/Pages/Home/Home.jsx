@@ -139,6 +139,7 @@ function Home() {
       productName: data.productName,
       selectedSize: data.selectedSize,
       price: selectedPrice,
+      productImages: data.productImages,
       quantity: 1
     }
 

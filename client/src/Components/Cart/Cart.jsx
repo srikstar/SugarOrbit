@@ -1,51 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { increaseQuantity, decreaseQuantity, removeItem } from '../../Redux/cart.redux.js'
 import './Cart.css'
-
-const initialCartItems = [
-  {
-    id: 1,
-    name: 'Motichoor Laddu',
-    size: '200g',
-    price: 230,
-    quantity: 2,
-    image: "https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410"
-  },
-  {
-    id: 2,
-    name: 'Kaju Katli',
-    size: '200g',
-    price: 370,
-    quantity: 1,
-    image: "https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410"
-  },
-  {
-    id: 3,
-    name: 'Besan Laddu',
-    size: '250g',
-    price: 210,
-    quantity: 3,
-    image: "https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410"
-  }
-]
 
 function CartItem({ item, onRemove, onIncrease, onDecrease }) {
   return (
     <div className="cart-item">
-      <img src={item.image} alt={item.name} className="cart-item-image" />
+      <img src={item.productImages?.[0]} alt={item.productName} className="cart-item-image" />
       <div className="cart-item-details column-s">
         <div className="cart-item-header row-sb div">
-          <span className="cart-item-name">{item.name}</span>
-          <button className="cart-item-remove" onClick={() => onRemove(item.id, item.size)}>✕</button>
+          <span className="cart-item-name">{item.productName}</span>
+          <button className="cart-item-remove" onClick={() => onRemove(item)}>✕</button>
         </div>
-        <span className="cart-item-meta">Weight: {item.size}</span>
+        <span className="cart-item-meta">Weight: {item.selectedSize}</span>
         <div className="cart-item-footer row-sb div">
           <span className="cart-item-price">₹ {item.price}</span>
           <div className="qty-control row">
-            <button className="qty-btn" onClick={() => onDecrease(item.id, item.size)}>−</button>
+            <button className="qty-btn" onClick={() => onDecrease(item)}>−</button>
             <span className="qty-value">{item.quantity}</span>
-            <button className="qty-btn" onClick={() => onIncrease(item.id, item.size)}>+</button>
+            <button className="qty-btn" onClick={() => onIncrease(item)}>+</button>
           </div>
         </div>
       </div>
@@ -54,63 +28,16 @@ function CartItem({ item, onRemove, onIncrease, onDecrease }) {
 }
 
 function Cart({ onClose, isOpen }) {
-  const [cartItems, setCartItems] = useState(initialCartItems)
-
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const cartItems = useSelector(state => state.cart)  // 👈 from Redux
 
-  const handleCheckout = () => {
-    navigate("/checkout")
-  }
+  const handleCheckout = () => navigate("/checkout")
+  const handleRemove   = (item) => dispatch(removeItem(item))
+  const handleIncrease = (item) => dispatch(increaseQuantity(item))
+  const handleDecrease = (item) => dispatch(decreaseQuantity(item))
 
-  // Remove item by id AND size
-  const handleRemove = (id, size) => {
-    setCartItems(prev => prev.filter(item => !(item.id === id && item.size === size)))
-  }
-
-  // Increase quantity for specific id + size combination
-  const handleIncrease = (id, size) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.id === id && item.size === size
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    )
-  }
-
-  // Decrease quantity, remove if quantity becomes 0
-  const handleDecrease = (id, size) => {
-    setCartItems(prev =>
-      prev
-        .map(item =>
-          item.id === id && item.size === size
-            ? { ...item, quantity: Math.max(0, item.quantity - 1) }
-            : item
-        )
-        .filter(item => item.quantity > 0)
-    )
-  }
-
-  // Add to cart - merge if same product + size, otherwise create new entry
-  const handleAddToCart = (product) => {
-    setCartItems(prev => {
-      const existingItem = prev.find(item => item.id === product.id && item.size === product.size)
-
-      if (existingItem) {
-        // If item exists, increment quantity
-        return prev.map(item =>
-          item.id === product.id && item.size === product.size
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      } else {
-        // If item doesn't exist, add it as new entry
-        return [...prev, { ...product, quantity: 1 }]
-      }
-    })
-  }
-
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total      = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
@@ -138,7 +65,7 @@ function Cart({ onClose, isOpen }) {
             </div>
           ) : (
             cartItems.map((item, index) => (
-              <React.Fragment key={`${item.id}-${item.size}`}>
+              <React.Fragment key={`${item._id}-${item.selectedSize}`}>
                 <CartItem
                   item={item}
                   onRemove={handleRemove}
@@ -157,10 +84,9 @@ function Cart({ onClose, isOpen }) {
             <span className="cart-total-label">Total</span>
             <span className="cart-total-value">₹ {total.toFixed(2)}</span>
           </div>
-          <button className="checkout-btn div" onClick={() => {
-            onClose();
-            handleCheckout();
-          }}>Checkout</button>
+          <button className="checkout-btn div" onClick={() => { onClose(); handleCheckout() }}>
+            Checkout
+          </button>
         </div>
 
       </div>
