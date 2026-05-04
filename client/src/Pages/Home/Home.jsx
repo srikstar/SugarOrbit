@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
 import { homeSweets, homeNamkeens } from '../../API/home.api'
-import { setHomeSweetData, setHomeNamkeenData} from '../../Redux/home.js'
+import { setHomeSweetData, setHomeNamkeenData } from '../../Redux/home.js'
+import { setCartData } from '../../Redux/cart.redux.js'
 
 const VISIBLE_CARDS = 3
 const DRAG_THRESHOLD = 50
@@ -17,6 +18,7 @@ function ProductCarousel({
   isDragging,
   activeSize,
   onSizeSelect,
+  onAddToCart
 }) {
   const translateX = -(currentIndex * (100 / VISIBLE_CARDS))
 
@@ -64,7 +66,7 @@ function ProductCarousel({
                     </div>
                     <div className="product-footer">
                       <span className="item-price">₹{selectedPrice}</span>
-                      <button className="add-to-cart-btn">Add to Cart</button>
+                      <button className="add-to-cart-btn" onClick={() => onAddToCart({ ...item, selectedSize })}>Add to Cart</button>
                     </div>
                   </div>
                 </div>
@@ -129,6 +131,19 @@ function Home() {
     handleNamkeens()
   }, [])
 
+  const handleCart = (data) => {
+    const selectedPrice = data.productPrice.find(p => p.size === data.selectedSize)?.price
+
+    const cartItem = {
+      _id: data._id,
+      productName: data.productName,
+      selectedSize: data.selectedSize,
+      price: selectedPrice,
+      quantity: 1
+    }
+
+    dispatch(setCartData(cartItem))
+  }
 
   const categories = [
     {
@@ -326,6 +341,7 @@ function Home() {
               isDragging={isDraggingBS}
               activeSize={activeSize}
               onSizeSelect={handleSizeSelect}
+              onAddToCart={handleCart}
             />
           </div>
         </section>
@@ -386,6 +402,7 @@ function Home() {
               isDragging={isDraggingNK}
               activeSize={activeSize}
               onSizeSelect={handleSizeSelect}
+              onAddToCart={handleCart}
             />
           </div>
         </section>

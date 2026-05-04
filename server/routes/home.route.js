@@ -7,7 +7,7 @@ const homeRoute = express.Router()
 // GET TOP 5 SWEETS
 homeRoute.get('/sweets', async (req, res) => {
     try {
-        const sweets = await Sweets.find()
+        const sweets = await Sweets.find({},{productName : 1, productDescription : 1,productPrice: 1, totalOrders : 1, _id : 1, productImages : { $slice : 1 } })
             .sort({ totalOrders: -1 })
             .limit(5)
 
@@ -25,7 +25,7 @@ homeRoute.get('/sweets', async (req, res) => {
 // GET TOP 5 NAMKEENS
 homeRoute.get('/namkeens', async (req, res) => {
     try {
-        const namkeens = await Namkeens.find()
+        const namkeens = await Namkeens.find({},{productName : 1, productDescription : 1,productPrice: 1, totalOrders : 1, _id : 1, productImages : { $slice : 1 } })
             .sort({ totalOrders: -1 })
             .limit(5)
 
