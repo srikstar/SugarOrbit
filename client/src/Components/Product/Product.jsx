@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"   // 👈 get id from URL
-import axios from "axios"
+import { useParams } from "react-router-dom"
+import { getProduct } from "../../API/product.api"
 import "./Product.css"
 import Footer from "../Footer/Footer"
 
 export default function Product() {
-    const { id } = useParams()  
+    const { id, category } = useParams()
     const [product, setProduct] = useState(null)
     const [activeImg, setActiveImg] = useState(0)
     const [weight, setWeight] = useState("")
@@ -15,18 +15,16 @@ export default function Product() {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await axios.get(`/api/sweets/${id}`)  // 👈 check this URL is correct
-                console.log(response.data)
-
-                const sweet = response.data.sweet   // ✅ matches { sweet: {...} }
-                setProduct(sweet)
-                setWeight(sweet.productPrice[0].size)
+                const data = await getProduct({ category, id })
+                console.log(data)
+                setProduct(data.product)
+                setWeight(data.product.productPrice[0].size)
             } catch (error) {
                 console.log(error)
             }
         }
         fetchProduct()
-    }, [id])
+    }, [id, category])
 
     if (!product) return <div>Loading...</div>
 
@@ -37,11 +35,10 @@ export default function Product() {
             <div className="main-section">
                 <div className="pp-root row">
                     <div className="pp-breadcrumb div-80">
-                        Home / All Products / <span>{product.productName}</span>
+                        Home / {category} / <span>{product.productName}</span>
                     </div>
 
                     <div className="pp-main div-80">
-                        {/* Images */}
                         <div className="pp-images">
                             <div className="pp-main-img-wrap">
                                 <img src={product.productImages[activeImg]} alt={product.productName} />
@@ -59,7 +56,6 @@ export default function Product() {
                             </div>
                         </div>
 
-                        {/* Info */}
                         <div className="pp-info">
                             <h1 className="pp-title">{product.productName}</h1>
                             <p>{product.productDescription}</p>
@@ -68,7 +64,6 @@ export default function Product() {
                                 <span className="pp-price">₹ {selectedPrice}</span>
                             </div>
 
-                            {/* Weight */}
                             <p className="pp-label">Weight</p>
                             <div className="pp-weight-btns">
                                 {product.productPrice.map(({ size }) => (
@@ -82,7 +77,6 @@ export default function Product() {
                                 ))}
                             </div>
 
-                            {/* Quantity */}
                             <p className="pp-label">Quantity</p>
                             <div className="pp-qty-row">
                                 <div className="pp-qty-ctrl">
@@ -95,7 +89,6 @@ export default function Product() {
                             <button className="pp-cta">Add to Cart</button>
                             <button className="pp-cta-alt">Buy Now</button>
 
-                            {/* Accordion */}
                             <div className="pp-accordion">
                                 {[
                                     { id: "details", title: "Product Details", content: product.productDetails },

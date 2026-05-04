@@ -16,9 +16,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/sweets' element={<Product />} />
-        <Route path='/namkeens/:id' element={<Product />} />
-        <Route path='/chocolates/:id' element={<Product />} />
+        <Route path='/sweets' element={<Sweets />} />
+        <Route path='/namkeens' element={<Namkeen />} />
+        <Route path='/chocolates' element={<Chocolates />} />
+        <Route path='/:category/:id' element={<Product />} />
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/payment' element={<PaymentStatus />} />
       </Routes>

@@ -33,7 +33,7 @@ function Items({ data, category }) {   // 👈 accept category as prop
     }
 
     const handleItem = (id) => {
-        navigate(`/${category}/${id}`)  // 👈 e.g. /sweets/kaju-katli
+        navigate(`/${category}/${id}`)
     }
 
     return (
