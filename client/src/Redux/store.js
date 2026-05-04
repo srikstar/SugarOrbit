@@ -6,6 +6,7 @@ import homeReducer from './home.js'
 import namkeensReducer from './namkeens.redux.js'
 import chocolateReducer from './chocolates.redux.js'
 import cartReducer from './cart.redux.js'
+import productReducer from './product.redux.js'
 
 const loadState = (key) => {
   try {
@@ -22,7 +23,8 @@ const store = configureStore({
     home: homeReducer,
     namkeens: namkeensReducer,
     chocolates: chocolateReducer,
-    cart: cartReducer
+    cart: cartReducer,
+    product : productReducer
   },
   preloadedState: {
     auth: loadState('authState'),

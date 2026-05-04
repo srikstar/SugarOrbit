@@ -1,24 +1,28 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { getProduct } from "../../API/product.api"
+import { getProduct } from "../../API/product.api.js"
+import { setProduct } from '../../Redux/product.redux.js'
+import { useDispatch, useSelector } from "react-redux"
 import "./Product.css"
 import Footer from "../Footer/Footer"
 
 export default function Product() {
     const { id, category } = useParams()
-    const [product, setProduct] = useState(null)
     const [activeImg, setActiveImg] = useState(0)
     const [weight, setWeight] = useState("")
     const [quantity, setQuantity] = useState(1)
     const [activeAcc, setActiveAcc] = useState(null)
+
+    const dispatch = useDispatch()
+    const product = useSelector(state => state.product)  // 👈 from Redux, no local state needed
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const data = await getProduct({ category, id })
                 console.log(data)
-                setProduct(data.product)
-                setWeight(data.product.productPrice[0].size)
+                dispatch(setProduct(data?.product))          // 👈 store in Redux
+                setWeight(data?.product?.productPrice[0]?.size)
             } catch (error) {
                 console.log(error)
             }
@@ -26,7 +30,7 @@ export default function Product() {
         fetchProduct()
     }, [id, category])
 
-    if (!product) return <div>Loading...</div>
+    if (!product || !product.productName) return <div>Loading...</div>
 
     const selectedPrice = product.productPrice.find(p => p.size === weight)?.price
 
