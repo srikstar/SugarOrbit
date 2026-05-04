@@ -35,9 +35,8 @@ body {
    ===================================================== */
 
 @font-face {
-    font-family: 'BeautiqueDisplay-Regular';
-    src: url('./font/BeautiqueDisplay-Regular.otf');
-    font-display: swap;
+  font-family: 'BeautiqueDisplay-Regular';
+  src: url('/fonts/BeautiqueDisplay-Regular.otf') format('opentype');
 }
 
 @font-face {
@@ -45,6 +44,8 @@ body {
     src: url('./font/BeautiqueDisplay-Medium.otf');
     font-display: swap;
 }
+
+
 
 /* =====================================================
    FLEX UTILITIES
