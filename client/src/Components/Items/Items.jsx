@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { setCartData } from '../../Redux/cart.redux'
 import './Items.css'
 
 function Items({ data }) {
     const [counts, setCounts] = useState({})
+    const dispatch = useDispatch() 
 
     const getCount = (index) => counts[index] ?? 1
 
@@ -11,6 +14,18 @@ function Items({ data }) {
             ...prev,
             [index]: Math.max(1, (prev[index] ?? 1) + delta)
         }))
+    }
+
+    const handleCart = (value, index) => { 
+        const cartItem = {
+            _id: value._id,
+            productName: value.productName,
+            selectedSize: value.productPrice[0].size,
+            price: value.productPrice[0].price,
+            productImages: value.productImages,
+            quantity: getCount(index)
+        }
+        dispatch(setCartData(cartItem))
     }
 
     return (
@@ -24,7 +39,7 @@ function Items({ data }) {
                         </div>
                         <div className="item-details-container">
                             <h2 className='item-name'>{value.productName}</h2>
-                            <span>₹ 260</span>
+                            <span>₹ {value.productPrice[0].price}</span>
                             <div className="item-list-container row-sb">
                                 <div className="item-count-container row-sb">
                                     <button onClick={() => updateCount(index, -1)}>-</button>
@@ -32,7 +47,12 @@ function Items({ data }) {
                                     <button onClick={() => updateCount(index, +1)}>+</button>
                                 </div>
                                 <div className="item-add-container">
-                                    <button className='item-add-btn'>Add to Cart</button>
+                                    <button 
+                                        className='item-add-btn'
+                                        onClick={() => handleCart(value, index)}
+                                    >
+                                        Add to Cart
+                                    </button>
                                 </div>
                             </div>
                         </div>
