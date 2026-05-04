@@ -249,7 +249,7 @@ function Chocolates() {
             </section>
 
             <section className="product-items-container">
-              <Items data={chocolates} loading={loading} />
+              <Items data={chocolates} loading={loading} category="chocolates" />
             </section>
           </div>
         </section>

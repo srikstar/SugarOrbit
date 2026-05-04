@@ -57,6 +57,9 @@ function deriveBadge(totalOrders) {
 // SCHEMA
 const sweetSchema = new mongoose.Schema(
     {
+        _id: {
+            type: String
+        },
         productName: {
             type: String,
             required: [true, 'Product name is required'],
@@ -98,7 +101,7 @@ const sweetSchema = new mongoose.Schema(
             maxlength: [100, 'Product type must be under 100 characters']
         },
 
-        
+
         productDetails: {
             type: String,
             required: [true, 'Product details are required'],
@@ -118,7 +121,7 @@ const sweetSchema = new mongoose.Schema(
             maxlength: [2000, 'FAQ content must be under 2000 characters']
         },
 
-        
+
         productImages: {
             type: [String],
             required: [true, 'At least one image is required'],
@@ -134,7 +137,7 @@ const sweetSchema = new mongoose.Schema(
             default: 'Freshly Made'
         },
 
-        
+
         shelfLifeDays: {
             type: Number,
             required: [true, 'Shelf life is required'],
@@ -142,13 +145,13 @@ const sweetSchema = new mongoose.Schema(
             default: 60
         },
 
-        
+
         reviews: {
             type: [reviewSchema],
             default: []
         },
 
-        
+
         averageRating: {
             type: Number,
             default: 0,
@@ -161,7 +164,7 @@ const sweetSchema = new mongoose.Schema(
             min: 0
         },
 
-        
+
         totalOrders: {
             type: Number,
             default: 0,

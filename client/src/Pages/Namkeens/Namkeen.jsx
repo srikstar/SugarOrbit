@@ -249,7 +249,7 @@ function Namkeen() {
             </section>
 
             <section className="product-items-container">
-              <Items data={namkeens} loading={loading} />
+              <Items data={namkeens} loading={loading} category="namkeens" />
             </section>
           </div>
         </section>

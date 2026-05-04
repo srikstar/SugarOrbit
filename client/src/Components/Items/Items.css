@@ -41,6 +41,11 @@
     padding: calc(0.5vh + 0.5vw);
 }
 
+.item-card-container:hover {
+    cursor: pointer;
+}
+
+
 .item-image-container {
     width: 100%;
     height: calc(20vh + 20vw);
