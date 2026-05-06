@@ -16,6 +16,64 @@ export default function Product() {
     const dispatch = useDispatch()
     const product = useSelector(state => state.product)
 
+    const REVIEWS = [
+        {
+            stars: 5,
+            text: "Absolutely divine — the ghee fragrance alone is worth it. Ordered for Diwali and the whole family was impressed.",
+            author: "Sneha P.",
+            date: "November 2024",
+        },
+        {
+            stars: 4,
+            text: "Good quality and beautifully packaged. The laddus were soft and not overly sweet. Will order again.",
+            author: "Madhuri K.",
+            date: "October 2024",
+        },
+        {
+            stars: 5,
+            text: "Best Motichoor Laddu I've had outside of Jaipur. The texture is perfect — melt in your mouth.",
+            author: "Arjun S.",
+            date: "September 2024",
+        },
+        {
+            stars: 5,
+            text: "Best Motichoor Laddu I've had outside of Jaipur. The texture is perfect — melt in your mouth.",
+            author: "Arjun S.",
+            date: "September 2024",
+        }
+    ];
+
+    const RELATED_PRODUCTS = [
+        {
+            name: "Besan Laddu",
+            price: "₹210",
+            weight: "250g",
+            badge: "Bestseller",
+            img: "https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410"
+        },
+        {
+            name: "Kaju Katli",
+            price: "₹380",
+            weight: "250g",
+            badge: "Premium",
+            img: "https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410"
+        },
+        {
+            name: "Coconut Laddu",
+            price: "₹190",
+            weight: "250g",
+            badge: null,
+            img: "https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410"
+        },
+        {
+            name: "Gulab Jamun",
+            price: "₹160",
+            weight: "500ml",
+            badge: "Fresh Daily",
+            img: "https://ashasweetcenter.com/cdn/shop/articles/IMG_3378_4727e19c-d225-4e8e-aae6-29df5cab768b.jpg?v=1752060410"
+        },
+    ];
+
     useEffect(() => {
         const fetchProduct = async () => {
             try {
@@ -115,6 +173,55 @@ export default function Product() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div className="pp-ymal">
+                <div className="pp-ymal-inner div-80">
+                    <h2 className="pp-ymal-title">You May Also Like</h2>
+
+                    <div className="pp-ymal-grid">
+                        {RELATED_PRODUCTS.map((p, i) => (
+                            <div className="pp-ymal-card" key={i}>
+                                <div className="pp-ymal-img-wrap">
+                                    <img src={p.img} alt={p.name} />
+                                </div>
+                                <div className="pp-ymal-info">
+                                    <span className="pp-ymal-name">{p.name}</span>
+                                    <span className="pp-ymal-weight">{p.weight}</span>
+                                    <div className="pp-ymal-bottom">
+                                        <span className="pp-ymal-price">{p.price}</span>
+                                        <button className="pp-ymal-btn">Add +</button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="pp-reviews">
+                        <div className="pp-reviews-inner">
+                            <div className="pp-reviews-header">
+                                <h2 className="pp-reviews-title">Customer Reviews</h2>
+                                <span className="pp-reviews-count">4.8 avg</span>
+                            </div>
+
+                            <div className="pp-review-grid">
+                                {REVIEWS.map((r, i) => (
+                                    <div className="pp-review-card" key={i}>
+                                        <div className="pp-review-stars">
+                                            {"★".repeat(r.stars)}
+                                            {"☆".repeat(5 - r.stars)}
+                                        </div>
+                                        <p className="pp-review-text">{r.text}</p>
+                                        <span className="pp-review-author">
+                                            {r.author} · {r.date}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <Footer />
