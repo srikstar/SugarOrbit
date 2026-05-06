@@ -37,12 +37,13 @@ body {
 @font-face {
   font-family: 'BeautiqueDisplay-Regular';
   src: url('/fonts/BeautiqueDisplay-Regular.otf') format('opentype');
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'BeautiqueDisplay-Medium';
-    src: url('./font/BeautiqueDisplay-Medium.otf');
-    font-display: swap;
+  font-family: 'BeautiqueDisplay-Medium';
+  src: url('/fonts/BeautiqueDisplay-Medium.otf') format('opentype');
+  font-display: swap;
 }
 
 

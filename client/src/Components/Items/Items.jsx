@@ -20,7 +20,7 @@ function Items({ data, category }) {   // 👈 accept category as prop
     }
 
     const handleCart = (value, index, e) => {
-        e.stopPropagation()            // 👈 prevent card click when clicking Add to Cart
+        e.stopPropagation()      
         const cartItem = {
             _id: value._id,
             productName: value.productName,
