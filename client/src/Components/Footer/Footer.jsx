@@ -92,7 +92,7 @@ const Footer = () => {
       {/* ── Existing footer body ── */}
       <div className="footer-container row-sb-e">
         <div className="footer-brand column">
-          <img className='donut-footer-image' src="./donut.svg" alt="donut-footer-image" />
+          <img className='donut-footer-image' src="/donut.svg" alt="donut-footer-image" />
         </div>
 
         <div className="footer-links row">

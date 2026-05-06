@@ -75,7 +75,7 @@ function Navbar() {
       <div className="navbar-main-container row">
         <nav className="navbar div-80 row-sb">
 
-          <Link to='/'><img className='main-logo' src="./donut.svg" alt="main-logo" /></Link>
+          <Link to='/'><img className='main-logo' src="/donut.svg" alt="main-logo" /></Link>
 
           <div className="nav-containers nav-links row">
             <Link to='/sweets'><h3>Sweets</h3></Link>
@@ -86,18 +86,18 @@ function Navbar() {
           <div className="nav-containers nav-icons-container row">
             <div className="nav-icons" onClick={() => setIsOpen(true)}>
               <Link className='row'>
-                <img className='nav-icon menu' src="./menu.png" alt="menu-logo" />
+                <img className='nav-icon menu' src="/menu.png" alt="menu-logo" />
               </Link>
             </div>
             <div className="nav-icons" onClick={openCart}>
               <Link className='row'>
-                <img className='nav-icon' src="./cart.png" alt="cart-logo" />
+                <img className='nav-icon' src="/cart.png" alt="cart-logo" />
                 <h4>Cart <span className='tot-items'>{totalItems}</span></h4>
               </Link>
             </div>
             <div className="nav-icons" onClick={openProfile}>
               <Link className='row'>
-                <img className='nav-icon' src="./user.png" alt="user-logo" />
+                <img className='nav-icon' src="/user.png" alt="user-logo" />
                 <h4>Profile</h4>
               </Link>
             </div>
