@@ -7,22 +7,6 @@ import Items from '../../Components/Items/Items'
 import Footer from '../../Components/Footer/Footer'
 import '../Sweets/Sweets.css'
 
-const CATEGORY_META = {
-  sweets: {
-    label: 'Sweets',
-    description: 'At Sugar Orbit, our sweets are crafted with authentic ghee and the finest ingredients, keeping alive the rich traditions of Indian mithai. Each piece is a celebration of flavor, texture, and heritage — made fresh with no preservatives. 🪔✨'
-  },
-  namkeens: {
-    label: 'Namkeens',
-    description: 'At Sugar Orbit, our namkeens are crafted with the perfect blend of tradition and taste, using high-quality ingredients and authentic spice mixes. Each crunchy bite delivers bold flavors, balanced seasoning, and a satisfying crispness that keeps you coming back for more. 🌶️✨'
-  },
-  chocolates: {
-    label: 'Chocolates',
-    description: 'At Sugar Orbit, our chocolates are pure indulgence — crafted with premium cocoa and infused with Indian-inspired flavors. Every bite is a smooth, rich experience that bridges classic confectionery with a homegrown twist. 🍫✨'
-  },
-}
-
-
 function Sweets() {
   const { category } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -44,7 +28,7 @@ function Sweets() {
   const [priceFilter, setPriceFilter] = useState({
     isOpen: false,
     minPrice: Number(searchParams.get('minPrice')) || 0,
-    maxPrice: Number(searchParams.get('maxPrice')) || 0 
+    maxPrice: Number(searchParams.get('maxPrice')) || 0
   })
 
   const [productTypeFilter, setProductTypeFilter] = useState({
@@ -52,9 +36,6 @@ function Sweets() {
     selected: searchParams.getAll('type') || []
   })
 
-  const meta = CATEGORY_META[category] || { label: category, description: '' }
-
-  
   useEffect(() => {
     const fetchMeta = async () => {
       const result = await getSweets({ page: 1 })
@@ -110,8 +91,8 @@ function Sweets() {
 
   useEffect(() => {
     document.title = page > 1
-      ? `Sugar Orbit | ${meta.label} - Page ${page}`
-      : `Sugar Orbit | ${meta.label}`
+      ? `Sugar Orbit | Sweets - Page ${page}`
+      : `Sugar Orbit | Sweets`
   }, [category, page])
 
   useEffect(() => {
@@ -153,8 +134,10 @@ function Sweets() {
         <section className="category-main-container row">
           <div className="div-80">
             <section className="category-header-section">
-              <h1>{meta.label}</h1>
-              <div className="para"><p>{meta.description}</p></div>
+              <h1>Sweets</h1>
+              <div className="para">
+                <p>At Sugar Orbit, our sweets are crafted with authentic ghee and the finest ingredients, keeping alive the rich traditions of Indian mithai. Each piece is a celebration of flavor, texture, and heritage — made fresh with no preservatives. 🪔✨</p>
+              </div>
               <div className="badges-container-main row-sb">
                 <div className="badges-container column">
                   <img className='badge-icon' src="/package.svg" alt="package" />
