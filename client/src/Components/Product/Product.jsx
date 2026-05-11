@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { getProduct } from "../../API/product.api.js"
 import { setProduct } from '../../Redux/product.redux.js'
+import { setCartData } from '../../Redux/cart.redux.js'
 import { useDispatch, useSelector } from "react-redux"
 import "./Product.css"
 import Footer from "../Footer/Footer"
@@ -93,6 +94,17 @@ export default function Product() {
         }
     }, [product?.productName])
 
+    const handleAddToCart = () => {
+        dispatch(setCartData({
+            _id: product._id,
+            productName: product.productName,
+            productImages: product.productImages,
+            selectedSize: weight,
+            price: selectedPrice,
+            quantity: quantity
+        }));
+    };
+
     if (!product || !product.productName) return <div>Loading...</div>
 
     const selectedPrice = product.productPrice.find(p => p.size === weight)?.price
@@ -153,7 +165,7 @@ export default function Product() {
                                 </div>
                             </div>
 
-                            <button className="pp-cta">Add to Cart</button>
+                            <button className="pp-cta" onClick={handleAddToCart}>Add to Cart</button>
                             <button className="pp-cta-alt">Buy Now</button>
 
                             <div className="pp-accordion">
