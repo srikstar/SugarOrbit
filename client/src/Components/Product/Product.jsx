@@ -3,8 +3,8 @@ import { useParams, useNavigate } from "react-router-dom"
 import { getProduct } from "../../API/product.api.js"
 import { setProduct } from '../../Redux/product.redux.js'
 import { setCartData } from '../../Redux/cart.redux.js'
-import { setHomeSweetData, setHomeNamkeenData } from '../../Redux/home.js'
-import { homeSweets, homeNamkeens } from '../../API/home.api'
+import { setHomeSweetData, setHomeNamkeenData, setHomeChocolateData } from '../../Redux/home.js'
+import { homeSweets, homeNamkeens, homeChocolates } from '../../API/home.api'
 import { useDispatch, useSelector } from "react-redux"
 import "./Product.css"
 import Footer from "../Footer/Footer"
@@ -56,6 +56,9 @@ export default function Product() {
                 } else if (category === 'namkeens') {
                     const response = await homeNamkeens()
                     dispatch(setHomeNamkeenData(response?.data || []))
+                } else if (category === 'chocolates') { // Added chocolates
+                    const response = await homeChocolates()
+                    dispatch(setHomeChocolateData(response?.data || []))
                 }
             } catch (error) {
                 console.log(error)
@@ -113,7 +116,9 @@ export default function Product() {
             ? homeData?.sweets || []
             : category === "namkeens"
                 ? homeData?.namkeens || []
-                : []
+                : category === "chocolates" // Added chocolates
+                    ? homeData?.chocolates || []
+                    : []
 
     const filteredRelated = Array.isArray(relatedProducts)
         ? relatedProducts

@@ -4,7 +4,8 @@ const homeReducer = createSlice({
     name: "homeData",
     initialState: {
         sweets: [],
-        namkeens: []
+        namkeens: [],
+        chocolates: [] // Added chocolates
     },
 
     reducers: {
@@ -13,9 +14,12 @@ const homeReducer = createSlice({
         },
         setHomeNamkeenData: (state, action) => {
             state.namkeens = action.payload
+        },
+        setHomeChocolateData: (state, action) => {
+            state.chocolates = action.payload
         }
     }
 })
 
-export const { setHomeSweetData, setHomeNamkeenData } = homeReducer.actions
+export const { setHomeSweetData, setHomeNamkeenData, setHomeChocolateData } = homeReducer.actions
 export default homeReducer.reducer

@@ -26,3 +26,12 @@ export const homeNamkeens = async () => {
         return error?.response?.data 
     }
 }
+
+export const homeChocolates = async () => {
+    try {
+        const response = await home.get(`/api/home/chocolates`)
+        return response?.data
+    } catch (error) {
+        return error?.response?.data
+    }
+}
