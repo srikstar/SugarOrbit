@@ -96,11 +96,8 @@ namkeensRoute.get('/namkeens', async (req, res) => {
 namkeensRoute.get('/namkeens/:id', async (req, res) => {
     try {
         const namkeens = await Namkeens.findOne({ _id: req.params.id })
-
         if (!namkeens) return res.status(404).json({ message: "Requested Namkeens not found!" })
-
         return res.status(200).json({ namkeens })
-
     } catch (error) {
         return res.status(500).json({ message: "Unable to get the request at this time" })
     }

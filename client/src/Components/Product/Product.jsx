@@ -72,16 +72,15 @@ export default function Product() {
         const fetchProduct = async () => {
             try {
                 const data = await getProduct({ category, id })
-
-                if (data?.sweet) {
-                    dispatch(setProduct(data.sweet))
-                    setWeight(data.sweet?.productPrice?.[0]?.size || "")
+                const product = data?.sweet || data?.namkeens || data?.chocolate
+                if (product) {
+                    dispatch(setProduct(product))
+                    setWeight(product?.productPrice?.[0]?.size || "")
                 }
             } catch (error) {
                 console.log(error)
             }
         }
-
         fetchProduct()
     }, [id, category, dispatch])
 
