@@ -56,6 +56,9 @@ function deriveBadge(totalOrders) {
 // SCHEMA
 const chocolatesSchema = new mongoose.Schema(
     {
+        _id: {
+            type: String
+        },
         productName: {
             type: String,
             required: [true, 'Product name is required'],
