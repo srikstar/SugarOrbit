@@ -1,6 +1,7 @@
 const express = require('express')
 const Sweets = require('../models/sweets.db.js')
 const Namkeens = require('../models/namkeens.db.js')
+const Chocolates = require('../models/chocolates.db.js')
 
 const homeRoute = express.Router()
 
@@ -40,8 +41,25 @@ homeRoute.get('/namkeens', async (req, res) => {
     }
 })
 
+homeRoute.get('/chocolates', async (req, res) => {
+    try {
+        const chocolates = await Chocolates.find({},{productName : 1, productDescription : 1,productPrice: 1, totalOrders : 1, _id : 1, productImages : { $slice : 1 } })
+            .sort({ totalOrders: -1 })
+            .limit(5)
 
-// GET PARTICULAR SWEET
+        res.status(200).json({
+            data: chocolates,
+            message: "Chocolates fetched successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+})
+
+
+// GET PARTICULAR PRODUCT
 homeRoute.get('/:type/:name', async (req, res) => {
     try {
         const { type, name } = req.params

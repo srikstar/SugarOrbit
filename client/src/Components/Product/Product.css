@@ -442,8 +442,8 @@
 .pp-cta {
     width: 100%;
     padding: 18px;
-    background: white;
-    color: black;
+    background: rgb(0, 0, 0);
+    color: #f5f0e1;;
     border: 1px solid black;
     font-family: "Poppins", sans-serif;
     font-size: 13px;
@@ -457,8 +457,8 @@
 }
 
 .pp-cta:hover {
-    background: black;
-    color: white;
+    background: #f5f0e1;
+    color: black;
 }
 
 .pp-cta:active {

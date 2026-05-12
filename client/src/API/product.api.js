@@ -9,7 +9,6 @@ const product = axios.create({
 export const getProduct = async ({ category, id }) => {  // 👈 fixed typo: categeory → category
     try {
         const response = await product.get(`/api/product/${category}/${id}`)
-        console.log(response?.data)
         return response?.data
     } catch (error) {
         return error?.response?.data
