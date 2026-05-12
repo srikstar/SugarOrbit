@@ -92,6 +92,19 @@ chocolatesRoute.get('/chocolates', async (req, res) => {
     }
 })
 
+// GET SPECIFIC NAMKEENS DATA
+chocolatesRoute.get('/chocolates/:id', async (req, res) => {
+    try {
+        const chocolate = await Chocolates.findOne({ _id: req.params.id })
+
+        if (!chocolate) return res.status(404).json({ message: "Requested Chocolates not found!" })
+
+        return res.status(200).json({ chocolate })
+
+    } catch (error) {
+        return res.status(500).json({ message: "Unable to get the request at this time" })
+    }
+})
 
 
 // DELETE
