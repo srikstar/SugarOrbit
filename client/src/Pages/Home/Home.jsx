@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import './Home.css'
 import Footer from '../../Components/Footer/Footer'
@@ -116,6 +117,7 @@ function Home() {
 
   const heroImage = 'https://sugar-orbit-assets.s3.ap-south-1.amazonaws.com/homepage.png'
   const shopImage = './shopimg.png'
+  const navigate = useNavigate()
 
   const dispatch = useDispatch()
 
@@ -142,9 +144,8 @@ function Home() {
     handleNamkeens()
   }, [])
 
-  const handleItem = (id) => {
-    navigate(`/${category}/${id}`)
-  }
+  const handleSweetItem = (id) => navigate(`/sweets/${id}`)
+  const handleNamkeenItem = (id) => navigate(`/namkeens/${id}`)
 
   const handleCart = (data) => {
     const selectedPrice = data.productPrice.find(p => p.size === data.selectedSize)?.price
@@ -358,7 +359,7 @@ function Home() {
               activeSize={activeSize}
               onSizeSelect={handleSizeSelect}
               onAddToCart={handleCart}
-              onItemClick={handleItem}
+              onItemClick={handleSweetItem}
             />
           </div>
         </section>
@@ -420,7 +421,7 @@ function Home() {
               activeSize={activeSize}
               onSizeSelect={handleSizeSelect}
               onAddToCart={handleCart}
-              onItemClick={handleItem}
+              onItemClick={handleNamkeenItem}
             />
           </div>
         </section>
