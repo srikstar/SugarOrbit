@@ -18,7 +18,8 @@ function ProductCarousel({
   isDragging,
   activeSize,
   onSizeSelect,
-  onAddToCart
+  onAddToCart,
+  onItemClick
 }) {
   const translateX = -(currentIndex * (100 / VISIBLE_CARDS))
 
@@ -39,7 +40,12 @@ function ProductCarousel({
             const selectedPrice = item.productPrice.find((p) => p.size === selectedSize)?.price
 
             return (
-              <div key={item._id} className="carousel-slide">
+              <div
+                key={item._id}
+                className="carousel-slide"
+                onClick={() => onItemClick(item._id)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="product-card">
                   <div className="product-image-wrapper">
                     <img
@@ -58,7 +64,7 @@ function ProductCarousel({
                         <button
                           key={size}
                           className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                          onClick={() => onSizeSelect(item._id, size)}
+                          onClick={(e) => { e.stopPropagation(); onSizeSelect(item._id, size) }}
                         >
                           {size}
                         </button>
@@ -66,7 +72,12 @@ function ProductCarousel({
                     </div>
                     <div className="product-footer">
                       <span className="item-price">₹{selectedPrice}</span>
-                      <button className="add-to-cart-btn" onClick={() => onAddToCart({ ...item, selectedSize })}>Add to Cart</button>
+                      <button
+                        className="add-to-cart-btn"
+                        onClick={(e) => { e.stopPropagation(); onAddToCart({ ...item, selectedSize }) }}
+                      >
+                        Add to Cart
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -130,6 +141,10 @@ function Home() {
     handleSweets()
     handleNamkeens()
   }, [])
+
+  const handleItem = (id) => {
+    navigate(`/${category}/${id}`)
+  }
 
   const handleCart = (data) => {
     const selectedPrice = data.productPrice.find(p => p.size === data.selectedSize)?.price
@@ -343,6 +358,7 @@ function Home() {
               activeSize={activeSize}
               onSizeSelect={handleSizeSelect}
               onAddToCart={handleCart}
+              onItemClick={handleItem}
             />
           </div>
         </section>
@@ -404,6 +420,7 @@ function Home() {
               activeSize={activeSize}
               onSizeSelect={handleSizeSelect}
               onAddToCart={handleCart}
+              onItemClick={handleItem}
             />
           </div>
         </section>
