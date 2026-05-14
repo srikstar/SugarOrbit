@@ -6,6 +6,7 @@ import { setCartData } from '../../Redux/cart.redux.js'
 import { setHomeSweetData, setHomeNamkeenData, setHomeChocolateData } from '../../Redux/home.js'
 import { homeSweets, homeNamkeens, homeChocolates } from '../../API/home.api'
 import { useDispatch, useSelector } from "react-redux"
+import { setBuyNow } from '../../Redux/buynow.redux.js'
 import "./Product.css"
 import Footer from "../Footer/Footer"
 
@@ -91,6 +92,11 @@ export default function Product() {
             window.scrollTo({ top: 0, behavior: 'smooth' })
         }
     }, [product?.productName])
+
+    const handleBuyNow = (product) =>{
+        dispatch(setBuyNow(product))
+        navigate('/checkout')
+    }
 
     const selectedPrice =
         product?.productPrice?.find(p => p.size === weight)?.price || 0
@@ -220,9 +226,7 @@ export default function Product() {
                                 Add to Cart
                             </button>
 
-                            <button className="pp-cta-alt">
-                                Buy Now
-                            </button>
+                            <button onClick={() => handleBuyNow({weight, quantity, product})} className="pp-cta-alt">Buy Now</button>
 
                             <div className="pp-accordion">
 
