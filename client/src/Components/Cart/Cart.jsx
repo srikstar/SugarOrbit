@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { increaseQuantity, decreaseQuantity, removeItem } from '../../Redux/cart.redux.js'
+import { clearBuyNow } from '../../Redux/buynow.redux.js'
 import './Cart.css'
 
 function CartItem({ item, onRemove, onIncrease, onDecrease }) {
@@ -31,13 +32,16 @@ function Cart({ onClose, isOpen }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const cartItems = useSelector(state => state.cart)  // 👈 from Redux
-
-  const handleCheckout = () => navigate("/checkout")
-  const handleRemove   = (item) => dispatch(removeItem(item))
+  const handleCheckout = () => {
+    dispatch(clearBuyNow())  
+    onClose()
+    navigate("/checkout")
+  }
+  const handleRemove = (item) => dispatch(removeItem(item))
   const handleIncrease = (item) => dispatch(increaseQuantity(item))
   const handleDecrease = (item) => dispatch(decreaseQuantity(item))
 
-  const total      = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (

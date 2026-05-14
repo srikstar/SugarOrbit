@@ -12,18 +12,24 @@ const Checkout = () => {
 
   const isBuyNow = !!buyNow?.product;
 
+
   const cartItems = isBuyNow
-    ? [
-        {
-          id: buyNow.product._id,
-          name: buyNow.product.productName,
-          variant: buyNow.weight,
-          price: buyNow.price,
-          quantity: buyNow.quantity,
-          image: buyNow.image,
-        },
-      ]
-    : cart?.items || [];
+    ? [{
+      id: buyNow.product._id,
+      name: buyNow.product.productName,
+      variant: buyNow.weight,
+      price: buyNow.price,
+      quantity: buyNow.quantity,
+      image: buyNow.image,
+    }]
+    : cart.map(item => ({          // ← map cart array directly
+      id: item._id,
+      name: item.productName,
+      variant: item.selectedSize,
+      price: item.price,
+      quantity: item.quantity,
+      image: item.productImages?.[0],
+    }));
 
   useEffect(() => {
     const fetchCart = async () => {
