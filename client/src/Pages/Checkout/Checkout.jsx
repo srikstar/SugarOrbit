@@ -1,72 +1,170 @@
-import React, { useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import "./Checkout.css";
+
+import { auth } from "../../FirebaseConfig";
+import { setAuthData } from "../../Redux/user.auth";
+import { setUserData } from "../../Redux/user.redux";
+import { getUser } from "../../API/user.api";
+
+// ─── helpers ─────────────────────────────────────────────────────────────────
+
+const isValidPhone = (v) => /^\d{10}$/.test(v);
+
+// ─── Firebase OTP ─────────────────────────────────────────────────────────────
+
+let confirmationResult = null;
+let recaptchaVerifier  = null;
+
+const clearVerifier = () => {
+  if (recaptchaVerifier) {
+    recaptchaVerifier.clear();
+    recaptchaVerifier = null;
+  }
+};
+
+const requestOtp = async (phone) => {
+  clearVerifier();                        // always destroy the old one first
+  recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+    size: "invisible",
+    callback: () => {},
+    "expired-callback": () => clearVerifier(),
+  });
+  await recaptchaVerifier.render();       // pre-render avoids init race on mobile
+  confirmationResult = await signInWithPhoneNumber(auth, `+91${phone}`, recaptchaVerifier);
+};
+
+const confirmOtp = async (otp) => {
+  const result = await confirmationResult.confirm(otp);
+  return result.user;
+};
+
+// ─── Countdown ────────────────────────────────────────────────────────────────
+
+function Countdown({ seconds, onEnd }) {
+  const [left, setLeft] = useState(seconds);
+
+  useEffect(() => {
+    setLeft(seconds);
+    const id = setInterval(() => {
+      setLeft((s) => {
+        if (s <= 1) { clearInterval(id); onEnd(); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [seconds]);
+
+  return <span className="co-otp-resend-timer">Resend in {left}s</span>;
+}
 
 /* ─────────────────────────────────────────
    OTP Login form (guest users)
 ───────────────────────────────────────── */
 function OtpLogin() {
-  const [phone, setPhone]       = useState("");
-  const [step, setStep]         = useState("phone"); // "phone" | "otp"
-  const [otp, setOtp]           = useState(["", "", "", "", "", ""]);
+  const dispatch = useDispatch();
+
+  const [phone, setPhone]         = useState("");
+  const [step, setStep]           = useState("phone"); // "phone" | "otp"
+  const [otp, setOtp]             = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [otpError, setOtpError]   = useState("");
-  const [sending, setSending]     = useState(false);
-  const refs = useRef([]);
+  const [loading, setLoading]     = useState(false);
+  const [canResend, setCanResend] = useState(false);
 
-  const handleOtpChange = (val, i) => {
-    const next = [...otp];
-    next[i] = val.slice(-1);
-    setOtp(next);
-    setOtpError("");
-    if (val && i < 5) refs.current[i + 1]?.focus();
-    if (!val && i > 0) refs.current[i - 1]?.focus();
-  };
+  const inputs = useRef([]);
+  const digits = otp.split("").concat(Array(6).fill("")).slice(0, 6);
 
-  const handleOtpKeyDown = (e, i) => {
-    if (e.key === "Backspace" && !otp[i] && i > 0) {
-      refs.current[i - 1]?.focus();
+  // ── OTP box keyboard handler ──────────────────────────────────────────────
+  const handleOtpKey = (e, i) => {
+    if (e.key === "Backspace") {
+      const next = digits.slice();
+      if (next[i]) {
+        next[i] = "";
+        setOtp(next.join(""));
+      } else if (i > 0) {
+        next[i - 1] = "";
+        setOtp(next.join(""));
+        inputs.current[i - 1]?.focus();
+      }
+      return;
     }
+    if (!/^\d$/.test(e.key)) return;
+    const next = digits.slice();
+    next[i] = e.key;
+    setOtp(next.join(""));
+    setOtpError("");
+    if (i < 5) inputs.current[i + 1]?.focus();
   };
 
+  const handleOtpPaste = (e) => {
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    setOtp(pasted.padEnd(6, "").slice(0, 6));
+    inputs.current[Math.min(pasted.length, 5)]?.focus();
+    e.preventDefault();
+  };
+
+  // ── Send OTP ──────────────────────────────────────────────────────────────
   const sendOtp = async () => {
     setPhoneError("");
-    if (phone.replace(/\D/g, "").length < 10) {
+    if (!isValidPhone(phone)) {
       setPhoneError("Enter a valid 10-digit mobile number.");
       return;
     }
-    setSending(true);
+    setLoading(true);
     try {
-      // TODO: window.confirmationResult = await signInWithPhoneNumber(auth, `+91${phone}`, recaptchaVerifier)
+      await requestOtp(phone);
       setStep("otp");
-      setTimeout(() => refs.current[0]?.focus(), 100);
-    } catch (err) {
+      setCanResend(false);
+      setTimeout(() => inputs.current[0]?.focus(), 100);
+    } catch {
       setPhoneError("Failed to send OTP. Please try again.");
     } finally {
-      setSending(false);
+      setLoading(false);
     }
   };
 
+  // ── Verify OTP → fetch user → dispatch to Redux ───────────────────────────
   const verifyOtp = async () => {
+    if (otp.length < 6) { setOtpError("Please enter all 6 digits."); return; }
     setOtpError("");
-    const code = otp.join("");
-    if (code.length < 6) {
-      setOtpError("Please enter all 6 digits.");
-      return;
-    }
+    setLoading(true);
     try {
-      // TODO: await window.confirmationResult.confirm(code)
-      // On success Redux will update state.user.data and this component unmounts
-      setOtpError(""); // clear on success path
-    } catch (err) {
+      const firebaseUser = await confirmOtp(otp);
+
+      // Persist auth identifiers in Redux
+      dispatch(setAuthData({ phone: firebaseUser.phoneNumber, uid: firebaseUser.uid }));
+
+      // Fetch full user record from DB
+      const dbUser = await getUser(firebaseUser.phoneNumber);
+      if (dbUser?.isLoggedIn === false) {
+        setOtpError("No account found. Please sign up first.");
+        setLoading(false);
+        return;
+      }
+
+      dispatch(setUserData(dbUser));
+      // Component unmounts automatically once Redux user state updates
+    } catch {
       setOtpError("Incorrect OTP. Please try again.");
-      setOtp(["", "", "", "", "", ""]);
-      setTimeout(() => refs.current[0]?.focus(), 100);
+      setOtp("");
+      setTimeout(() => inputs.current[0]?.focus(), 100);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleResend = async () => {
+    setOtp(""); setOtpError(""); setCanResend(false);
+    try { await requestOtp(phone); } catch { setOtpError("Could not resend OTP."); }
   };
 
   return (
     <div className="co-otp-card">
+      {/* invisible reCAPTCHA mount point */}
+      <div id="recaptcha-container" />
+
       {step === "phone" ? (
         <>
           <p className="co-otp-label">Sign in with your mobile number to continue</p>
@@ -75,43 +173,67 @@ function OtpLogin() {
             <input
               className={`co-input${phoneError ? " co-input-error" : ""}`}
               type="tel"
+              inputMode="numeric"
               maxLength={10}
               placeholder="Mobile number"
               value={phone}
-              onChange={(e) => { setPhone(e.target.value); setPhoneError(""); }}
+              onChange={(e) => { setPhone(e.target.value.replace(/\D/g, "").slice(0, 10)); setPhoneError(""); }}
               onKeyDown={(e) => e.key === "Enter" && sendOtp()}
             />
           </div>
           {phoneError && <p className="co-field-error">{phoneError}</p>}
-          <button className="co-otp-submit-btn" onClick={sendOtp} disabled={sending}>
-            {sending ? "Sending…" : "Send OTP →"}
+          <button className="co-otp-submit-btn" onClick={sendOtp} disabled={loading}>
+            {loading ? "Sending…" : "Send OTP →"}
           </button>
         </>
       ) : (
         <>
           <p className="co-otp-label">
-            Enter the 6-digit OTP sent to <strong>+91 {phone}</strong>
+            Enter the 6-digit OTP sent to{" "}
+            <strong>+91 {phone.replace(/(\d{2})\d{6}(\d{2})/, "$1••••••$2")}</strong>
           </p>
+
+          {/* 6-box OTP input */}
           <div className="co-otp-boxes">
-            {otp.map((d, i) => (
+            {digits.map((d, i) => (
               <input
                 key={i}
-                ref={(el) => (refs.current[i] = el)}
+                ref={(el) => (inputs.current[i] = el)}
                 className={`co-otp-box${otpError ? " co-otp-box-error" : ""}`}
-                type="tel"
+                type="text"
                 inputMode="numeric"
                 maxLength={1}
                 value={d}
-                onChange={(e) => handleOtpChange(e.target.value, i)}
-                onKeyDown={(e) => handleOtpKeyDown(e, i)}
+                onChange={() => {}}
+                onKeyDown={(e) => handleOtpKey(e, i)}
+                onPaste={handleOtpPaste}
+                onFocus={(e) => e.target.select()}
+                autoFocus={i === 0}
               />
             ))}
           </div>
+
           {otpError && <p className="co-field-error">{otpError}</p>}
-          <button className="co-otp-submit-btn" onClick={verifyOtp}>
-            Verify & Continue →
+
+          <button
+            className="co-otp-submit-btn"
+            onClick={verifyOtp}
+            disabled={loading || otp.length < 6}
+          >
+            {loading ? "Verifying…" : "Verify & Continue →"}
           </button>
-          <button className="co-otp-back-btn" onClick={() => { setStep("phone"); setOtp(["","","","","",""]); setOtpError(""); }}>
+
+          <div className="co-otp-resend-row">
+            {canResend
+              ? <button className="co-otp-back-btn" onClick={handleResend}>Resend OTP</button>
+              : <Countdown seconds={30} onEnd={() => setCanResend(true)} />
+            }
+          </div>
+
+          <button
+            className="co-otp-back-btn"
+            onClick={() => { setStep("phone"); setOtp(""); setOtpError(""); }}
+          >
             ← Change number
           </button>
         </>
@@ -239,7 +361,6 @@ const Checkout = () => {
               </div>
 
               {isLoggedIn ? (
-                /* ── Radio-style logged-in card ── */
                 <div className="co-user-pill">
                   <div className="co-user-radio">
                     <div className="co-radio-outer">
@@ -359,7 +480,7 @@ const Checkout = () => {
 
             <div className="co-divider" />
 
-            {/* Coupon — above subtotal */}
+            {/* Coupon */}
             <div className="co-coupon-card">
               <div className="co-coupon-title">Apply Coupon</div>
               <div className="co-coupon-row">

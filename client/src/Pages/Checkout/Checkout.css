@@ -38,7 +38,7 @@
 
 /* LEFT */
 .co-left {
-  flex: 1.4;
+  flex: 3;
   padding: 44px 4% 80px 5%;
   display: flex;
   flex-direction: column;
@@ -48,7 +48,7 @@
 
 /* RIGHT */
 .co-right {
-  flex: 0.6;
+  flex: 2;
   background: var(--co-right-bg);
   border-left: 1px solid var(--gold-border);
   padding: 40px 4% 48px;
@@ -475,9 +475,8 @@ select.co-input {
   flex-shrink: 0;
   border: 1px solid var(--gold-border);
   position: relative;
-  overflow: hidden;
 }
-.co-item-img-inner { width: 100%; height: 100%; object-fit: cover; }
+.co-item-img-inner { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
 .co-item-qty {
   position: absolute;
   top: -5px; right: -5px;
@@ -601,7 +600,7 @@ select.co-input {
 ══════════════════════════════ */
 
 /* Tablet */
-@media (max-width: 860px) {
+@media (max-width: 1000px) {
   .co-main { flex-direction: column-reverse; }
 
   .co-right {
@@ -624,6 +623,7 @@ select.co-input {
 
   .co-otp-boxes { gap: 6px; }
   .co-otp-box { height: 44px; font-size: 16px; }
+  .co-left { width: 100%; }
 
   .co-section-title { font-size: 16px; }
 
@@ -632,4 +632,15 @@ select.co-input {
   .co-coupon-row { flex-direction: column; }
   .co-coupon-apply-btn,
   .co-coupon-remove-btn { width: 100%; text-align: center; }
+}
+
+/* ── OTP resend row (checkout) ── */
+.co-otp-resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.co-otp-resend-timer {
+  font-size: 12px;
+  color: var(--muted);
 }
