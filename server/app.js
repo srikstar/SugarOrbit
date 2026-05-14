@@ -8,6 +8,7 @@ const userRoute = require('./routes/users.route.js')
 const sweetsRoute = require('./routes/sweets.route.js')
 const namkeensRoute = require('./routes/namkeens.route.js')
 const chocolatesRoute = require('./routes/chocolates.route.js')
+const couponRoute = require('./routes/coupons.route.js')
 
 dotenv.config()
 const port = process.env.PORT
@@ -27,6 +28,7 @@ app.use('/api/product', namkeensRoute)
 app.use('/api/product', chocolatesRoute)
 app.use('/api/home', homeRoute)
 app.use('/product', homeRoute)
+app.use('/api/coupons', couponRoute)
 
 
 app.listen(port, () =>{

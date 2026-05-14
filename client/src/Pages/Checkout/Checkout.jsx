@@ -7,6 +7,7 @@ import { auth } from "../../FirebaseConfig";
 import { setAuthData } from "../../Redux/user.auth";
 import { setUserData } from "../../Redux/user.redux";
 import { getUser } from "../../API/user.api";
+import { applyCouponAPI } from "../../API/coupons.api.js"
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -25,13 +26,13 @@ const clearVerifier = () => {
 };
 
 const requestOtp = async (phone) => {
-  clearVerifier();                        // always destroy the old one first
+  clearVerifier();
   recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
     size: "invisible",
     callback: () => {},
     "expired-callback": () => clearVerifier(),
   });
-  await recaptchaVerifier.render();       // pre-render avoids init race on mobile
+  await recaptchaVerifier.render();
   confirmationResult = await signInWithPhoneNumber(auth, `+91${phone}`, recaptchaVerifier);
 };
 
@@ -65,13 +66,13 @@ function Countdown({ seconds, onEnd }) {
 function OtpLogin() {
   const dispatch = useDispatch();
 
-  const [phone, setPhone]         = useState("");
-  const [step, setStep]           = useState("phone"); // "phone" | "otp"
-  const [otp, setOtp]             = useState("");
+  const [phone, setPhone]           = useState("");
+  const [step, setStep]             = useState("phone"); // "phone" | "otp"
+  const [otp, setOtp]               = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [otpError, setOtpError]   = useState("");
-  const [loading, setLoading]     = useState(false);
-  const [canResend, setCanResend] = useState(false);
+  const [otpError, setOtpError]     = useState("");
+  const [loading, setLoading]       = useState(false);
+  const [canResend, setCanResend]   = useState(false);
 
   const inputs = useRef([]);
   const digits = otp.split("").concat(Array(6).fill("")).slice(0, 6);
@@ -133,10 +134,8 @@ function OtpLogin() {
     try {
       const firebaseUser = await confirmOtp(otp);
 
-      // Persist auth identifiers in Redux
       dispatch(setAuthData({ phone: firebaseUser.phoneNumber, uid: firebaseUser.uid }));
 
-      // Fetch full user record from DB
       const dbUser = await getUser(firebaseUser.phoneNumber);
       if (dbUser?.isLoggedIn === false) {
         setOtpError("No account found. Please sign up first.");
@@ -145,7 +144,6 @@ function OtpLogin() {
       }
 
       dispatch(setUserData(dbUser));
-      // Component unmounts automatically once Redux user state updates
     } catch {
       setOtpError("Incorrect OTP. Please try again.");
       setOtp("");
@@ -162,7 +160,6 @@ function OtpLogin() {
 
   return (
     <div className="co-otp-card">
-      {/* invisible reCAPTCHA mount point */}
       <div id="recaptcha-container" />
 
       {step === "phone" ? (
@@ -193,7 +190,6 @@ function OtpLogin() {
             <strong>+91 {phone.replace(/(\d{2})\d{6}(\d{2})/, "$1••••••$2")}</strong>
           </p>
 
-          {/* 6-box OTP input */}
           <div className="co-otp-boxes">
             {digits.map((d, i) => (
               <input
@@ -297,24 +293,39 @@ const Checkout = () => {
         image:    item.productImages?.[0],
       }));
 
+  /* ── Totals ── */
+  const subtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
+  const shipping = 100;
+  const tax      = Math.round(subtotal * 0.18 * 100) / 100;
+
   /* ── Coupon ── */
   const [couponInput, setCouponInput]       = useState("");
   const [appliedCoupon, setAppliedCoupon]   = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponError, setCouponError]       = useState("");
   const [couponSuccess, setCouponSuccess]   = useState("");
+  const [couponLoading, setCouponLoading]   = useState(false); // ← new
 
-  const applyCoupon = () => {
+  const applyCoupon = async () => {
     setCouponError(""); setCouponSuccess("");
     const code = couponInput.trim().toUpperCase();
     if (!code) { setCouponError("Please enter a coupon code."); return; }
-    if (code === "KEEPLEARNING") {
-      setAppliedCoupon("KEEPLEARNING");
-      setCouponDiscount(50);
-      setCouponSuccess("Coupon applied successfully!");
-    } else {
-      setCouponError("Invalid coupon code. Please try again.");
+
+    setCouponLoading(true);
+    try {
+      // Pass subtotal as cartTotal (items total before shipping & tax)
+      const res = await applyCouponAPI(code, subtotal);
+      if (res.success) {
+        setAppliedCoupon(res.coupon.code);
+        setCouponDiscount(res.discount);
+        setCouponSuccess(`Coupon applied! You save ₹${res.discount.toFixed(2)}`);
+      }
+    } catch (err) {
+      // Backend throws { success: false, message: "..." } on 4xx errors
+      setCouponError(err.message || "Invalid coupon code. Please try again.");
       setAppliedCoupon(""); setCouponDiscount(0);
+    } finally {
+      setCouponLoading(false);
     }
   };
 
@@ -326,11 +337,8 @@ const Checkout = () => {
   /* ── Billing ── */
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
-  /* ── Totals ── */
-  const subtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
-  const shipping = 100;
-  const tax      = Math.round(subtotal * 0.18 * 100) / 100;
-  const total    = subtotal + shipping + tax - couponDiscount;
+  /* ── Final total ── */
+  const total = subtotal + shipping + tax - couponDiscount;
 
   /* ── Address defaults from Redux ── */
   const addrDefaults = isLoggedIn && user?.address
@@ -494,7 +502,15 @@ const Checkout = () => {
                 />
                 {appliedCoupon
                   ? <button className="co-coupon-remove-btn" onClick={removeCoupon}>Remove</button>
-                  : <button className="co-coupon-apply-btn" onClick={applyCoupon}>Apply</button>
+                  : (
+                    <button
+                      className="co-coupon-apply-btn"
+                      onClick={applyCoupon}
+                      disabled={couponLoading}
+                    >
+                      {couponLoading ? "Checking…" : "Apply"}
+                    </button>
+                  )
                 }
               </div>
               {couponError   && <p className="co-field-error">{couponError}</p>}
