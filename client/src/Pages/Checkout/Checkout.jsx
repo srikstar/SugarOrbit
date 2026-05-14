@@ -285,7 +285,7 @@ const Checkout = () => {
         image:    buyNow.image,
       }]
     : cart.map((item) => ({
-        id:       item._id,
+        id:       `${item._id}-${item.selectedSize}`,
         name:     item.productName,
         variant:  item.selectedSize,
         price:    item.price,
@@ -470,7 +470,7 @@ const Checkout = () => {
             )}
 
             {cartItems.map((item) => (
-              <div className="co-order-item" key={item.id}>
+              <div className="co-order-item" key={`${item.id}-${item.variant}`}>
                 <div className="co-item-img">
                   {item.image
                     ? <img src={item.image} alt={item.name} className="co-item-img-inner" />
