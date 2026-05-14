@@ -404,7 +404,7 @@
 .pp-qty-ctrl {
     display: flex;
     align-items: center;
-    border: 1px solid var(--border);
+    border: 1px solid gold;
     border-radius: 2px;
     overflow: hidden;
 }
